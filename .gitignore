@@ -1,0 +1,6 @@
+.venv/
+data/ConTRoL-dataset/
+.env
+__pycache__/
+logs/
+results/
