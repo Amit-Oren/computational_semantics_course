@@ -2,7 +2,7 @@ import os
 import logging
 from typing import Literal
 from dotenv import load_dotenv
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, ConfigDict
 
 load_dotenv()
 
@@ -23,7 +23,7 @@ MODELS = {
 
 DEFAULT_PARAMS = {
     "temperature": 0.0,
-    "max_tokens":  512,
+    "max_tokens":  2048,
 }
 
 RESULTS_DIR = "results"
@@ -32,6 +32,42 @@ DATA_PATH   = "data/ConTRoL-dataset"
 
 
 class NLIOutput(BaseModel):
+    label:       Literal["Entailment", "Contradiction", "Neutral"]
+    explanation: str
+
+
+class QuestionListOutput(BaseModel):
+    questions: list[str]
+
+
+class PDTBQuestion(BaseModel):
+    id:     str
+    probes: str
+    q:      str
+
+
+class PDTBOutput(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    hypothesis:      str
+    connective:      str
+    connective_type: Literal["explicit", "implicit"] = Field(alias="connectivetype")
+    pdtb_sense:      str = Field(alias="pdtbsense")
+    arg1:            str
+    arg2:            str
+    questions:       list[PDTBQuestion]
+
+
+class QAPair(BaseModel):
+    question: str
+    answer:   str
+
+
+class HDQDOutput(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    qa_pairs:    list[QAPair] = Field(alias="qapairs")
+    comparisons: list[str]
     label:       Literal["Entailment", "Contradiction", "Neutral"]
     explanation: str
 
