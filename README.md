@@ -19,7 +19,7 @@ Place the dataset at `data/ConTRoL-dataset/` (already gitignored).
 | Experiment | Description |
 |---|---|
 | `zero_shot` | Full passage + hypothesis → label |
-| `few_shot_cot` | Few worked examples with step-by-step reasoning |
+| `few_shot_cot` | Three fixed examples (one per label) prepended to the zero-shot prompt |
 | `hdqd_pipeline` | Two-stage: hypothesis → sub-questions → evidence-grounded verdict |
 
 ---
