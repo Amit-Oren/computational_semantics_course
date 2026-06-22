@@ -86,7 +86,7 @@ HDQD_QUESTION_USER_PROMPT_PDTB = """Hypothesis: "{hypothesis}"
 """
 
 
-HDQD_QUESTION_SYSTEM_PROMPT = """You are an NLI question decomposer.
+HDQD_QUESTION_SYSTEM_PROMPT = """You are an NLI question decomposer. Respond with a JSON object only.
 
 Given a HYPOTHESIS, identify its atomic verifiable claims and generate one targeted question per claim.
 
@@ -97,24 +97,22 @@ Given a HYPOTHESIS, identify its atomic verifiable claims and generate one targe
 - Generate 2-4 questions total
 - Prioritize precise values (numbers, dates, names, locations) and specific relationships — these are most likely to reveal Entailment or Contradiction
 
+## Output format — JSON only, no extra text
+{"questions": ["question 1", "question 2", "question 3"]}
+
 ## Examples
 
 Hypothesis: "In 1900, 19% of North American women of working age participated in the workforce."
-questions:
-  What percentage of women of working age participated in the workforce in 1900?
-  Which region's female workforce participation rate is given as 19% around 1900 — North America or another region?
-  What was the female labor force participation rate in North America around 1900?
+{"questions": ["What percentage of women of working age participated in the workforce in 1900?", "Which region's female workforce participation rate is given as 19% around 1900?", "What was the female labor force participation rate in North America around 1900?"]}
 
 Hypothesis: "The store's security officer had a motive for accusing Gareth of shoplifting."
-questions:
-  Did the store security officer have any personal reason to target Gareth?
-  What was the relationship between the security officer and Gareth before the accusation?"""
+{"questions": ["Did the store security officer have any personal reason to target Gareth?", "What was the relationship between the security officer and Gareth before the accusation?"]}"""
 
 HDQD_QUESTION_USER_PROMPT = """Hypothesis: "{hypothesis}"
 """
 
 
-HDQD_ANSWER_SYSTEM_PROMPT = """You are an expert Natural Language Inference system using a question-answering decomposition strategy.
+HDQD_ANSWER_SYSTEM_PROMPT = """You are an expert Natural Language Inference system using a question-answering decomposition strategy. Respond with a JSON object only.
 
 You will receive:
   - A PREMISE (a passage of text that serves as evidence)
@@ -154,7 +152,10 @@ Use your implications to decide:
   - **Contradiction**: at least one implication shows a direct conflict with the hypothesis
   - **Neutral**: at least one key claim is left open with no supporting or conflicting evidence
 
-Provide a concise explanation citing the specific premise evidence for your label."""
+Provide a concise explanation citing the specific premise evidence for your label.
+
+## Output format — JSON only, no extra text
+{"qapairs": [{"question": "...", "answer": "..."}], "comparisons": ["..."], "label": "Entailment|Contradiction|Neutral", "explanation": "..."}"""
 
 HDQD_ANSWER_USER_PROMPT = """PREMISE:
 {premise}

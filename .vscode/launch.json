@@ -1,0 +1,67 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Q2 Pipeline (limit 10)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": ["--experiment", "q2_pipeline", "--model", "qwen2.5-32b-instruct", "--limit", "10"]
+        },
+        {
+            "name": "Q2 Pipeline (full)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": ["--experiment", "q2_pipeline", "--model", "qwen2.5-32b-instruct"]
+        },
+        {
+            "name": "HDQD Pipeline (limit 10)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": ["--experiment", "hdqd_pipeline", "--model", "qwen2.5-32b-instruct", "--limit", "10"]
+        },
+        {
+            "name": "HDQD Pipeline (full)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": ["--experiment", "hdqd_pipeline", "--model", "qwen2.5-32b-instruct"]
+        },
+        {
+            "name": "Zero Shot (limit 10)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": ["--experiment", "zero_shot", "--model", "qwen2.5-32b-instruct", "--limit", "10"]
+        },
+        {
+            "name": "Q2 Pipeline — Groq (limit 10)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": ["--experiment", "q2_pipeline", "--model", "llama-3.1-8b-instant", "--limit", "10"]
+        },
+        {
+            "name": "Q2 Pipeline — Groq (full)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": ["--experiment", "q2_pipeline", "--model", "llama-3.1-8b-instant"]
+        },
+        {
+            "name": "HDQD Pipeline — Groq (limit 10)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "args": ["--experiment", "hdqd_pipeline", "--model", "llama-3.1-8b-instant", "--limit", "10"]
+        },
+        {
+            "name": "Compare Results",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/compare_results.py"
+        }
+    ]
+}

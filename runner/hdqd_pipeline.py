@@ -1,5 +1,7 @@
+from __future__ import annotations
+from typing import Optional
 from langchain_core.messages import SystemMessage, HumanMessage
-from config.config import DEFAULT_PARAMS, HDQDOutput, QuestionListOutput, get_llm, logger
+from config.config import DEFAULT_PARAMS, HDQDOutput, QuestionListOutput, get_structured_llm, logger
 from prompts.hdqd_pipeline import (
     HDQD_QUESTION_SYSTEM_PROMPT,
     HDQD_QUESTION_USER_PROMPT,
@@ -13,7 +15,7 @@ def call_questions(hypothesis: str, model: str, params: dict) -> QuestionListOut
         SystemMessage(content=HDQD_QUESTION_SYSTEM_PROMPT),
         HumanMessage(content=HDQD_QUESTION_USER_PROMPT.format(hypothesis=hypothesis)),
     ]
-    return get_llm(model, params).with_structured_output(QuestionListOutput).invoke(messages)
+    return get_structured_llm(model, QuestionListOutput, params).invoke(messages)
 
 
 def call_answer(premise: str, hypothesis: str, questions: list[str], model: str, params: dict) -> HDQDOutput | None:
@@ -26,7 +28,7 @@ def call_answer(premise: str, hypothesis: str, questions: list[str], model: str,
             questions=formatted_questions,
         )),
     ]
-    return get_llm(model, params).with_structured_output(HDQDOutput).invoke(messages)
+    return get_structured_llm(model, HDQDOutput, params).invoke(messages)
 
 
 def run(samples: list[dict], model: str, params: dict = DEFAULT_PARAMS) -> list[dict]:

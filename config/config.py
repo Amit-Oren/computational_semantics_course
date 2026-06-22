@@ -9,7 +9,19 @@ load_dotenv()
 LAB_API_KEY = os.getenv("LAB_API_KEY", "")
 LAB_API_URL = os.getenv("LAB_API_URL", "http://100.110.96.82:8000/chat")
 
+HF_API_KEY = os.getenv("HF_API_KEY", "")
+HF_API_URL = "https://router.huggingface.co/featherless-ai/v1"
+
+# HuggingFace model ID for each friendly name
+HF_MODEL_MAP = {
+    "qwen2.5-32b-instruct": "Qwen/Qwen2.5-32B-Instruct",
+}
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_API_URL = "https://api.groq.com/openai/v1"
+
 MODELS = {
+    # ── Lab (Tailscale) ───────────────────────────────────────────────────────
     "llama3.1-8b":       "open_source",
     "llama3.1-70b":      "open_source",
     "qwen2.5-32b":       "open_source",
@@ -19,6 +31,10 @@ MODELS = {
     "gpt-oss-20b":       "open_source",
     "gemma4-31b":        "open_source",
     "nemotron-70b":      "open_source",
+    # ── Hugging Face ──────────────────────────────────────────────────────────
+    "qwen2.5-32b-instruct": "huggingface",
+    # ── Groq ──────────────────────────────────────────────────────────────────
+    "llama-3.1-8b-instant": "groq",
 }
 
 DEFAULT_PARAMS = {
@@ -72,6 +88,28 @@ class HDQDOutput(BaseModel):
     explanation: str
 
 
+# ── Q2 Pipeline schemas ───────────────────────────────────────────────────────
+
+class Q2QuestionOutput(BaseModel):
+    anchors:   list[str]
+    questions: list[str]
+
+
+class AuditTableRow(BaseModel):
+    question:                       str
+    target_anchor:                  str
+    verbatim_premise_evidence_list: list[str]
+    integrated_premise_tags:        str
+    found:                          bool
+
+
+class Q2AuditOutput(BaseModel):
+    audit_table_decomposition: list[AuditTableRow]
+    matrix_cross_check_flags:  list[str]
+    label:                     Literal["Entailment", "Contradiction", "Neutral"]
+    explanation:               str
+
+
 def setup_logger(experiment: str, model: str) -> logging.Logger:
     from datetime import datetime
     os.makedirs(LOGS_DIR, exist_ok=True)
@@ -96,7 +134,32 @@ def setup_logger(experiment: str, model: str) -> logging.Logger:
 logger = logging.getLogger("control")
 
 
+def get_structured_llm(model: str, schema, params: dict = DEFAULT_PARAMS):
+    llm = get_llm(model, params)
+    if MODELS.get(model) == "groq":
+        return llm.with_structured_output(schema, method="json_mode")
+    return llm.with_structured_output(schema)
+
+
 def get_llm(model: str, params: dict = DEFAULT_PARAMS):
+    if MODELS.get(model) == "huggingface":
+        from langchain_openai import ChatOpenAI
+        return ChatOpenAI(
+            model=HF_MODEL_MAP[model],
+            base_url=HF_API_URL,
+            api_key=HF_API_KEY,
+            temperature=params.get("temperature", 0.0),
+            max_tokens=params.get("max_tokens", 2048),
+        )
+    if MODELS.get(model) == "groq":
+        from langchain_openai import ChatOpenAI
+        return ChatOpenAI(
+            model=model,
+            base_url=GROQ_API_URL,
+            api_key=GROQ_API_KEY,
+            temperature=params.get("temperature", 0.0),
+            max_tokens=params.get("max_tokens", 2048),
+        )
     from open_source_llm import OpenSourceChatModel
     return OpenSourceChatModel(
         model=model,
