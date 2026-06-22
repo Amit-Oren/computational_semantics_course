@@ -16,7 +16,8 @@ RUNNERS = {
 
 def save_results(results: list[dict], experiment: str, model: str, params: dict):
     os.makedirs(RESULTS_DIR, exist_ok=True)
-    out_path = os.path.join(RESULTS_DIR, f"{experiment}_{model}.json")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    out_path = os.path.join(RESULTS_DIR, f"{experiment}_{model}_{timestamp}.json")
     output = {
         "metadata": {
             "experiment": experiment,
