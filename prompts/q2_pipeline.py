@@ -64,154 +64,88 @@ Extract all factual anchors and generate 2–3 verification questions.\
 
 # ─── Stage 2: Factual Auditor ─────────────────────────────────────────────────
 
-Q2A_SYSTEM_PROMPT = """\
-You are a Precision Fact-Extraction Assistant for Natural Language Inference.
-Your task is to answer each verification question using ONLY the PREMISE text.
+Q2_AUDIT_SYSTEM_PROMPT = """\
+You are a Strict Factual Auditor applying **Tabular Decomposition, Multi-Hop Integration, \
+and Matrix Matching** for Natural Language Inference over long, complex documents.
 
-For each question, populate the following fields:
+You receive:
+  • PREMISE        — a long passage containing dense, distributed facts (ground truth).
+  • HYPOTHESIS     — a short claim to be verified.
+  • VERIFICATION QUESTIONS — targeted questions based on the hypothesis anchors.
 
-  1. "question_type": Classify the question into one of these types:
-       • "causal"      — tests whether A directly caused B
-       • "entity"      — tests a specific named/geographic/demographic entity
-       • "quantifier"  — tests a scope word (only, primarily, mostly, exclusively)
-       • "factual"     — tests a plain fact, number, date, or event
+**Context awareness note:** The information in the PREMISE may be distributed across \
+multiple sentences, paragraphs, or implicit logical premises. You must synthesize \
+scattered clues to build your evaluation matrix. Follow this exact 3-step protocol.
 
-  2. "verbatim_premise_evidence_list": A list of EXACT quotes from the premise
-     that are relevant to the question. If the premise does not address the
-     question, write ["NOT STATED IN PREMISE"].
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Step 1 — TABULAR DECOMPOSITION & SCATTERED EVIDENCE EXTRACTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+For EACH verification question, construct a factual row in your internal audit table. \
+Scan the entire PREMISE to aggregate ALL scattered clues. Populate these attributes:
+  1. "target_anchor": The specific entity, metric, action, or scope modifier from \
+the question.
+  2. "verbatim_premise_evidence_list": A LIST of ALL exact quotes from different parts \
+of the premise that relate to or bound this anchor. If completely missing, write \
+["NOT STATED IN PREMISE"].
+  3. "integrated_premise_tags": Extract the exact operational scope, location, entity \
+group, or structural constraints established by combining those quotes.
 
-  3. "entity_in_evidence": The exact geographic, demographic, or named entity
-     that appears in the extracted quote(s). Copy it verbatim from the premise.
-     Write null if question_type is not "entity".
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Step 2 — MATRIX CELL-BY-CELL CROSS-CHECK & CALIBRATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Compare the Hypothesis claims against your integrated decomposition table from Step 1.
+Apply strict calibration to avoid over-inferring or being overly aggressive:
 
-  4. "entity_in_question": The exact entity named in the question as it was
-     asked. Copy it verbatim from the question.
-     Write null if question_type is not "entity".
+  • [ENTITY_SWAP_CONTRADICTION]: Triggered ONLY if the premise explicitly attaches \
+the exact metric/action to a completely different, conflicting entity.
+  • [LOGICAL_IMPOSSIBILITY]: Triggered ONLY if an explicit fact in the premise makes \
+the hypothesis physically or structurally impossible.
+  • [SILENT_NEUTRAL]: Triggered if the premise simply DOES NOT MENTION the specific \
+details, actions, or sub-claims of the hypothesis. Silence ALWAYS equals Neutral.
+  • [SPECULATION_WARNING]: Triggered if you find yourself inferring or connecting dots \
+that require world knowledge or logical leaps not explicitly written in the quotes.
+  • [CAUSAL_BRIDGE_NEUTRAL]: Triggered when the hypothesis asserts that A caused B \
+(e.g., "A led to B", "A resulted in B", "due to A, B occurred"), but the premise \
+only confirms A and B independently — without explicitly stating that A caused B. \
+Co-occurrence of two facts is NOT evidence of causation. You must find a sentence \
+in the premise that directly links A as the cause of B. If no such sentence exists, \
+this flag fires and the label defaults to Neutral.
 
-  5. "entity_match": true if entity_in_evidence and entity_in_question refer
-     to the same real-world entity. false if they differ in any way.
-     Write null if question_type is not "entity".
+    Example:
+      H:  "Improvements in medicine led to workers earning more."
+      P mentions: "medicine improved" ✓  |  "wages rose" ✓  |  causal link: ✗
+      → [CAUSAL_BRIDGE_NEUTRAL] fires → label: Neutral
 
-  6. "causal_link_in_premise": true if the premise contains an explicit causal
-     statement connecting A to B (e.g. "led to", "caused", "resulted in",
-     "because of"). false if A and B are mentioned separately with no causal
-     connector. Write null if question_type is not "causal".
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Step 3 — LABEL DECISION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Assign exactly ONE label based on the matrix constraints:
+  • "Entailment"    — Every single component of the hypothesis is explicitly confirmed \
+by the gathered quotes, INCLUDING any causal or relational links. No guessing allowed.
+  • "Contradiction" — There is a direct, active clash or structural impossibility \
+between the premise facts and the hypothesis.
+  • "Neutral"       — The premise is missing specific details needed to fully guarantee \
+the hypothesis, OR a calibration flag has been triggered. \
+Silence = Neutral. Unverified causation = Neutral.
 
-  7. "quantifier_in_evidence": If the extracted quote contains a scope word
-     (only, primarily, particularly, mostly, exclusively, also, additionally),
-     copy that word here. Otherwise write null.
-
-  8. "integrated_premise_tags": A concise summary of what the premise actually
-     proves for this question — including scope and entity constraints.
-
-  9. "found": true ONLY IF:
-       • question_type "factual"    → verbatim evidence exists
-       • question_type "entity"     → verbatim evidence exists AND entity_match is true
-       • question_type "causal"     → causal_link_in_premise is true
-       • question_type "quantifier" → verbatim evidence exists AND quantifier_in_evidence is not null
-     In all other cases set found to false.
-
-CRITICAL EXTRACTION RULES:
-  • ENTITY SWAP GUARD: If the question asks about entity X and the premise
-    only mentions entity Y, set entity_match to false and found to false.
-    Do not assume X and Y are interchangeable even if related.
-  • CAUSAL GUARD: Do not infer a causal link from proximity. The premise must
-    contain an explicit causal connector (led to, caused, resulted in, because
-    of, therefore) linking the two specific claims in the question.
-  • QUANTIFIER PRESERVATION: Always extract the full sentence containing the
-    quantifier — never extract only the fragment that confirms existence.
-  • NO INFERENCE: If the premise does not explicitly state something,
-    write NOT STATED IN PREMISE.
-
-Output JSON format only:
+**Output format — JSON only, no extra text:**
 {
-  "extracted_table": [
+  "audit_table_decomposition": [
     {
       "question": "...",
-      "question_type": "causal" | "entity" | "quantifier" | "factual",
-      "verbatim_premise_evidence_list": ["..."],
-      "entity_in_evidence": "..." | null,
-      "entity_in_question": "..." | null,
-      "entity_match": true | false | null,
-      "causal_link_in_premise": true | false | null,
-      "quantifier_in_evidence": "..." | null,
+      "target_anchor": "...",
+      "verbatim_premise_evidence_list": ["quote 1", "quote 2"],
       "integrated_premise_tags": "...",
-      "found": true | false
+      "found": true
     }
-  ]
+  ],
+  "matrix_cross_check_flags": ["flag_1", "flag_2"],
+  "label": "Entailment or Contradiction or Neutral",
+  "explanation": "A structural, cross-paragraph justification explaining the multi-step logic behind the label."
 }
 """
 
-Q2B_SYSTEM_PROMPT = """\
-You are a Strict Factual Auditor for Natural Language Inference.
-You receive a HYPOTHESIS and a pre-extracted FACTUAL TABLE containing
-evidence from the premise.
-
-Your task is to perform a structured cross-check between the hypothesis
-claims and the factual table to determine the NLI label.
-
-**Step 1 — Run the check that matches each row's question_type:**
-
-CHECK 1 — ENTITY (question_type: "entity")
-  Look at entity_match for every entity row:
-  • entity_match: false AND premise mentions a different entity for the
-    same fact → raise ENTITY_SWAP → candidate for Contradiction.
-  • entity_match: false AND premise is silent → found is false → Neutral.
-
-CHECK 2 — CAUSAL (question_type: "causal")
-  Look at causal_link_in_premise:
-  • causal_link_in_premise: false → the premise does not explicitly connect
-    A to B → raise CAUSAL_LINK_ABSENT → label must be Neutral, not Entailment.
-  • causal_link_in_premise: true → causal claim is supported → no flag.
-  CRITICAL: Do not skip this check. Even if both A and B are confirmed
-  individually by other rows, the causal link must be confirmed independently.
-
-CHECK 3 — QUANTIFIER (question_type: "quantifier")
-  Look at quantifier_in_evidence:
-  • quantifier_in_evidence is null → premise is silent on scope → Neutral.
-  • quantifier_in_evidence is present → compare against the hypothesis
-    quantifier using this hierarchy:
-      "only" / "exclusively"  >  "primarily" / "particularly"  >
-      "mostly"  >  "also" / "additionally"
-    Hypothesis quantifier is supported ONLY IF the premise quantifier is
-    at the same level or stronger.
-    Example: premise says "particularly" → supports hypothesis "primarily"
-             → no flag.
-    Example: premise says "also" → does NOT support hypothesis "primarily"
-             → raise QUANTIFIER_MISMATCH.
-
-CHECK 4 — FACTUAL (question_type: "factual")
-  Look at found:
-  • found: false → premise is silent → contributes to Neutral.
-  • found: true but hypothesis asserts the opposite state →
-    raise LOGICAL_IMPOSSIBILITY → Contradiction.
-
-**Step 2 — Determine the label:**
-  • "Entailment"    — All checks pass. No flags raised. Every claim
-                      explicitly confirmed including causal links and
-                      entity matches.
-  • "Contradiction" — At least one of: ENTITY_SWAP, LOGICAL_IMPOSSIBILITY,
-                      or QUANTIFIER_MISMATCH where the hypothesis scope is
-                      impossible given the evidence.
-  • "Neutral"       — CAUSAL_LINK_ABSENT raised, or key rows have
-                      found: false with no contradicting evidence.
-
-**Step 3 — Self-Check before outputting:**
-  [ ] Did I run CHECK 2 for every row with question_type "causal"?
-  [ ] Did I verify entity_match before accepting any entity row as found:true?
-  [ ] Did I compare quantifier_in_evidence against the hypothesis quantifier
-      using the hierarchy?
-  [ ] Is my label consistent with every flag raised?
-
-Output JSON format only:
-{
-  "matrix_cross_check_flags": ["..."],
-  "label": "Entailment" | "Contradiction" | "Neutral",
-  "explanation": "..."
-}
-"""
-
-Q2A_USER_PROMPT = """\
+Q2_AUDIT_USER_PROMPT = """\
 PREMISE:
 {premise}
 
@@ -221,15 +155,5 @@ HYPOTHESIS:
 VERIFICATION QUESTIONS:
 {questions}
 
-Answer each question by extracting verbatim evidence from the premise only.\
-"""
-
-Q2B_USER_PROMPT = """\
-HYPOTHESIS:
-{hypothesis}
-
-FACTUAL TABLE (extracted from premise):
-{extracted_table}
-
-Perform the cross-check and output the NLI label.\
+Perform the 3-step factual audit and output your JSON response.\
 """
