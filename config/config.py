@@ -97,10 +97,12 @@ class Q2QuestionOutput(BaseModel):
 
 class Q2AExtractedRow(BaseModel):
     question:                       str
+    question_type:                  Literal["causal", "entity", "quantifier", "factual"]
     verbatim_premise_evidence_list: list[str]
-    entity_in_evidence:             str
-    entity_in_question:             str
-    entity_match:                   bool
+    entity_in_evidence:             str | None
+    entity_in_question:             str | None
+    entity_match:                   bool | None
+    causal_link_in_premise:         bool | None
     quantifier_in_evidence:         str | None
     integrated_premise_tags:        str
     found:                          bool
