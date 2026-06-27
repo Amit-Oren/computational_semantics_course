@@ -34,7 +34,8 @@ MODELS = {
     # ── Hugging Face ──────────────────────────────────────────────────────────
     "qwen2.5-32b-instruct": "huggingface",
     # ── Groq ──────────────────────────────────────────────────────────────────
-    "llama-3.1-8b-instant": "groq",
+    "llama-3.1-8b-instant":    "groq",
+    "llama-3.3-70b-versatile": "groq",
 }
 
 DEFAULT_PARAMS = {
