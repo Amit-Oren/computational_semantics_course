@@ -90,33 +90,35 @@ class HDQDOutput(BaseModel):
 
 # ── Q2 Pipeline schemas ───────────────────────────────────────────────────────
 
+# ── Q1 output ────────────────────────────────────────────────────────────────
 class Q2QuestionOutput(BaseModel):
     anchors:   list[str]
     questions: list[str]
 
 
-class Q2AExtractedRow(BaseModel):
+# ── Q2A output ────────────────────────────────────────────────────────────────
+class AuditTableRow(BaseModel):
     question:                       str
     question_type:                  Literal["causal", "entity", "quantifier", "factual"]
     verbatim_premise_evidence_list: list[str]
-    entity_in_evidence:             str | None
-    entity_in_question:             str | None
-    entity_match:                   bool | None
-    causal_link_in_premise:         bool | None
-    quantifier_in_evidence:         str | None
+    entity_in_evidence:             str | None = None
+    entity_in_question:             str | None = None
+    entity_match:                   bool | None = None
+    causal_link_in_premise:         bool | None = None
+    quantifier_in_evidence:         str | None = None
     integrated_premise_tags:        str
     found:                          bool
 
 
 class Q2AOutput(BaseModel):
-    extracted_table: list[Q2AExtractedRow]
+    extracted_table: list[AuditTableRow]
 
 
+# ── Q2B output ────────────────────────────────────────────────────────────────
 class Q2BOutput(BaseModel):
     matrix_cross_check_flags: list[str]
     label:                    Literal["Entailment", "Contradiction", "Neutral"]
     explanation:              str
-
 
 def setup_logger(experiment: str, model: str) -> logging.Logger:
     from datetime import datetime
