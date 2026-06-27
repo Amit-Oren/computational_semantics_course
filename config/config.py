@@ -95,19 +95,25 @@ class Q2QuestionOutput(BaseModel):
     questions: list[str]
 
 
-class AuditTableRow(BaseModel):
+class Q2AExtractedRow(BaseModel):
     question:                       str
-    target_anchor:                  str
     verbatim_premise_evidence_list: list[str]
+    entity_in_evidence:             str
+    entity_in_question:             str
+    entity_match:                   bool
+    quantifier_in_evidence:         str | None
     integrated_premise_tags:        str
     found:                          bool
 
 
-class Q2AuditOutput(BaseModel):
-    audit_table_decomposition: list[AuditTableRow]
-    matrix_cross_check_flags:  list[str]
-    label:                     Literal["Entailment", "Contradiction", "Neutral"]
-    explanation:               str
+class Q2AOutput(BaseModel):
+    extracted_table: list[Q2AExtractedRow]
+
+
+class Q2BOutput(BaseModel):
+    matrix_cross_check_flags: list[str]
+    label:                    Literal["Entailment", "Contradiction", "Neutral"]
+    explanation:              str
 
 
 def setup_logger(experiment: str, model: str) -> logging.Logger:

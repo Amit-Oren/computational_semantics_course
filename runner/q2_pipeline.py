@@ -1,27 +1,31 @@
 """
 Q2 Pipeline Runner — Query-Based Factual Verification for NLI
 =============================================================
-Two-stage pipeline that eliminates hypothesis-only bias on long premises:
-  Stage 1 (Question Generator): H → anchors + 2-3 verification questions
-  Stage 2 (Factual Auditor):    P + H + questions → verbatim extraction
-                                 + entity-metric cross-check + strict label
+Three-stage pipeline:
+  Stage 1  (Question Generator): H → anchors + 2-3 verification questions
+  Stage 2A (Fact Extractor):     P + H + questions → verbatim extraction + entity matching
+  Stage 2B (Label Auditor):      H + extracted table → cross-check flags + label
 """
 
 from __future__ import annotations
+import json
 import time
 from langchain_core.messages import SystemMessage, HumanMessage
 from config.config import (
     DEFAULT_PARAMS,
     Q2QuestionOutput,
-    Q2AuditOutput,
+    Q2AOutput,
+    Q2BOutput,
     get_structured_llm,
     logger,
 )
 from prompts.q2_pipeline import (
     Q2_QUESTION_SYSTEM_PROMPT,
     Q2_QUESTION_USER_PROMPT,
-    Q2_AUDIT_SYSTEM_PROMPT,
-    Q2_AUDIT_USER_PROMPT,
+    Q2A_SYSTEM_PROMPT,
+    Q2A_USER_PROMPT,
+    Q2B_SYSTEM_PROMPT,
+    Q2B_USER_PROMPT,
 )
 
 
@@ -46,14 +50,13 @@ def _call_with_retry(fn, *args, **kwargs):
 
 
 class Q2Pipeline:
-    """Two-stage NLI verifier: question generation → factual audit."""
+    """Three-stage NLI verifier: question generation → fact extraction → label decision."""
 
     def __init__(self, model: str, params: dict):
         self.model = model
         self.params = params
 
     def stage1_generate_questions(self, hypothesis: str) -> Q2QuestionOutput | None:
-        """Stage 1: extract factual anchors and generate verification questions from H only."""
         messages = [
             SystemMessage(content=Q2_QUESTION_SYSTEM_PROMPT),
             HumanMessage(content=Q2_QUESTION_USER_PROMPT.format(hypothesis=hypothesis)),
@@ -61,72 +64,70 @@ class Q2Pipeline:
         llm = get_structured_llm(self.model, Q2QuestionOutput, self.params)
         return _call_with_retry(llm.invoke, messages)
 
-    def stage2_audit(
+    def stage2a_extract(
         self,
         premise: str,
         hypothesis: str,
         stage1_output: Q2QuestionOutput,
-    ) -> Q2AuditOutput | None:
-        """Stage 2: verbatim extraction + cross-check + label.
-
-        Receives the exact Stage 1 output so the questions injected here are
-        identical to what was generated — no rephrasing or reformatting of the
-        model's own output.
-        """
-        # Build the numbered question block exactly as Stage 1 produced it.
+    ) -> Q2AOutput | None:
         questions_block = "\n".join(
             f"{i + 1}. {q}" for i, q in enumerate(stage1_output.questions)
         )
         messages = [
-            SystemMessage(content=Q2_AUDIT_SYSTEM_PROMPT),
-            HumanMessage(
-                content=Q2_AUDIT_USER_PROMPT.format(
-                    premise=premise,
-                    hypothesis=hypothesis,
-                    questions=questions_block,
-                )
-            ),
+            SystemMessage(content=Q2A_SYSTEM_PROMPT),
+            HumanMessage(content=Q2A_USER_PROMPT.format(
+                premise=premise,
+                hypothesis=hypothesis,
+                questions=questions_block,
+            )),
         ]
-        llm = get_structured_llm(self.model, Q2AuditOutput, self.params)
+        llm = get_structured_llm(self.model, Q2AOutput, self.params)
+        return _call_with_retry(llm.invoke, messages)
+
+    def stage2b_label(
+        self,
+        hypothesis: str,
+        stage2a_output: Q2AOutput,
+    ) -> Q2BOutput | None:
+        extracted_table_json = json.dumps(
+            [row.model_dump() for row in stage2a_output.extracted_table],
+            indent=2,
+        )
+        messages = [
+            SystemMessage(content=Q2B_SYSTEM_PROMPT),
+            HumanMessage(content=Q2B_USER_PROMPT.format(
+                hypothesis=hypothesis,
+                extracted_table=extracted_table_json,
+            )),
+        ]
+        llm = get_structured_llm(self.model, Q2BOutput, self.params)
         return _call_with_retry(llm.invoke, messages)
 
     def run_sample(self, sample: dict) -> dict | None:
-        """Run both stages for one sample. Returns None if either stage fails."""
-        # ── Stage 1 ──────────────────────────────────────────────────────────
+        """Run all three stages for one sample. Returns None if any stage fails."""
         q_output = self.stage1_generate_questions(sample["hypothesis"])
         if q_output is None:
             return None
 
-        # ── Stage 2: inject exact Stage 1 string output ──────────────────────
-        a_output = self.stage2_audit(sample["premise"], sample["hypothesis"], q_output)
+        a_output = self.stage2a_extract(sample["premise"], sample["hypothesis"], q_output)
         if a_output is None:
+            return None
+
+        b_output = self.stage2b_label(sample["hypothesis"], a_output)
+        if b_output is None:
             return None
 
         return {
             "id":           sample.get("id"),
             "premise":      sample["premise"],
             "hypothesis":   sample["hypothesis"],
-            "label":        sample["label"],          # ground truth
-            "prediction":   a_output.label,           # predicted label
-            # Stage 1 trace
-            "stage1_anchors":   q_output.anchors,
-            "stage1_questions": q_output.questions,
-            # Stage 2 trace (full structured output stored as dict for traceability)
-            "stage2_raw_output": {
-                "audit_table_decomposition": [
-                    {
-                        "question":                       e.question,
-                        "target_anchor":                  e.target_anchor,
-                        "verbatim_premise_evidence_list": e.verbatim_premise_evidence_list,
-                        "integrated_premise_tags":        e.integrated_premise_tags,
-                        "found":                          e.found,
-                    }
-                    for e in a_output.audit_table_decomposition
-                ],
-                "matrix_cross_check_flags": a_output.matrix_cross_check_flags,
-                "label":       a_output.label,
-                "explanation": a_output.explanation,
-            },
+            "label":        sample["label"],
+            "prediction":   b_output.label,
+            "stage1_anchors":          q_output.anchors,
+            "stage1_questions":        q_output.questions,
+            "stage2a_extracted_table": [row.model_dump() for row in a_output.extracted_table],
+            "stage2b_flags":           b_output.matrix_cross_check_flags,
+            "stage2b_explanation":     b_output.explanation,
         }
 
 
@@ -157,7 +158,7 @@ def run(samples: list[dict], model: str, params: dict = DEFAULT_PARAMS) -> list[
 
         if result is None:
             logger.warning(
-                f"[{i+1}/{len(samples)}] id={sample_id} | one or both stages failed, skipping"
+                f"[{i+1}/{len(samples)}] id={sample_id} | one or more stages failed, skipping"
             )
             skipped += 1
             continue
@@ -168,7 +169,6 @@ def run(samples: list[dict], model: str, params: dict = DEFAULT_PARAMS) -> list[
             f"| gold={result['label']} | pred={result['prediction']}"
         )
 
-    # ── Summary ──────────────────────────────────────────────────────────────
     if results:
         correct = sum(r["label"] == r["prediction"] for r in results)
         accuracy = correct / len(results)
