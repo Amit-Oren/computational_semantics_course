@@ -20,65 +20,34 @@ that will be answered against a long premise (~500 words).
 
 **Step 1 — Extract Factual Anchors**
 Scan the hypothesis and list every verifiable claim under one of these categories:
-  • Named entities     — people, organizations, places, products
-  • Geographic/demographic entities — nationalities, regions, population groups
-  • Metrics            — numbers, percentages, counts, rankings, monetary values
-  • Timelines          — years, dates, durations, explicit time periods
-  • Relational claims  — causal links ("led to", "caused", "resulted in"),
-                         comparisons, outcomes, role assignments
-  • Scope quantifiers  — words like "only", "primarily", "mostly", "also",
-                         "exclusively", "particularly"
-
-CRITICAL ANCHOR RULES:
-  1. CAUSAL CLAIMS: If the hypothesis contains a causal link (e.g. "A led to B"),
-     treat the relationship itself as a standalone anchor — do NOT dissolve it
-     into two independent anchors A and B.
-  2. ENTITY PRECISION: Copy every geographic, demographic, and named entity
-     from the hypothesis VERBATIM into your anchors list. Never generalize
-     (e.g. "North American women" must stay "North American women" —
-     do not broaden to "women" or "Western women").
-  3. SCOPE QUANTIFIERS: If the hypothesis contains a quantifier
-     (primarily, only, mostly, exclusively, particularly), extract it as
-     its own anchor — it is a verifiable claim about scope, not decoration.
+  • Named entities    — people, organizations, places, products
+  • Metrics           — numbers, percentages, counts, rankings, monetary values
+  • Timelines         — years, dates, durations, explicit time periods
+  • Relational claims — causal links, comparisons, outcomes, role assignments
 
 **Step 2 — Generate 2–3 Verification Questions**
 Write one precise question per major anchor. Each question must:
-  1. Name the specific entity, metric, or claim being verified — verbatim
-     from the hypothesis. No paraphrasing, no generalizing.
+  1. Name the specific entity or metric being verified (no vague wording).
   2. Be answerable only by reading the premise — not from the hypothesis alone.
   3. When answered, definitively reveal whether the hypothesis is Entailed,
      Contradicted, or Neutral.
 
-CRITICAL QUESTION RULES:
-  • CAUSAL QUESTIONS: If the hypothesis asserts "A caused B", ask:
-    "Does the premise state that A directly caused B?" — not two separate
-    questions about A and B independently.
-  • ENTITY SWAP CHECK: If the hypothesis names a specific
-    geographic/demographic entity (e.g. "North American women"), the question
-    MUST ask whether the premise's evidence applies to THAT EXACT entity —
-    not to a related but different one (e.g. "European women").
-    Correct form: "Does the premise state that 19% of North American women
-    (not European women) participated in the workforce in 1900?"
-  • QUANTIFIER CHECK: If the hypothesis uses a scope quantifier
-    (primarily, only, mostly), the question MUST test whether the premise
-    supports that exact scope — not just the existence of the claim.
-    Correct form: "Does the premise state that shanty towns appeared
-    PRIMARILY in the Third World, or does it also mention other regions?"
-  • NO FILLER QUESTIONS: Do not generate questions about facts that are
-    not in dispute (e.g. "What century does the premise cover?",
-    "What demographic group is discussed?"). Every question must have the
-    potential to change the final NLI label.
-  • NO INVENTED DETAILS: Do not introduce any date range, sector, or entity
-    that does not appear in both H and P.
+**Critical Rule for Relational Claims:**
+If the hypothesis asserts a causal link, comparison, or outcome between two anchors
+(e.g. "A caused B", "A led to B", "A resulted in B"), you MUST generate at least
+one question that directly tests that specific connection — not each anchor
+separately. The question must ask whether the premise explicitly links A to B in
+that relationship.
 
-**Step 3 — Self-Check before outputting**
-For each generated question, verify:
-  [ ] Does this question name the exact entity/metric from the hypothesis?
-  [ ] If H has a causal claim — is there a question testing the causal link directly?
-  [ ] If H has an entity (geographic/demographic) — does the question explicitly
-      guard against an entity swap?
-  [ ] If H has a quantifier — does the question test the scope, not just existence?
-  [ ] Could this question's answer change the NLI label? If no — rewrite it.
+  ✗ Wrong (tests anchors in isolation):
+      H: "Improvements in medicine led to workers earning more."
+      Q: "Did wages increase over the 20th century?"
+      Q: "Did medicine improve?"
+
+  ✓ Correct (tests the causal link itself):
+      H: "Improvements in medicine led to workers earning more."
+      Q: "Does the premise state that improvements in medicine directly
+          caused wages or earnings to increase?"
 
 **Output format — JSON only, no extra text:**
 {
