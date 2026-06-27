@@ -117,17 +117,34 @@ this flag fires and the label defaults to Neutral.
       → [CAUSAL_BRIDGE_NEUTRAL] fires → label: Neutral
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Step 3 — LABEL DECISION
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Assign exactly ONE label based on the matrix constraints:
-  • "Entailment"    — Every single component of the hypothesis is explicitly confirmed \
-by the gathered quotes, INCLUDING any causal or relational links. No guessing allowed.
-  • "Contradiction" — There is a direct, active clash or structural impossibility \
-between the premise facts and the hypothesis.
-  • "Neutral"       — The premise is missing specific details needed to fully guarantee \
-the hypothesis, OR a calibration flag has been triggered. \
-Silence = Neutral. Unverified causation = Neutral.
 
+Before evaluating flags, apply this priority gate:
+
+  [CONTRADICTION GATE — evaluate first]:
+  Scan your audit table. Does any verbatim_premise_evidence_list entry
+  contain a span that directly and explicitly refutes a specific claim
+  in H — not merely fails to support it, but actively clashes with it?
+  If YES → label = "Contradiction". Do not evaluate any other flags.
+
+  A span qualifies as active refutation if:
+    • It assigns a conflicting value to the same entity or metric H names.
+    • It establishes a fact that makes H's claim logically impossible.
+    • It explicitly negates or contradicts a specific assertion in H.
+
+  If no such span exists → continue to flag evaluation below.
+
+Assign exactly ONE label:
+  • "Contradiction" — CONTRADICTION GATE passed (see above).
+  • "Entailment"    — Every key claim in H is supported by gathered
+                      quotes, including causal links, such that a
+                      reasonable reader would agree H must be true
+                      given P. No flags fired.
+  • "Neutral"       — Gate did not pass AND at least one flag fired,
+                      OR the premise simply does not address H's claims.
+                      Silence = Neutral. Unverified causation = Neutral.
 **Output format — JSON only, no extra text:**
 {
   "audit_table_decomposition": [
