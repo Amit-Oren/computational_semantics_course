@@ -29,8 +29,15 @@ Each question must:
      causal link, action, outcome, or attribute.
   3. Be a well-formed wh-question ending with a question mark (?).
   4. NOT contain its own answer in the question text.
-  5. Cover the full breadth of the premise: entities, quantities, temporal
-     facts, relational claims, and causal links each deserve their own question.
+  5. Always include the full identifying context in the question — geographic
+     locations, demographic groups, time periods, and named entities must
+     appear explicitly in the question, not just in the answer.
+  6. Cover ALL claim types in the premise, including:
+       - Quantitative facts (numbers, percentages, dates, counts)
+       - Qualitative and evaluative claims (were there problems? what was the
+         overall effect? what does the text characterize as X?)
+       - Causal and relational claims (what caused X? what resulted from Y?)
+       - Presupposed facts (facts implied but not the main point of a sentence)
 
 Output format — JSON only, no extra text:
 {"questions": ["question_1", "question_2", ...]}\
