@@ -113,6 +113,8 @@ class PQuestionPipeline:
         self, premise: str, existing_questions: list[str]
     ) -> list[str]:
         """Return gap-filling questions for entities not covered by existing_questions."""
+        if len(premise.split()) < 300:
+            return []
         global _SPACY_NLP
         try:
             import spacy as _spacy
