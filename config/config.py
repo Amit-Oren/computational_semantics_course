@@ -220,7 +220,8 @@ def setup_logger(experiment: str, model: str) -> logging.Logger:
     from datetime import datetime
     os.makedirs(LOGS_DIR, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_file = os.path.join(LOGS_DIR, f"{experiment}_{model}_{timestamp}.log")
+    safe_model = model.replace("/", "-")
+    log_file = os.path.join(LOGS_DIR, f"{experiment}_{safe_model}_{timestamp}.log")
 
     fmt = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 
