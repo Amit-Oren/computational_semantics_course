@@ -40,16 +40,21 @@ def main():
     parser.add_argument("--experiment", choices=RUNNERS.keys(), required=True)
     parser.add_argument("--model", choices=MODELS.keys(), required=True)
     parser.add_argument("--limit", type=int, default=None, help="Run only the first N samples")
+    parser.add_argument("--max_tokens", type=int, default=None, help="Override max tokens per LLM call")
     args = parser.parse_args()
 
     setup_logger(args.experiment, args.model)
+
+    params = dict(DEFAULT_PARAMS)
+    if args.max_tokens is not None:
+        params["max_tokens"] = args.max_tokens
 
     samples = load_data()
     if args.limit:
         samples = samples[:args.limit]
     runner = RUNNERS[args.experiment]
-    results = runner.run(samples, model=args.model)
-    save_results(results, args.experiment, args.model, DEFAULT_PARAMS)
+    results = runner.run(samples, model=args.model, params=params)
+    save_results(results, args.experiment, args.model, params)
 
 
 if __name__ == "__main__":
