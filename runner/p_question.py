@@ -52,6 +52,8 @@ _MAX_RETRIES = 5
 FALLBACK_LABEL = "Neutral"
 UNANSWERABLE   = "[UNANSWERABLE]"
 
+_SPACY_NLP = None  # loaded once on first use
+
 
 # ── Retry helper (mirrors q2_pipeline) ───────────────────────────────────────
 
@@ -104,6 +106,49 @@ class PQuestionPipeline:
         self.top_k             = P_QUESTION_TOP_K
         self.alignment_metric  = P_QUESTION_ALIGNMENT_METRIC
         self.stage2_mode       = P_QUESTION_STAGE2_MODE
+
+    # ── NER coverage (additive, purely metric-based) ──────────────────────────
+
+    def _ner_coverage_questions(
+        self, premise: str, existing_questions: list[str]
+    ) -> list[str]:
+        """Return gap-filling questions for entities not covered by existing_questions."""
+        global _SPACY_NLP
+        try:
+            import spacy as _spacy
+            if _SPACY_NLP is None:
+                _SPACY_NLP = _spacy.load("en_core_web_sm")
+        except Exception as exc:
+            logger.warning(f"spaCy unavailable — NER coverage skipped: {exc}")
+            return []
+
+        doc = _SPACY_NLP(premise)
+        covered_lower = " ".join(existing_questions).lower()
+        seen_texts: set[str] = set()
+        new_questions: list[str] = []
+
+        for ent in doc.ents:
+            text = ent.text.strip()
+            if len(text) < 3:
+                continue
+            key = text.lower()
+            if key in seen_texts:
+                continue
+            seen_texts.add(key)
+            if key in covered_lower:
+                continue
+
+            label = ent.label_
+            if label in ("PERCENT", "CARDINAL", "QUANTITY"):
+                q = f"What was the {text} figure mentioned in the premise?"
+            elif label in ("DATE", "TIME"):
+                q = f"What happened in/at {text} according to the premise?"
+            else:
+                q = f"What does the premise say about {text}?"
+
+            new_questions.append(q)
+
+        return new_questions
 
     # ── Stage 1a ─────────────────────────────────────────────────────────────
 
@@ -303,6 +348,11 @@ class PQuestionPipeline:
             return self._make_result(sample, [], [], [], "", FALLBACK_LABEL, warnings)
 
         questions = q_output.questions
+
+        ner_questions = self._ner_coverage_questions(premise, questions)
+        if ner_questions:
+            logger.info(f"NER coverage added {len(ner_questions)} question(s): {ner_questions}")
+            questions = questions + ner_questions
 
         # Stage 1b
         aligned_items, align_warnings = self.stage1b_align_questions(questions, hypothesis)
