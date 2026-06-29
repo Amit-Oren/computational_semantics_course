@@ -248,28 +248,30 @@ class PQuestionPipeline:
         aligned_items: list[dict],
         premise: str,
     ) -> list[dict]:
-        """Return {question, score, evidence_sentences, answer, unanswerable} per question."""
+        """Return {question, score, source, evidence_sentences, answer, unanswerable} per question."""
         results = []
         for item in aligned_items:
             answer_out, evidence_sentences = self._extract_one_answer(item["question"], premise)
 
             if answer_out is None:
                 results.append({
-                    "question":          item["question"],
-                    "score":             item["score"],
+                    "question":           item["question"],
+                    "score":              item["score"],
+                    "source":             item.get("source", "LLM"),
                     "evidence_sentences": evidence_sentences,
-                    "answer":            UNANSWERABLE,
-                    "unanswerable":      True,
+                    "answer":             UNANSWERABLE,
+                    "unanswerable":       True,
                 })
             else:
                 # Belt-and-suspenders: honour both the boolean flag and the text
                 is_unans = answer_out.unanswerable or (UNANSWERABLE in answer_out.answer.upper())
                 results.append({
-                    "question":          item["question"],
-                    "score":             item["score"],
+                    "question":           item["question"],
+                    "score":              item["score"],
+                    "source":             item.get("source", "LLM"),
                     "evidence_sentences": evidence_sentences,
-                    "answer":            answer_out.answer,
-                    "unanswerable":      is_unans,
+                    "answer":             answer_out.answer,
+                    "unanswerable":       is_unans,
                 })
         return results
 
@@ -345,18 +347,23 @@ class PQuestionPipeline:
 
         if q_output is None or not q_output.questions:
             warnings.append("Stage 1a returned no questions; defaulting to Neutral.")
-            return self._make_result(sample, [], [], [], "", FALLBACK_LABEL, warnings)
+            return self._make_result(sample, [], [], [], [], "", FALLBACK_LABEL, warnings)
 
         questions = q_output.questions
+        source_map: dict[str, str] = {q: "LLM" for q in questions}
 
         ner_questions = self._ner_coverage_questions(premise, questions)
         if ner_questions:
             logger.info(f"NER coverage added {len(ner_questions)} question(s): {ner_questions}")
             questions = questions + ner_questions
+            for q in ner_questions:
+                source_map[q] = "NER"
 
         # Stage 1b
         aligned_items, align_warnings = self.stage1b_align_questions(questions, hypothesis)
         warnings.extend(align_warnings)
+        for item in aligned_items:
+            item["source"] = source_map.get(item["question"], "LLM")
 
         # Stage 1c
         answer_items = self.stage1c_extract_answers(aligned_items, premise)
@@ -367,15 +374,17 @@ class PQuestionPipeline:
         )
         warnings.extend(stage2_warnings)
 
+        stage1a_sources = [source_map.get(q, "LLM") for q in questions]
         return self._make_result(
-            sample, questions, aligned_items, answer_items,
+            sample, questions, stage1a_sources, aligned_items, answer_items,
             evidence_string, predicted_label, warnings,
         )
 
     @staticmethod
     def _make_result(
-        sample:           dict,
+        sample:            dict,
         stage1a_questions: list[str],
+        stage1a_sources:   list[str],
         stage1b_aligned:   list[dict],
         stage1c_answers:   list[dict],
         stage2_evidence:   str,
@@ -389,6 +398,7 @@ class PQuestionPipeline:
             "label":             sample["label"],
             "prediction":        predicted_label,
             "stage1a_questions": stage1a_questions,
+            "stage1a_sources":   stage1a_sources,
             "stage1b_aligned":   stage1b_aligned,
             "stage1c_answers":   stage1c_answers,
             "stage2_evidence":   stage2_evidence,
