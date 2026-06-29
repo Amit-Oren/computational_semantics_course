@@ -4,13 +4,14 @@ import argparse
 from datetime import datetime
 from config.config import MODELS, RESULTS_DIR, DEFAULT_PARAMS, setup_logger
 from data.data import load_data
-from runner import zero_shot, few_shot_cot, hdqd_pipeline, q2_pipeline
+from runner import zero_shot, few_shot_cot, hdqd_pipeline, q2_pipeline, p_question
 
 RUNNERS = {
     "zero_shot":    zero_shot,
     "few_shot_cot": few_shot_cot,
     "hdqd_pipeline": hdqd_pipeline,
     "q2_pipeline":  q2_pipeline,
+    "p_question":   p_question,
 }
 
 

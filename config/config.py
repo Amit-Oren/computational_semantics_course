@@ -2,7 +2,7 @@ import os
 import logging
 from typing import Literal
 from dotenv import load_dotenv
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, field_validator, model_validator
 
 load_dotenv()
 
@@ -111,6 +111,109 @@ class Q2AuditOutput(BaseModel):
     matrix_cross_check_flags:  list[str]
     label:                     Literal["Entailment", "Contradiction", "Neutral"]
     explanation:               str
+
+
+# ── P-Question Pipeline constants ─────────────────────────────────────────────
+# Swap these two lines to change ablation variant — no other code changes needed.
+P_QUESTION_TOP_K:           int = 3
+P_QUESTION_ALIGNMENT_METRIC: str = "ROUGE_L"   # "ROUGE_L" | "BLEU"
+P_QUESTION_STAGE2_MODE:      str = "concatenated"  # "concatenated" | "majority_vote"
+
+
+# ── P-Question Pipeline schemas ───────────────────────────────────────────────
+
+class PQuestionListOutput(BaseModel):
+    """Stage 1a output: factual questions the premise directly answers."""
+    questions: list[str]
+
+    @field_validator("questions", mode="before")
+    @classmethod
+    def coerce_questions_to_list(cls, v):
+        # Some models return a newline-separated string instead of a JSON array
+        if isinstance(v, str):
+            return [line.strip() for line in v.splitlines() if line.strip()]
+        return v
+
+    @field_validator("questions", mode="after")
+    @classmethod
+    def drop_empty_questions(cls, v):
+        return [q.strip() for q in v if q.strip()]
+
+
+class PEvidenceGatheringOutput(BaseModel):
+    """Stage 1c Step 1: all premise sentences relevant to a question."""
+    evidence_sentences: list[str]  # every relevant span, verbatim or close paraphrase
+    has_evidence:       bool       # False only when no relevant sentence exists at all
+
+    @field_validator("evidence_sentences", mode="before")
+    @classmethod
+    def coerce_sentences_to_list(cls, v):
+        # Guard against model returning a single string instead of a JSON array
+        if isinstance(v, str):
+            return [v.strip()] if v.strip() else []
+        return v
+
+    @field_validator("evidence_sentences", mode="after")
+    @classmethod
+    def drop_empty_sentences(cls, v):
+        return [s.strip() for s in v if s.strip()]
+
+    @field_validator("has_evidence", mode="before")
+    @classmethod
+    def coerce_has_evidence_bool(cls, v):
+        if isinstance(v, str):
+            return v.strip().lower() in ("true", "yes", "1")
+        return v
+
+    @model_validator(mode="after")
+    def sync_has_evidence_with_sentences(self) -> "PEvidenceGatheringOutput":
+        # If the model returned sentences but forgot to set has_evidence=True, fix it
+        if self.evidence_sentences and not self.has_evidence:
+            self.has_evidence = True
+        # If the model set has_evidence=True but returned an empty list, correct it
+        if not self.evidence_sentences and self.has_evidence:
+            self.has_evidence = False
+        return self
+
+
+class PAnswerOutput(BaseModel):
+    """Stage 1c Step 2: one-sentence answer synthesised from gathered evidence."""
+    answer:       str   # answer text or exactly "[UNANSWERABLE]"
+    unanswerable: bool
+
+    @field_validator("answer", mode="before")
+    @classmethod
+    def strip_answer(cls, v):
+        return str(v).strip() if v is not None else "[UNANSWERABLE]"
+
+    @field_validator("unanswerable", mode="before")
+    @classmethod
+    def coerce_unanswerable_bool(cls, v):
+        if isinstance(v, str):
+            return v.strip().lower() in ("true", "yes", "1")
+        return v
+
+    @model_validator(mode="after")
+    def sync_unanswerable_with_answer(self) -> "PAnswerOutput":
+        # If the answer text signals unanswerable but the flag wasn't set, fix it
+        if "[UNANSWERABLE]" in self.answer.upper() and not self.unanswerable:
+            self.unanswerable = True
+        return self
+
+
+class PNLIOutput(BaseModel):
+    """Stage 2 output: NLI label for evidence → hypothesis."""
+    label: Literal["Entailment", "Contradiction", "Neutral"]
+
+    @field_validator("label", mode="before")
+    @classmethod
+    def normalize_label_case(cls, v):
+        # Handle ENTAILMENT, neutral, CONTRADICTION, etc. from any model
+        if isinstance(v, str):
+            title = v.strip().title()
+            if title in {"Entailment", "Contradiction", "Neutral"}:
+                return title
+        return v  # pass through unchanged; Pydantic raises a clear error
 
 def setup_logger(experiment: str, model: str) -> logging.Logger:
     from datetime import datetime

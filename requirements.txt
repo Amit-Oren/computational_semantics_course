@@ -3,3 +3,5 @@ langchain-openai
 pydantic
 python-dotenv
 requests
+rouge-score
+nltk
