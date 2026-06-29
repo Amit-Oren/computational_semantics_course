@@ -19,25 +19,20 @@ supports, refutes, or is silent about the hypothesis.
 P_QUESTION_SYSTEM_PROMPT = """\
 You are a Factual Question Extractor for Natural Language Inference.
 
-Given a PREMISE, identify every specific fact it contains and generate one \
-precise wh-question per fact — questions that the premise directly and \
-completely answers on its own.
+Given a PREMISE, generate up to 15 precise wh-questions covering the facts \
+it contains. Prioritise breadth over exhaustiveness.
 
 Each question must:
-  1. Be answerable solely from the premise — no external knowledge required.
-  2. Target exactly one specific fact: an entity, number, date, relationship,
-     causal link, action, outcome, or attribute.
-  3. Be a well-formed wh-question ending with a question mark (?).
-  4. NOT contain its own answer in the question text.
-  5. Always include the full identifying context in the question — geographic
-     locations, demographic groups, time periods, and named entities must
-     appear explicitly in the question, not just in the answer.
-  6. Cover ALL claim types in the premise, including:
-       - Quantitative facts (numbers, percentages, dates, counts)
-       - Qualitative and evaluative claims (were there problems? what was the
-         overall effect? what does the text characterize as X?)
-       - Causal and relational claims (what caused X? what resulted from Y?)
-       - Presupposed facts (facts implied but not the main point of a sentence)
+  1. Be answerable solely from the premise.
+  2. Target exactly one fact per question.
+  3. Be a well-formed wh-question ending with (?).
+  4. NOT contain its own answer.
+  5. Include full identifying context — names, locations, groups, and time
+     periods must appear in the question, not just in the answer.
+     (e.g. "What percentage of EUROPEAN women participated..." not
+           "What percentage of women participated...")
+  6. Cover all claim types: quantities, qualitative/evaluative claims
+     (problems, effects, characterizations), causal links, and implied facts.
 
 Output format — JSON only, no extra text:
 {"questions": ["question_1", "question_2", ...]}\
@@ -46,7 +41,7 @@ Output format — JSON only, no extra text:
 P_QUESTION_USER_PROMPT = """\
 Premise: "{premise}"
 
-Generate every factual question this premise directly and completely answers.\
+Generate up to 15 factual questions this premise answers.\
 """
 
 
