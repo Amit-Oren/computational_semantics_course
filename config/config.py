@@ -6,8 +6,8 @@ from pydantic import BaseModel, Field, ConfigDict, field_validator, model_valida
 
 load_dotenv()
 
-LAB_API_KEY = os.getenv("LAB_API_KEY", "")
-LAB_API_URL = os.getenv("LAB_API_URL", "http://100.110.96.82:8000/chat")
+LAB_API_KEY = os.getenv("LAB_LLM_TOKEN", "")
+LAB_API_URL = "http://lab-server.tailbdc662.ts.net:8000/v1"
 
 HF_API_KEY = os.getenv("HF_API_KEY", "")
 HF_API_URL = "https://router.huggingface.co/featherless-ai/v1"
@@ -15,6 +15,7 @@ HF_API_URL = "https://router.huggingface.co/featherless-ai/v1"
 # HuggingFace model ID for each friendly name
 HF_MODEL_MAP = {
     "qwen2.5-32b-instruct": "Qwen/Qwen2.5-32B-Instruct",
+    "llama-3-8b-instruct":  "meta-llama/Meta-Llama-3-8B-Instruct",
 }
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
@@ -33,6 +34,7 @@ MODELS = {
     "nemotron-70b":      "open_source",
     # ── Hugging Face ──────────────────────────────────────────────────────────
     "qwen2.5-32b-instruct": "huggingface",
+    "llama-3-8b-instruct":  "huggingface",
     # ── Groq ──────────────────────────────────────────────────────────────────
     "llama-3.1-8b-instant":    "groq",
     "llama-3.3-70b-versatile": "groq",
@@ -216,6 +218,62 @@ class PNLIOutput(BaseModel):
                 return title
         return v  # pass through unchanged; Pydantic raises a clear error
 
+
+# ── H-Question Pipeline schemas ───────────────────────────────────────────────
+
+class HQuestionsOutput(BaseModel):
+    """Stage 1 output: probe questions derived from the hypothesis."""
+    questions: list[str]
+
+    @field_validator("questions", mode="before")
+    @classmethod
+    def coerce_to_list(cls, v):
+        if isinstance(v, str):
+            return [line.strip() for line in v.splitlines() if line.strip()]
+        return v
+
+    @field_validator("questions", mode="after")
+    @classmethod
+    def drop_empty(cls, v):
+        return [q.strip() for q in v if q.strip()]
+
+
+class HLocateOutput(BaseModel):
+    """Stage 2a output: sentence indices from the numbered premise."""
+    indices: list[int]
+
+    @field_validator("indices", mode="before")
+    @classmethod
+    def coerce_to_list(cls, v):
+        if isinstance(v, str):
+            import re
+            return [int(n) for n in re.findall(r"\d+", v)]
+        return v
+
+
+class HAnswerOutput(BaseModel):
+    """Stage 2b output: concise answer from extracted sentences."""
+    answer: str
+
+    @field_validator("answer", mode="before")
+    @classmethod
+    def coerce_str(cls, v):
+        return str(v).strip() if v is not None else "NOT_ANSWERABLE"
+
+
+class HCompareOutput(BaseModel):
+    """Stage 3 output: per-question NLI label."""
+    label: Literal["Entailment", "Contradiction", "Neutral"]
+
+    @field_validator("label", mode="before")
+    @classmethod
+    def normalize_label(cls, v):
+        if isinstance(v, str):
+            title = v.strip().title()
+            if title in {"Entailment", "Contradiction", "Neutral"}:
+                return title
+        return v
+
 def setup_logger(experiment: str, model: str) -> logging.Logger:
     from datetime import datetime
     os.makedirs(LOGS_DIR, exist_ok=True)
@@ -267,11 +325,11 @@ def get_llm(model: str, params: dict = DEFAULT_PARAMS):
             temperature=params.get("temperature", 0.0),
             max_tokens=params.get("max_tokens", 2048),
         )
-    from open_source_llm import OpenSourceChatModel
-    return OpenSourceChatModel(
+    from langchain_openai import ChatOpenAI
+    return ChatOpenAI(
         model=model,
-        api_url=LAB_API_URL,
+        base_url=LAB_API_URL,
         api_key=LAB_API_KEY,
         temperature=params.get("temperature", 0.0),
-        max_tokens=params.get("max_tokens", 512),
+        max_tokens=params.get("max_tokens", 2048),
     )
