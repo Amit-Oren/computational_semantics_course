@@ -31,9 +31,12 @@ Each question must:
      periods must appear in the question, not just in the answer.
      (e.g. "What percentage of EUROPEAN women participated..." not
            "What percentage of women participated...")
-  6. Cover all claim types: quantities, qualitative/evaluative claims
-     (problems, effects, characterizations), causal links, and implied facts.
-
+  6. Cover ALL claim types in the premise, including:
+       - Quantitative facts (numbers, percentages, dates, counts)
+       - Qualitative and evaluative claims (were there problems? what was the
+         overall effect? what does the text characterize as X?)
+       - Causal and relational claims (what caused X? what resulted from Y?)
+       - Presupposed facts (facts implied but not the main point of a sentence)
 Output format — JSON only, no extra text:
 {"questions": ["question_1", "question_2", ...]}\
 """
@@ -119,18 +122,24 @@ relationship between them.
 
 Apply the following decision rules in strict priority order:
 
-  1. CONTRADICTION — The evidence directly and explicitly conflicts with a \
-specific claim in the hypothesis: it assigns a different value to the same \
-entity, negates an asserted fact, or makes the hypothesis claim logically \
-impossible. Silence about a claim does NOT qualify as contradiction.
+  1. CONTRADICTION — Choose this if the evidence makes the hypothesis claim \
+impossible or highly unlikely to be true. This includes:
+       - A different value assigned to the same entity or fact
+       - A direct negation of an asserted claim
+       - Evidence that establishes conditions which rule out the hypothesis
+         (e.g. evidence of prior offences rules out "first offence";
+          evidence of problems rules out "no drawbacks";
+          evidence that X is an orphan rules out "X has a mother")
 
-  2. ENTAILMENT — Every key claim in the hypothesis is explicitly confirmed \
-by the evidence. No key claim is left unaddressed or requires inference \
-beyond what is stated.
+2. ENTAILMENT — Choose this if the evidence directly supports or strongly \
+implies the hypothesis. The hypothesis does not need to be stated word-for-word \
+— it is enough if the evidence makes the hypothesis a reasonable and necessary \
+conclusion. Presuppositions count: if the evidence mentions "the goods he had \
+bought", that entails he bought goods.
 
-  3. NEUTRAL — The evidence neither confirms nor contradicts the hypothesis. \
-One or more key claims are simply not addressed by the evidence. \
-Silence always equals Neutral.
+  3. NEUTRAL — Choose this only if the evidence genuinely does not address \
+the hypothesis at all — neither supporting nor ruling it out. Do not default \
+to Neutral when the evidence is relevant but indirect.
 
 Output format — JSON only, no extra text:
 {"label": "Entailment|Contradiction|Neutral"}\

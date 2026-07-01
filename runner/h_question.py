@@ -6,12 +6,7 @@ Four-stage pipeline:
   Stage 1:  H + keyphrases → 1-2 probe questions              (LLM)
   Stage 2a: Numbered premise + question → sentence indices     (LLM)
   Stage 2b: Extracted sentences + question → concise answer   (LLM)
-  Stage 3:  Answer + claim from H → per-question NLI label    (LLM)
-
-Aggregation rule:
-  any "Contradiction"        → Contradiction
-  all "Entailment"           → Entailment
-  otherwise (neutral / NOT_ANSWERABLE / mix) → Neutral
+  Stage 3:  All probes (Q + answer) → holistic NLI label      (LLM)
 
 Dataset note: ConTRoL JSONL contains uid/premise/hypothesis/label only —
 gold evidence sentence indices are not available, so located_indices vs
@@ -39,8 +34,8 @@ from prompts.h_question import (
     H_LOCATE_USER_PROMPT,
     H_ANSWER_SYSTEM_PROMPT,
     H_ANSWER_USER_PROMPT,
-    H_COMPARE_SYSTEM_PROMPT,
-    H_COMPARE_USER_PROMPT,
+    H_JUDGE_SYSTEM_PROMPT,
+    H_JUDGE_USER_PROMPT,
 )
 from utils.pos_keyphrase import extract_keyphrases
 from utils.premise_indexer import number_sentences, pull_by_indices
@@ -69,18 +64,6 @@ def _call_with_retry(fn, *args, **kwargs):
             else:
                 raise
     return None
-
-
-# ── Label aggregation ─────────────────────────────────────────────────────────
-
-def _aggregate_labels(labels: list[str]) -> str:
-    if not labels:
-        return FALLBACK_LABEL
-    if any(l == "Contradiction" for l in labels):
-        return "Contradiction"
-    if all(l == "Entailment" for l in labels):
-        return "Entailment"
-    return FALLBACK_LABEL
 
 
 # ── Pipeline class ────────────────────────────────────────────────────────────
@@ -136,15 +119,15 @@ class HQuestionPipeline:
         llm = get_structured_llm(self.model, HAnswerOutput, self.params)
         return _call_with_retry(llm.invoke, messages)
 
-    # ── Stage 3 ───────────────────────────────────────────────────────────────
+    # ── Stage 3: Holistic Judge ───────────────────────────────────────────────
 
-    def stage3_compare(
-        self, question: str, answer: str, claim: str
+    def stage_judge(
+        self, hypothesis: str, probes_block: str
     ) -> HCompareOutput | None:
         messages = [
-            SystemMessage(content=H_COMPARE_SYSTEM_PROMPT),
-            HumanMessage(content=H_COMPARE_USER_PROMPT.format(
-                question=question, answer=answer, claim=claim,
+            SystemMessage(content=H_JUDGE_SYSTEM_PROMPT),
+            HumanMessage(content=H_JUDGE_USER_PROMPT.format(
+                hypothesis=hypothesis, probes_block=probes_block,
             )),
         ]
         llm = get_structured_llm(self.model, HCompareOutput, self.params)
@@ -160,7 +143,6 @@ class HQuestionPipeline:
         # Stage 0 — keyphrases (no LLM)
         kp_result  = extract_keyphrases(hypothesis)
         keyphrases = kp_result["keyphrases"]
-        claim_from_H = kp_result["claim_from_H"]
 
         # Index premise sentences once
         indexed_sentences, numbered_premise = number_sentences(premise)
@@ -175,14 +157,13 @@ class HQuestionPipeline:
         if q_output is None or not q_output.questions:
             warnings.append("Stage 1 returned no questions; defaulting to Neutral.")
             return self._make_result(
-                sample, keyphrases, [], [], [], [], [], FALLBACK_LABEL, warnings,
+                sample, keyphrases, [], [], FALLBACK_LABEL, warnings,
             )
 
         questions = q_output.questions
-        located_indices_list:    list[list[int]] = []
+        located_indices_list:     list[list[int]] = []
         extracted_sentences_list: list[list[str]] = []
-        answers:                 list[str]       = []
-        per_question_labels:     list[str]       = []
+        answers:                  list[str]       = []
 
         for question in questions:
             # Stage 2a — locate
@@ -210,61 +191,63 @@ class HQuestionPipeline:
                     logger.warning(f"Stage 2b failed for '{question[:60]}': {exc}")
             answers.append(answer)
 
-            # Stage 3 — compare
-            label = FALLBACK_LABEL
-            if answer != NOT_ANSWERABLE:
-                try:
-                    cmp = self.stage3_compare(question, answer, claim_from_H)
-                    if cmp:
-                        label = cmp.label
-                    else:
-                        warnings.append(f"Stage 3 returned None for '{question[:60]}'; defaulting to Neutral.")
-                except Exception as exc:
-                    logger.warning(f"Stage 3 failed for '{question[:60]}': {exc}")
-                    warnings.append(f"Stage 3 error: {exc}")
-            per_question_labels.append(label)
+        # Build per-question details (no per-probe Stage 3 label)
+        per_question_details = [
+            {
+                "question":              questions[i],
+                "located_indices":       located_indices_list[i],
+                "gold_evidence_indices": None,
+                "extracted_sentences":   extracted_sentences_list[i],
+                "answer_from_P":         answers[i],
+                "answerable_flag":       answers[i] != NOT_ANSWERABLE,
+                "per_question_label":    "N/A",
+            }
+            for i in range(len(questions))
+        ]
 
-        final_label = _aggregate_labels(per_question_labels)
+        # Build probes block for holistic judge
+        probes_block = "\n\n".join(
+            f"Q{i+1}: {d['question']}\n"
+            f"Answer from P: {d['answer_from_P']}\n"
+            f"Per-probe label: {d['per_question_label']}"
+            for i, d in enumerate(per_question_details)
+        )
+
+        # Stage 3 — holistic judge (one call for all probes)
+        final_label = FALLBACK_LABEL
+        try:
+            judge_out = self.stage_judge(hypothesis, probes_block)
+            if judge_out:
+                final_label = judge_out.label
+            else:
+                warnings.append("Stage 3 (judge) returned None; defaulting to Neutral.")
+        except Exception as exc:
+            logger.warning(f"Stage 3 (judge) failed: {exc}")
+            warnings.append(f"Stage 3 error: {exc}")
+
         return self._make_result(
-            sample, keyphrases, questions, located_indices_list,
-            extracted_sentences_list, answers, per_question_labels,
-            final_label, warnings,
+            sample, keyphrases, questions, per_question_details, final_label, warnings,
         )
 
     @staticmethod
     def _make_result(
-        sample:                   dict,
-        keyphrases:               list[str],
-        gen_questions:            list[str],
-        located_indices_list:     list[list[int]],
-        extracted_sentences_list: list[list[str]],
-        answers:                  list[str],
-        per_question_labels:      list[str],
-        final_label:              str,
-        warnings:                 list[str],
+        sample:               dict,
+        keyphrases:           list[str],
+        gen_questions:        list[str],
+        per_question_details: list[dict],
+        final_label:          str,
+        warnings:             list[str],
     ) -> dict:
-        per_question_details = [
-            {
-                "question":            gen_questions[i],
-                "located_indices":     located_indices_list[i],
-                "gold_evidence_indices": None,  # not in ConTRoL JSONL
-                "extracted_sentences": extracted_sentences_list[i],
-                "answer_from_P":       answers[i],
-                "answerable_flag":     answers[i] != "NOT_ANSWERABLE",
-                "per_question_label":  per_question_labels[i],
-            }
-            for i in range(len(gen_questions))
-        ]
         return {
-            "id":                    sample.get("id"),
-            "premise":               sample["premise"],
-            "hypothesis":            sample["hypothesis"],
-            "label":                 sample["label"],
-            "prediction":            final_label,
-            "keyphrases":            keyphrases,
-            "gen_questions":         gen_questions,
-            "per_question_details":  per_question_details,
-            "warnings":              warnings,
+            "id":                   sample.get("id"),
+            "premise":              sample["premise"],
+            "hypothesis":           sample["hypothesis"],
+            "label":                sample["label"],
+            "prediction":           final_label,
+            "keyphrases":           keyphrases,
+            "gen_questions":        gen_questions,
+            "per_question_details": per_question_details,
+            "warnings":             warnings,
         }
 
 

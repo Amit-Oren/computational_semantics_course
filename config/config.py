@@ -4,7 +4,7 @@ from typing import Literal
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field, ConfigDict, field_validator, model_validator
 
-load_dotenv()
+load_dotenv(override=True)
 
 LAB_API_KEY = os.getenv("LAB_LLM_TOKEN", "")
 LAB_API_URL = "http://lab-server.tailbdc662.ts.net:8000/v1"
@@ -273,6 +273,52 @@ class HCompareOutput(BaseModel):
             if title in {"Entailment", "Contradiction", "Neutral"}:
                 return title
         return v
+
+# ── H-Multihop Pipeline schemas ───────────────────────────────────────────────
+
+class HMDecompOutput(BaseModel):
+    """Stage 1: ordered list of 2-3 atomic sub-questions."""
+    sub_questions: list[str]
+
+    @field_validator("sub_questions", mode="before")
+    @classmethod
+    def coerce_to_list(cls, v):
+        if isinstance(v, str):
+            return [line.strip() for line in v.splitlines() if line.strip()]
+        return v
+
+    @field_validator("sub_questions", mode="after")
+    @classmethod
+    def drop_empty_and_cap(cls, v):
+        cleaned = [q.strip() for q in v if q.strip()]
+        return cleaned[:3]
+
+
+class HMAnswerOutput(BaseModel):
+    """Per-hop output: answer text and answerable flag."""
+    answer:     str
+    answerable: bool
+
+    @field_validator("answer", mode="before")
+    @classmethod
+    def coerce_str(cls, v):
+        return str(v).strip() if v is not None else "NOT_ANSWERABLE"
+
+    @field_validator("answerable", mode="before")
+    @classmethod
+    def coerce_bool(cls, v):
+        if isinstance(v, str):
+            return v.strip().lower() in ("true", "yes", "1")
+        return v
+
+    @model_validator(mode="after")
+    def sync_answerable(self) -> "HMAnswerOutput":
+        if "NOT_ANSWERABLE" in self.answer.upper() and self.answerable:
+            self.answerable = False
+        if "NOT_ANSWERABLE" not in self.answer.upper() and not self.answerable:
+            self.answerable = True
+        return self
+
 
 def setup_logger(experiment: str, model: str) -> logging.Logger:
     from datetime import datetime

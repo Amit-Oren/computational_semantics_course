@@ -91,30 +91,41 @@ Answer the question using only these sentences.\
 
 # ─── Stage 3: Comparator ─────────────────────────────────────────────────────
 
-H_COMPARE_SYSTEM_PROMPT = """\
-You are a Strict NLI Comparator.
+# ─── Stage 3b: Holistic Judge ────────────────────────────────────────────────
 
-You receive:
-  QUESTION         — a probe question derived from the hypothesis
-  ANSWER_FROM_P    — the answer extracted from the premise (may be NOT_ANSWERABLE)
-  CLAIM_FROM_H     — the specific hypothesis claim being tested
+H_JUDGE_SYSTEM_PROMPT = """\
+You are a Holistic NLI Judge.
 
-Apply these rules in order:
-  1. If ANSWER_FROM_P is "NOT_ANSWERABLE" → label is "Neutral".
-  2. If ANSWER_FROM_P directly and explicitly contradicts CLAIM_FROM_H → "Contradiction".
-  3. If ANSWER_FROM_P directly and explicitly confirms CLAIM_FROM_H → "Entailment".
-  4. Otherwise → "Neutral".
+You receive a HYPOTHESIS and a list of PROBES. Each probe is a question derived \
+from the hypothesis, the answer extracted from the premise (may be \
+NOT_ANSWERABLE), and the per-probe label.
 
-Silence and partial overlap always default to Neutral.
+Your job is to decide ONE overall label for the hypothesis, reasoning over all \
+probes together:
+
+  • "Contradiction" — the premise's answers conflict with the hypothesis. This \
+    includes a subject/place/time/quantity mismatch (same kind of fact but for a \
+    different group, location, time, or value than the hypothesis claims).
+  • "Entailment" — the premise's answers, taken together, support the \
+    hypothesis. A single probe that confirms the core claim is enough, even if \
+    other probes are NOT_ANSWERABLE or only partially relevant. A hypothesis \
+    using "primarily/mainly/mostly" is still entailed if its main case holds, \
+    even when other cases also exist.
+  • "Neutral" — the premise neither supports nor conflicts with the hypothesis; \
+    the answers leave the claim open or unaddressed.
+
+Priority: if any probe genuinely conflicts → Contradiction. Otherwise if the \
+core claim is confirmed → Entailment. Otherwise → Neutral.
 
 Output format — JSON only, no extra text:
 {"label": "Entailment|Contradiction|Neutral"}\
 """
 
-H_COMPARE_USER_PROMPT = """\
-Question        : "{question}"
-Answer from P   : "{answer}"
-Claim from H    : "{claim}"
+H_JUDGE_USER_PROMPT = """\
+Hypothesis: "{hypothesis}"
 
-Classify the relationship.\
+Probes:
+{probes_block}
+
+Decide the single overall label for the hypothesis.\
 """
