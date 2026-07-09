@@ -22,7 +22,11 @@ def run(samples: list[dict], model: str, params: dict = DEFAULT_PARAMS) -> list[
     for i, sample in enumerate(samples):
         system = SYSTEM_PROMPT
         user = USER_PROMPT.format(premise=sample["premise"], hypothesis=sample["hypothesis"])
-        output = call(system, user, model, params)
+        try:
+            output = call(system, user, model, params)
+        except Exception as exc:
+            logger.warning(f"[{i+1}/{len(samples)}] id={sample.get('id')} | structured output parsing failed, skipping: {exc}")
+            continue
 
         if output is None:
             logger.warning(f"[{i+1}/{len(samples)}] id={sample.get('id')} | structured output parsing failed, skipping")

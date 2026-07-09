@@ -2,8 +2,10 @@
 Q2 Pipeline Prompts — Query-Based Factual Verification for NLI
 ==============================================================
 Stage 1 (Question Generator): Hypothesis → anchors + 2-3 verification questions.
-Stage 2 (Factual Auditor):    Premise + Hypothesis + questions → verbatim extraction
-                               + entity-metric cross-check + strict NLI label.
+
+Evidence-finding (Locator + Answer Extractor) and final classification are
+shared components — see utils/locator_extractor.py and
+prompts/shared_classifier.py. Only question generation is method-specific here.
 
 Design goal: force the model to ground every claim in the premise text BEFORE
 deciding the label, eliminating hypothesis-only bias on long premises (~500 words).
@@ -60,117 +62,4 @@ Q2_QUESTION_USER_PROMPT = """\
 Hypothesis: "{hypothesis}"
 
 Extract all factual anchors and generate 2–3 verification questions.\
-"""
-
-# ─── Stage 2: Factual Auditor ─────────────────────────────────────────────────
-
-Q2_AUDIT_SYSTEM_PROMPT = """\
-You are a Strict Factual Auditor applying **Tabular Decomposition, Multi-Hop Integration, \
-and Matrix Matching** for Natural Language Inference over long, complex documents.
-
-You receive:
-  • PREMISE        — a long passage containing dense, distributed facts (ground truth).
-  • HYPOTHESIS     — a short claim to be verified.
-  • VERIFICATION QUESTIONS — targeted questions based on the hypothesis anchors.
-
-**Context awareness note:** The information in the PREMISE may be distributed across \
-multiple sentences, paragraphs, or implicit logical premises. You must synthesize \
-scattered clues to build your evaluation matrix. Follow this exact 3-step protocol.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Step 1 — TABULAR DECOMPOSITION & SCATTERED EVIDENCE EXTRACTION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-For EACH verification question, construct a factual row in your internal audit table. \
-Scan the entire PREMISE to aggregate ALL scattered clues. Populate these attributes:
-  1. "target_anchor": The specific entity, metric, action, or scope modifier from \
-the question.
-  2. "verbatim_premise_evidence_list": A LIST of ALL exact quotes from different parts \
-of the premise that relate to or bound this anchor. If completely missing, write \
-["NOT STATED IN PREMISE"].
-  3. "integrated_premise_tags": Extract the exact operational scope, location, entity \
-group, or structural constraints established by combining those quotes.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Step 2 — MATRIX CELL-BY-CELL CROSS-CHECK & CALIBRATION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Compare the Hypothesis claims against your integrated decomposition table from Step 1.
-Apply strict calibration to avoid over-inferring or being overly aggressive:
-
-  • [ENTITY_SWAP_CONTRADICTION]: Triggered ONLY if the premise explicitly attaches \
-the exact metric/action to a completely different, conflicting entity.
-  • [LOGICAL_IMPOSSIBILITY]: Triggered ONLY if an explicit fact in the premise makes \
-the hypothesis physically or structurally impossible.
-  • [SILENT_NEUTRAL]: Triggered if the premise simply DOES NOT MENTION the specific \
-details, actions, or sub-claims of the hypothesis. Silence ALWAYS equals Neutral.
-  • [SPECULATION_WARNING]: Triggered if you find yourself inferring or connecting dots \
-that require world knowledge or logical leaps not explicitly written in the quotes.
-  • [CAUSAL_BRIDGE_NEUTRAL]: Triggered when the hypothesis asserts that A caused B \
-(e.g., "A led to B", "A resulted in B", "due to A, B occurred"), but the premise \
-only confirms A and B independently — without explicitly stating that A caused B. \
-Co-occurrence of two facts is NOT evidence of causation. You must find a sentence \
-in the premise that directly links A as the cause of B. If no such sentence exists, \
-this flag fires and the label defaults to Neutral.
-
-    Example:
-      H:  "Improvements in medicine led to workers earning more."
-      P mentions: "medicine improved" ✓  |  "wages rose" ✓  |  causal link: ✗
-      → [CAUSAL_BRIDGE_NEUTRAL] fires → label: Neutral
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Step 3 — LABEL DECISION
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Before evaluating flags, apply this priority gate:
-
-  [CONTRADICTION GATE — evaluate first]:
-  Scan your audit table. Does any verbatim_premise_evidence_list entry
-  contain a span that directly and explicitly refutes a specific claim
-  in H — not merely fails to support it, but actively clashes with it?
-  If YES → label = "Contradiction". Do not evaluate any other flags.
-
-  A span qualifies as active refutation if:
-    • It assigns a conflicting value to the same entity or metric H names.
-    • It establishes a fact that makes H's claim logically impossible.
-    • It explicitly negates or contradicts a specific assertion in H.
-
-  If no such span exists → continue to flag evaluation below.
-
-Assign exactly ONE label:
-  • "Contradiction" — CONTRADICTION GATE passed (see above).
-  • "Entailment"    — Every key claim in H is supported by gathered
-                      quotes, including causal links, such that a
-                      reasonable reader would agree H must be true
-                      given P. No flags fired.
-  • "Neutral"       — Gate did not pass AND at least one flag fired,
-                      OR the premise simply does not address H's claims.
-                      Silence = Neutral. Unverified causation = Neutral.
-**Output format — JSON only, no extra text:**
-{
-  "audit_table_decomposition": [
-    {
-      "question": "...",
-      "target_anchor": "...",
-      "verbatim_premise_evidence_list": ["quote 1", "quote 2"],
-      "integrated_premise_tags": "...",
-      "found": true
-    }
-  ],
-  "matrix_cross_check_flags": ["flag_1", "flag_2"],
-  "label": "Entailment or Contradiction or Neutral",
-  "explanation": "A structural, cross-paragraph justification explaining the multi-step logic behind the label."
-}
-"""
-
-Q2_AUDIT_USER_PROMPT = """\
-PREMISE:
-{premise}
-
-HYPOTHESIS:
-{hypothesis}
-
-VERIFICATION QUESTIONS:
-{questions}
-
-Perform the 3-step factual audit and output your JSON response.\
 """

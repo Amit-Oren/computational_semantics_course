@@ -3,9 +3,13 @@ H-Multihop Pipeline Prompts — Atomic Sub-Question Chaining for NLI
 ===================================================================
 Stage 1  (Decomposition Planner): H + keyphrases → ordered 2-3 sub-questions.
 Stage 2a (Sentence Locator):      Numbered premise + sub-question → indices.
-                                   (reuses H_LOCATE_* from prompts/h_question.py)
+                                   (reuses LOCATE_* from prompts/shared_answering.py)
 Stage 2b (Per-hop Answerer):      Extracted sentences + prior context → answer.
-Stage 3  (Chain Classifier):      Full evidence chain → holistic NLI label.
+                                   (kept local — needs the running context param,
+                                   unlike the shared Answer Extractor)
+Stage 3  (Chain Classifier):      Replaced by the shared classify_evidence() —
+                                   see prompts/shared_classifier.py. The answered
+                                   hops become its qa_pairs list.
 
 CHANGELOG:
   Fix 2 — Decomposition keeps the exact named entities from the hypothesis
@@ -95,72 +99,3 @@ Extracted sentences:
 
 Answer the sub-question using only these sentences and the prior context.\
 """
-
-
-# ─── Stage 3: Chain Classifier ───────────────────────────────────────────────
-
-HM_CLASSIFY_SYSTEM_PROMPT = """\
-You are a Chain-NLI Judge.
-
-You receive a HYPOTHESIS and an EVIDENCE CHAIN — an ordered list of sub-questions \
-and their answers extracted from the premise. The chain MAY BE PARTIAL: it can \
-stop early if a later sub-question was not answerable. Judge using the hops that \
-WERE answered — never default to Neutral just because the chain is incomplete.
-
-A single answered hop is enough to decide when it settles the hypothesis:
-  • If any answered hop conflicts with the hypothesis, label Contradiction even \
-if a later hop is unanswered. (E.g. H "this was his first offence"; an answered \
-hop says he offended before → Contradiction. H "police rang his mother"; an \
-answered hop says he is an orphan / has no mother → Contradiction.)
-  • If the answered hops fully confirm the hypothesis, label Entailment even if \
-a later confirmatory hop is missing.
-
-Decide ONE overall label:
-
-  • "Contradiction" — any chain answer conflicts with what the hypothesis claims \
-(wrong entity, wrong quantity, wrong direction, wrong location, or wrong time). \
-A subject/place/time/quantity mismatch counts even if the same kind of fact exists.
-  • "Entailment" — the chain answers taken together confirm the hypothesis. \
-Partial, topic-specific, or single-example evidence does NOT entail a claim that \
-uses "overall", "same", "always", or "identical" scope; label Entailment only \
-when the answers cover the FULL scope the hypothesis claims.
-  • "Neutral" — the chain does not confirm or conflict; evidence is absent, \
-off-topic, or covers only part of what the hypothesis asserts.
-
-Priority: any genuine conflict → Contradiction. Full-scope confirmation → \
-Entailment. Otherwise → Neutral.
-
-Output format — JSON only, no extra text:
-{"label": "Entailment|Contradiction|Neutral"}\
-"""
-
-HM_CLASSIFY_USER_PROMPT = """\
-Hypothesis: "{hypothesis}"
-
-Evidence chain (may be partial — judge from the answered hops):
-{chain_block}
-
-Decide the single overall label.\
-"""
-
-
-# ─── Fix 1: REQUIRED runner change ───────────────────────────────────────────
-# In your h_multihop runner, the chain currently auto-labels Neutral whenever a
-# hop halts. Remove that shortcut and ALWAYS call the classifier on whatever was
-# answered. Roughly:
-#
-#   # OLD (delete this):
-#   # if any(h["halted"] for h in chain):
-#   #     prediction = "Neutral"
-#   # else:
-#   #     prediction = classify_chain(hypothesis, chain)
-#
-#   # NEW:
-#   answered = [h for h in chain if h["answer_from_P"] != "NOT_ANSWERABLE"]
-#   if not answered:                       # nothing at all was answered
-#       prediction = "Neutral"
-#   else:
-#       prediction = classify_chain(hypothesis, answered)   # judge partial chain
-#
-# Keep logging the full chain (halted hops included) for traceability; only the
-# label decision changes.

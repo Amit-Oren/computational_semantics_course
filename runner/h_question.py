@@ -1,12 +1,16 @@
 """
 H-Question Pipeline Runner — Hypothesis Interrogation for NLI
 =============================================================
-Four-stage pipeline:
-  Stage 0:  Extract keyphrases from H (POS tagging, no LLM)
-  Stage 1:  H + keyphrases → 1-2 probe questions              (LLM)
-  Stage 2a: Numbered premise + question → sentence indices     (LLM)
-  Stage 2b: Extracted sentences + question → concise answer   (LLM)
-  Stage 3:  All probes (Q + answer) → holistic NLI label      (LLM)
+Three-stage pipeline:
+  Stage 0: Extract keyphrases from H (POS tagging, no LLM)
+  Stage 1: H + keyphrases → 1-2 probe questions                      (LLM)
+  Stage 2: locate_and_answer per question, then classify_evidence
+           over the surviving (question, answer) pairs               (shared, LLM)
+
+Evidence-finding (Locator + Answer Extractor) and final classification are
+shared with q2_pipeline, p_question, and h_multihop — see
+utils/locator_extractor.py and prompts/shared_classifier.py. Only Stage 1
+(question generation from H) is method-specific.
 
 Dataset note: ConTRoL JSONL contains uid/premise/hypothesis/label only —
 gold evidence sentence indices are not available, so located_indices vs
@@ -15,58 +19,27 @@ gold_evidence_indices comparison cannot be done on this dataset.
 
 from __future__ import annotations
 
-import time
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from config.config import (
     DEFAULT_PARAMS,
     HQuestionsOutput,
-    HLocateOutput,
-    HAnswerOutput,
-    HCompareOutput,
     get_structured_llm,
     logger,
 )
 from prompts.h_question import (
     H_QUESTION_GEN_SYSTEM_PROMPT,
     H_QUESTION_GEN_USER_PROMPT,
-    H_LOCATE_SYSTEM_PROMPT,
-    H_LOCATE_USER_PROMPT,
-    H_ANSWER_SYSTEM_PROMPT,
-    H_ANSWER_USER_PROMPT,
-    H_JUDGE_SYSTEM_PROMPT,
-    H_JUDGE_USER_PROMPT,
 )
+from prompts.shared_classifier import classify_evidence
+from utils.locator_extractor import locate_and_answer
 from utils.pos_keyphrase import extract_keyphrases
-from utils.premise_indexer import number_sentences, pull_by_indices
+from utils.premise_indexer import number_sentences
+from utils.retry import call_with_retry
 
-_RETRY_WAIT  = 30
-_MAX_RETRIES = 5
+METHOD = "h_question"
 FALLBACK_LABEL = "Neutral"
-NOT_ANSWERABLE = "NOT_ANSWERABLE"
 
-
-# ── Retry helper (mirrors q2_pipeline / p_question) ───────────────────────────
-
-def _call_with_retry(fn, *args, **kwargs):
-    for attempt in range(1, _MAX_RETRIES + 1):
-        try:
-            return fn(*args, **kwargs)
-        except Exception as exc:
-            msg = str(exc).lower()
-            is_capacity = any(k in msg for k in ("capacity", "rate limit", "429", "503", "overloaded"))
-            if is_capacity and attempt < _MAX_RETRIES:
-                logger.warning(
-                    f"Provider at capacity (attempt {attempt}/{_MAX_RETRIES}) "
-                    f"— retrying in {_RETRY_WAIT}s"
-                )
-                time.sleep(_RETRY_WAIT)
-            else:
-                raise
-    return None
-
-
-# ── Pipeline class ────────────────────────────────────────────────────────────
 
 class HQuestionPipeline:
     """Hypothesis-interrogation NLI pipeline."""
@@ -88,54 +61,11 @@ class HQuestionPipeline:
             )),
         ]
         llm = get_structured_llm(self.model, HQuestionsOutput, self.params)
-        return _call_with_retry(llm.invoke, messages)
-
-    # ── Stage 2a ──────────────────────────────────────────────────────────────
-
-    def stage2a_locate(
-        self, numbered_premise: str, question: str
-    ) -> HLocateOutput | None:
-        messages = [
-            SystemMessage(content=H_LOCATE_SYSTEM_PROMPT),
-            HumanMessage(content=H_LOCATE_USER_PROMPT.format(
-                numbered_premise=numbered_premise, question=question,
-            )),
-        ]
-        llm = get_structured_llm(self.model, HLocateOutput, self.params)
-        return _call_with_retry(llm.invoke, messages)
-
-    # ── Stage 2b ──────────────────────────────────────────────────────────────
-
-    def stage2b_answer(
-        self, question: str, sentences: list[str]
-    ) -> HAnswerOutput | None:
-        sentences_block = "\n".join(f"- {s}" for s in sentences)
-        messages = [
-            SystemMessage(content=H_ANSWER_SYSTEM_PROMPT),
-            HumanMessage(content=H_ANSWER_USER_PROMPT.format(
-                question=question, sentences_block=sentences_block,
-            )),
-        ]
-        llm = get_structured_llm(self.model, HAnswerOutput, self.params)
-        return _call_with_retry(llm.invoke, messages)
-
-    # ── Stage 3: Holistic Judge ───────────────────────────────────────────────
-
-    def stage_judge(
-        self, hypothesis: str, probes_block: str
-    ) -> HCompareOutput | None:
-        messages = [
-            SystemMessage(content=H_JUDGE_SYSTEM_PROMPT),
-            HumanMessage(content=H_JUDGE_USER_PROMPT.format(
-                hypothesis=hypothesis, probes_block=probes_block,
-            )),
-        ]
-        llm = get_structured_llm(self.model, HCompareOutput, self.params)
-        return _call_with_retry(llm.invoke, messages)
+        return call_with_retry(llm.invoke, messages)
 
     # ── Full sample ───────────────────────────────────────────────────────────
 
-    def run_sample(self, sample: dict) -> dict | None:
+    def run_sample(self, sample: dict) -> dict:
         premise    = sample["premise"]
         hypothesis = sample["hypothesis"]
         warnings: list[str] = []
@@ -143,9 +73,6 @@ class HQuestionPipeline:
         # Stage 0 — keyphrases (no LLM)
         kp_result  = extract_keyphrases(hypothesis)
         keyphrases = kp_result["keyphrases"]
-
-        # Index premise sentences once
-        indexed_sentences, numbered_premise = number_sentences(premise)
 
         # Stage 1 — generate questions
         q_output = None
@@ -156,98 +83,46 @@ class HQuestionPipeline:
 
         if q_output is None or not q_output.questions:
             warnings.append("Stage 1 returned no questions; defaulting to Neutral.")
-            return self._make_result(
-                sample, keyphrases, [], [], FALLBACK_LABEL, warnings,
-            )
+            return self._make_result(sample, keyphrases, [], FALLBACK_LABEL, warnings)
 
         questions = q_output.questions
-        located_indices_list:     list[list[int]] = []
-        extracted_sentences_list: list[list[str]] = []
-        answers:                  list[str]       = []
 
+        # Stage 2 — locate + answer each question, then classify the survivors
+        indexed_sentences, numbered_premise = number_sentences(premise)
+        qa_pairs = []
         for question in questions:
-            # Stage 2a — locate
-            indices: list[int] = []
-            try:
-                loc = self.stage2a_locate(numbered_premise, question)
-                if loc and loc.indices:
-                    indices = loc.indices[:5]
-            except Exception as exc:
-                logger.warning(f"Stage 2a failed for '{question[:60]}': {exc}")
-            located_indices_list.append(indices)
+            result = locate_and_answer(
+                self.model, self.params, question,
+                indexed_sentences=indexed_sentences, numbered_premise=numbered_premise,
+            )
+            if result["answerable"]:
+                qa_pairs.append(result)
 
-            # Pull sentences
-            extracted = pull_by_indices(indexed_sentences, indices) if indices else []
-            extracted_sentences_list.append(extracted)
+        if not qa_pairs:
+            warnings.append("All questions unanswerable; defaulting to Neutral.")
+            return self._make_result(sample, keyphrases, qa_pairs, FALLBACK_LABEL, warnings)
 
-            # Stage 2b — answer
-            answer = NOT_ANSWERABLE
-            if extracted:
-                try:
-                    ans = self.stage2b_answer(question, extracted)
-                    if ans:
-                        answer = ans.answer
-                except Exception as exc:
-                    logger.warning(f"Stage 2b failed for '{question[:60]}': {exc}")
-            answers.append(answer)
-
-        # Build per-question details (no per-probe Stage 3 label)
-        per_question_details = [
-            {
-                "question":              questions[i],
-                "located_indices":       located_indices_list[i],
-                "gold_evidence_indices": None,
-                "extracted_sentences":   extracted_sentences_list[i],
-                "answer_from_P":         answers[i],
-                "answerable_flag":       answers[i] != NOT_ANSWERABLE,
-                "per_question_label":    "N/A",
-            }
-            for i in range(len(questions))
-        ]
-
-        # Build probes block for holistic judge
-        probes_block = "\n\n".join(
-            f"Q{i+1}: {d['question']}\n"
-            f"Answer from P: {d['answer_from_P']}\n"
-            f"Per-probe label: {d['per_question_label']}"
-            for i, d in enumerate(per_question_details)
-        )
-
-        # Stage 3 — holistic judge (one call for all probes)
-        final_label = FALLBACK_LABEL
-        try:
-            judge_out = self.stage_judge(hypothesis, probes_block)
-            if judge_out:
-                final_label = judge_out.label
-            else:
-                warnings.append("Stage 3 (judge) returned None; defaulting to Neutral.")
-        except Exception as exc:
-            logger.warning(f"Stage 3 (judge) failed: {exc}")
-            warnings.append(f"Stage 3 error: {exc}")
-
-        return self._make_result(
-            sample, keyphrases, questions, per_question_details, final_label, warnings,
-        )
+        prediction = classify_evidence(self.model, self.params, qa_pairs, hypothesis)
+        return self._make_result(sample, keyphrases, qa_pairs, prediction, warnings)
 
     @staticmethod
     def _make_result(
-        sample:               dict,
-        keyphrases:           list[str],
-        gen_questions:        list[str],
-        per_question_details: list[dict],
-        final_label:          str,
-        warnings:             list[str],
+        sample:      dict,
+        keyphrases:  list[str],
+        qa_pairs:    list[dict],
+        prediction:  str,
+        warnings:    list[str],
     ) -> dict:
         return {
-            "id":                   sample.get("id"),
-            "premise":              sample["premise"],
-            "hypothesis":           sample["hypothesis"],
-            "label":                sample["label"],
-            "prediction":           final_label,
-            "keyphrases":           keyphrases,
-            "gen_questions":        gen_questions,
-            "per_question_details": per_question_details,
-            "warnings":             warnings,
+            "id":         sample.get("id"),
+            "premise":    sample["premise"],
+            "hypothesis": sample["hypothesis"],
+            "gold_label": sample["label"],
+            "prediction": prediction,
+            "qa_pairs":   qa_pairs,
+            "method":     METHOD,
+            "keyphrases": keyphrases,
+            "warnings":   warnings,
         }
 
 
@@ -276,22 +151,15 @@ def run(samples: list[dict], model: str, params: dict = DEFAULT_PARAMS) -> list[
             skipped += 1
             continue
 
-        if result is None:
-            logger.warning(
-                f"[{i+1}/{len(samples)}] id={sample_id} | pipeline returned None, skipping"
-            )
-            skipped += 1
-            continue
-
         results.append(result)
         warn_str = f" | warnings={result['warnings']}" if result["warnings"] else ""
         logger.info(
             f"[{i+1}/{len(samples)}] id={sample_id} "
-            f"| gold={result['label']} | pred={result['prediction']}{warn_str}"
+            f"| gold={result['gold_label']} | pred={result['prediction']}{warn_str}"
         )
 
     if results:
-        correct  = sum(r["label"] == r["prediction"] for r in results)
+        correct  = sum(r["gold_label"] == r["prediction"] for r in results)
         accuracy = correct / len(results)
         logger.info("=" * 60)
         logger.info(f"Processed : {len(results)} samples  |  Skipped: {skipped}")

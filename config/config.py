@@ -94,129 +94,92 @@ class HDQDOutput(BaseModel):
 
 # ── Q2 Pipeline schemas ───────────────────────────────────────────────────────
 
-# ── Q1 output ────────────────────────────────────────────────────────────────
 class Q2QuestionOutput(BaseModel):
+    """Stage 1 output: hypothesis anchors + verification questions."""
     anchors:   list[str]
     questions: list[str]
 
 
-# ── Q2 audit output ───────────────────────────────────────────────────────────
-class AuditTableRow(BaseModel):
-    question:                       str
-    target_anchor:                  str
-    verbatim_premise_evidence_list: list[str]
-    integrated_premise_tags:        str
-    found:                          bool
-
-
-class Q2AuditOutput(BaseModel):
-    audit_table_decomposition: list[AuditTableRow]
-    matrix_cross_check_flags:  list[str]
-    label:                     Literal["Entailment", "Contradiction", "Neutral"]
-    explanation:               str
-
-
 # ── P-Question Pipeline constants ─────────────────────────────────────────────
-# Swap these two lines to change ablation variant — no other code changes needed.
-P_QUESTION_TOP_K:           int = 3
-P_QUESTION_ALIGNMENT_METRIC: str = "ROUGE_L"   # "ROUGE_L" | "BLEU"
-P_QUESTION_STAGE2_MODE:      str = "concatenated"  # "concatenated" | "majority_vote"
+# Stage 1b's question-selection is swappable behind two orthogonal flags —
+# see utils/question_selectors.py. Only Stage 1b changes across ablation
+# runs; Stage 1a generation, Stage 1c locate_and_answer, and Stage 2
+# classify_evidence are identical regardless of which combo is active.
+P_QUESTION_TOP_K:     int   = 3
+P_QUESTION_SELECTOR:  str   = "rouge_l"   # "rouge_l" | "embedding" | "llm_relevance"
+P_QUESTION_SELECTION: str   = "topk"      # "topk" | "mmr"
+P_QUESTION_MMR_LAMBDA: float = 0.7        # 1.0 reduces MMR exactly to top-K
+
+# Stage 1a decomposes the premise into atomic facts + relations (one question
+# each) — this can produce 20-40 candidates for a ~500-word premise, well
+# above the old free-form cap. Capped here to bound Stage 1b/1c cost;
+# relation-type questions (scarce, high-value) are kept first, fact-type
+# fills the remainder. See runner/p_question.py._cap_questions.
+P_QUESTION_MAX_QUESTIONS: int = 30
 
 
 # ── P-Question Pipeline schemas ───────────────────────────────────────────────
 
+class DecomposedQuestion(BaseModel):
+    """One Stage 1a unit: an atomic fact or a relation/comparison, already
+    phrased as a question."""
+    q:    str
+    type: Literal["fact", "relation"] = "fact"
+
+    @field_validator("q", mode="before")
+    @classmethod
+    def coerce_q_str(cls, v):
+        return str(v).strip() if v is not None else ""
+
+    @field_validator("type", mode="before")
+    @classmethod
+    def normalize_type(cls, v):
+        if isinstance(v, str) and v.strip().lower() == "relation":
+            return "relation"
+        return "fact"
+
+
 class PQuestionListOutput(BaseModel):
-    """Stage 1a output: factual questions the premise directly answers."""
-    questions: list[str]
+    """Stage 1a output: atomic-fact + relation decomposition of the premise."""
+    questions: list[DecomposedQuestion]
 
     @field_validator("questions", mode="before")
     @classmethod
     def coerce_questions_to_list(cls, v):
-        # Some models return a newline-separated string instead of a JSON array
+        # Some models return a newline-separated string, or a plain list of
+        # strings, instead of the {"q", "type"} object list.
         if isinstance(v, str):
-            return [line.strip() for line in v.splitlines() if line.strip()]
+            return [{"q": line.strip(), "type": "fact"} for line in v.splitlines() if line.strip()]
+        if isinstance(v, list):
+            return [
+                {"q": item, "type": "fact"} if isinstance(item, str) else item
+                for item in v
+            ]
         return v
 
     @field_validator("questions", mode="after")
     @classmethod
     def drop_empty_questions(cls, v):
-        return [q.strip() for q in v if q.strip()]
+        return [item for item in v if item.q]
 
 
-class PEvidenceGatheringOutput(BaseModel):
-    """Stage 1c Step 1: all premise sentences relevant to a question."""
-    evidence_sentences: list[str]  # every relevant span, verbatim or close paraphrase
-    has_evidence:       bool       # False only when no relevant sentence exists at all
+class LLMRelevanceOutput(BaseModel):
+    """Stage 1b llm_relevance scorer output: 0-5 relevance-to-verdict rating."""
+    score: int
 
-    @field_validator("evidence_sentences", mode="before")
+    @field_validator("score", mode="before")
     @classmethod
-    def coerce_sentences_to_list(cls, v):
-        # Guard against model returning a single string instead of a JSON array
+    def coerce_int(cls, v):
         if isinstance(v, str):
-            return [v.strip()] if v.strip() else []
+            import re
+            m = re.search(r"-?\d+", v)
+            return int(m.group()) if m else 0
         return v
 
-    @field_validator("evidence_sentences", mode="after")
+    @field_validator("score", mode="after")
     @classmethod
-    def drop_empty_sentences(cls, v):
-        return [s.strip() for s in v if s.strip()]
-
-    @field_validator("has_evidence", mode="before")
-    @classmethod
-    def coerce_has_evidence_bool(cls, v):
-        if isinstance(v, str):
-            return v.strip().lower() in ("true", "yes", "1")
-        return v
-
-    @model_validator(mode="after")
-    def sync_has_evidence_with_sentences(self) -> "PEvidenceGatheringOutput":
-        # If the model returned sentences but forgot to set has_evidence=True, fix it
-        if self.evidence_sentences and not self.has_evidence:
-            self.has_evidence = True
-        # If the model set has_evidence=True but returned an empty list, correct it
-        if not self.evidence_sentences and self.has_evidence:
-            self.has_evidence = False
-        return self
-
-
-class PAnswerOutput(BaseModel):
-    """Stage 1c Step 2: one-sentence answer synthesised from gathered evidence."""
-    answer:       str   # answer text or exactly "[UNANSWERABLE]"
-    unanswerable: bool
-
-    @field_validator("answer", mode="before")
-    @classmethod
-    def strip_answer(cls, v):
-        return str(v).strip() if v is not None else "[UNANSWERABLE]"
-
-    @field_validator("unanswerable", mode="before")
-    @classmethod
-    def coerce_unanswerable_bool(cls, v):
-        if isinstance(v, str):
-            return v.strip().lower() in ("true", "yes", "1")
-        return v
-
-    @model_validator(mode="after")
-    def sync_unanswerable_with_answer(self) -> "PAnswerOutput":
-        # If the answer text signals unanswerable but the flag wasn't set, fix it
-        if "[UNANSWERABLE]" in self.answer.upper() and not self.unanswerable:
-            self.unanswerable = True
-        return self
-
-
-class PNLIOutput(BaseModel):
-    """Stage 2 output: NLI label for evidence → hypothesis."""
-    label: Literal["Entailment", "Contradiction", "Neutral"]
-
-    @field_validator("label", mode="before")
-    @classmethod
-    def normalize_label_case(cls, v):
-        # Handle ENTAILMENT, neutral, CONTRADICTION, etc. from any model
-        if isinstance(v, str):
-            title = v.strip().title()
-            if title in {"Entailment", "Contradiction", "Neutral"}:
-                return title
-        return v  # pass through unchanged; Pydantic raises a clear error
+    def clamp_range(cls, v):
+        return max(0, min(5, v))
 
 
 # ── H-Question Pipeline schemas ───────────────────────────────────────────────
@@ -237,42 +200,6 @@ class HQuestionsOutput(BaseModel):
     def drop_empty(cls, v):
         return [q.strip() for q in v if q.strip()]
 
-
-class HLocateOutput(BaseModel):
-    """Stage 2a output: sentence indices from the numbered premise."""
-    indices: list[int]
-
-    @field_validator("indices", mode="before")
-    @classmethod
-    def coerce_to_list(cls, v):
-        if isinstance(v, str):
-            import re
-            return [int(n) for n in re.findall(r"\d+", v)]
-        return v
-
-
-class HAnswerOutput(BaseModel):
-    """Stage 2b output: concise answer from extracted sentences."""
-    answer: str
-
-    @field_validator("answer", mode="before")
-    @classmethod
-    def coerce_str(cls, v):
-        return str(v).strip() if v is not None else "NOT_ANSWERABLE"
-
-
-class HCompareOutput(BaseModel):
-    """Stage 3 output: per-question NLI label."""
-    label: Literal["Entailment", "Contradiction", "Neutral"]
-
-    @field_validator("label", mode="before")
-    @classmethod
-    def normalize_label(cls, v):
-        if isinstance(v, str):
-            title = v.strip().title()
-            if title in {"Entailment", "Contradiction", "Neutral"}:
-                return title
-        return v
 
 # ── H-Multihop Pipeline schemas ───────────────────────────────────────────────
 
@@ -295,7 +222,9 @@ class HMDecompOutput(BaseModel):
 
 
 class HMAnswerOutput(BaseModel):
-    """Per-hop output: answer text and answerable flag."""
+    """Per-hop output: answer text and answerable flag (h_multihop's own
+    context-chained hop answerer — kept separate from the shared AnswerOutput
+    used by locate_and_answer, since hops take a running context argument)."""
     answer:     str
     answerable: bool
 
@@ -318,6 +247,63 @@ class HMAnswerOutput(BaseModel):
         if "NOT_ANSWERABLE" not in self.answer.upper() and not self.answerable:
             self.answerable = True
         return self
+
+
+# ── Shared answering + classification schemas ─────────────────────────────────
+# Used by utils/locator_extractor.py and prompts/shared_classifier.py, the two
+# components shared across q2_pipeline, p_question, h_question, and h_multihop.
+
+class LocateOutput(BaseModel):
+    """Locator output: sentence indices from the numbered premise."""
+    indices: list[int]
+
+    @field_validator("indices", mode="before")
+    @classmethod
+    def coerce_to_list(cls, v):
+        if isinstance(v, str):
+            import re
+            return [int(n) for n in re.findall(r"\d+", v)]
+        return v
+
+
+class AnswerOutput(BaseModel):
+    """Answer Extractor output: answer text and answerable flag."""
+    answer:     str
+    answerable: bool
+
+    @field_validator("answer", mode="before")
+    @classmethod
+    def coerce_str(cls, v):
+        return str(v).strip() if v is not None else "NOT_ANSWERABLE"
+
+    @field_validator("answerable", mode="before")
+    @classmethod
+    def coerce_bool(cls, v):
+        if isinstance(v, str):
+            return v.strip().lower() in ("true", "yes", "1")
+        return v
+
+    @model_validator(mode="after")
+    def sync_answerable(self) -> "AnswerOutput":
+        if "NOT_ANSWERABLE" in self.answer.upper() and self.answerable:
+            self.answerable = False
+        if "NOT_ANSWERABLE" not in self.answer.upper() and not self.answerable:
+            self.answerable = True
+        return self
+
+
+class ClassifyOutput(BaseModel):
+    """Shared classifier output: one NLI label over a full evidence block."""
+    label: Literal["Entailment", "Contradiction", "Neutral"]
+
+    @field_validator("label", mode="before")
+    @classmethod
+    def normalize_label(cls, v):
+        if isinstance(v, str):
+            title = v.strip().title()
+            if title in {"Entailment", "Contradiction", "Neutral"}:
+                return title
+        return v
 
 
 def setup_logger(experiment: str, model: str) -> logging.Logger:
@@ -352,6 +338,24 @@ def get_structured_llm(model: str, schema, params: dict = DEFAULT_PARAMS):
     return llm.with_structured_output(schema)
 
 
+# A request that never gets a response (dead connection, server hang) would
+# otherwise block forever — langchain_openai/ChatOpenAI has no default
+# timeout. Capped here so a hung call raises instead of stalling a run
+# indefinitely.
+#
+# max_retries=0 is just as important: the openai SDK's own default
+# (max_retries=2, i.e. 3 attempts) retries silently *inside* a single
+# llm.invoke() call, each attempt re-waiting up to the full timeout — so a
+# genuinely dead connection took 3x _REQUEST_TIMEOUT (confirmed empirically:
+# timeout=10 took 31s to raise, not 10s) before our own call_with_retry ever
+# saw an exception. We already do capacity-aware retries with visible
+# logging in utils/retry.py — the SDK's hidden retry layer only adds an
+# invisible multiplier on top of it, which is what turned a ~2min timeout
+# into real-world 15-40min hangs.
+_REQUEST_TIMEOUT = 120
+_SDK_MAX_RETRIES = 0
+
+
 def get_llm(model: str, params: dict = DEFAULT_PARAMS):
     if MODELS.get(model) == "huggingface":
         from langchain_openai import ChatOpenAI
@@ -361,6 +365,8 @@ def get_llm(model: str, params: dict = DEFAULT_PARAMS):
             api_key=HF_API_KEY,
             temperature=params.get("temperature", 0.0),
             max_tokens=params.get("max_tokens", 2048),
+            timeout=_REQUEST_TIMEOUT,
+            max_retries=_SDK_MAX_RETRIES,
         )
     if MODELS.get(model) == "groq":
         from langchain_openai import ChatOpenAI
@@ -370,6 +376,8 @@ def get_llm(model: str, params: dict = DEFAULT_PARAMS):
             api_key=GROQ_API_KEY,
             temperature=params.get("temperature", 0.0),
             max_tokens=params.get("max_tokens", 2048),
+            timeout=_REQUEST_TIMEOUT,
+            max_retries=_SDK_MAX_RETRIES,
         )
     from langchain_openai import ChatOpenAI
     return ChatOpenAI(
@@ -378,4 +386,6 @@ def get_llm(model: str, params: dict = DEFAULT_PARAMS):
         api_key=LAB_API_KEY,
         temperature=params.get("temperature", 0.0),
         max_tokens=params.get("max_tokens", 2048),
+        timeout=_REQUEST_TIMEOUT,
+        max_retries=_SDK_MAX_RETRIES,
     )

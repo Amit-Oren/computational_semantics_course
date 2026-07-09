@@ -2,51 +2,39 @@
 Q2 Pipeline Runner — Query-Based Factual Verification for NLI
 =============================================================
 Two-stage pipeline:
-  Stage 1 (Question Generator): H → anchors + 2-3 verification questions
-  Stage 2 (Factual Auditor):    P + H + questions → tabular decomposition
-                                 + calibration flags + strict NLI label
+  Stage 1 (Question Generator): H → anchors + 2-3 verification questions   (LLM)
+  Stage 2 (Evidence + Classify): locate_and_answer per question, then one
+                                  classify_evidence call over the surviving
+                                  (question, answer) pairs.
+
+Evidence-finding (Locator + Answer Extractor) and final classification are
+shared with p_question, h_question, and h_multihop — see
+utils/locator_extractor.py and prompts/shared_classifier.py.
 """
 
 from __future__ import annotations
-import time
 from langchain_core.messages import SystemMessage, HumanMessage
 from config.config import (
     DEFAULT_PARAMS,
     Q2QuestionOutput,
-    Q2AuditOutput,
     get_structured_llm,
     logger,
 )
 from prompts.q2_pipeline import (
     Q2_QUESTION_SYSTEM_PROMPT,
     Q2_QUESTION_USER_PROMPT,
-    Q2_AUDIT_SYSTEM_PROMPT,
-    Q2_AUDIT_USER_PROMPT,
 )
+from prompts.shared_classifier import classify_evidence
+from utils.locator_extractor import locate_and_answer
+from utils.premise_indexer import number_sentences
+from utils.retry import call_with_retry
 
-
-_RETRY_WAIT   = 30   # seconds between retries on capacity errors
-_MAX_RETRIES  = 5    # max attempts per LLM call
-
-
-def _call_with_retry(fn, *args, **kwargs):
-    """Call fn(*args, **kwargs), retrying on capacity/rate-limit errors."""
-    for attempt in range(1, _MAX_RETRIES + 1):
-        try:
-            return fn(*args, **kwargs)
-        except Exception as exc:
-            msg = str(exc).lower()
-            is_capacity = any(k in msg for k in ("capacity", "rate limit", "429", "503", "overloaded"))
-            if is_capacity and attempt < _MAX_RETRIES:
-                logger.warning(f"Provider at capacity (attempt {attempt}/{_MAX_RETRIES}) — retrying in {_RETRY_WAIT}s")
-                time.sleep(_RETRY_WAIT)
-            else:
-                raise
-    return None
+METHOD = "q2_pipeline"
+FALLBACK_LABEL = "Neutral"
 
 
 class Q2Pipeline:
-    """Two-stage NLI verifier: question generation → factual audit."""
+    """Two-stage NLI verifier: question generation → shared evidence + classification."""
 
     def __init__(self, model: str, params: dict):
         self.model = model
@@ -58,61 +46,62 @@ class Q2Pipeline:
             HumanMessage(content=Q2_QUESTION_USER_PROMPT.format(hypothesis=hypothesis)),
         ]
         llm = get_structured_llm(self.model, Q2QuestionOutput, self.params)
-        return _call_with_retry(llm.invoke, messages)
+        return call_with_retry(llm.invoke, messages)
 
-    def stage2_audit(
-        self,
-        premise: str,
-        hypothesis: str,
-        stage1_output: Q2QuestionOutput,
-    ) -> Q2AuditOutput | None:
-        questions_block = "\n".join(
-            f"{i + 1}. {q}" for i, q in enumerate(stage1_output.questions)
-        )
-        messages = [
-            SystemMessage(content=Q2_AUDIT_SYSTEM_PROMPT),
-            HumanMessage(content=Q2_AUDIT_USER_PROMPT.format(
-                premise=premise,
-                hypothesis=hypothesis,
-                questions=questions_block,
-            )),
-        ]
-        llm = get_structured_llm(self.model, Q2AuditOutput, self.params)
-        return _call_with_retry(llm.invoke, messages)
+    def run_sample(self, sample: dict) -> dict:
+        premise    = sample["premise"]
+        hypothesis = sample["hypothesis"]
+        warnings: list[str] = []
 
-    def run_sample(self, sample: dict) -> dict | None:
-        """Run both stages for one sample. Returns None if either stage fails."""
-        q_output = self.stage1_generate_questions(sample["hypothesis"])
-        if q_output is None:
-            return None
+        # Stage 1 — generate verification questions from H
+        q_output = None
+        try:
+            q_output = self.stage1_generate_questions(hypothesis)
+        except Exception as exc:
+            logger.warning(f"Stage 1 failed: {exc}")
 
-        a_output = self.stage2_audit(sample["premise"], sample["hypothesis"], q_output)
-        if a_output is None:
-            return None
+        anchors   = q_output.anchors if q_output else []
+        questions = q_output.questions if q_output else []
+        if not questions:
+            warnings.append("Stage 1 returned no questions; defaulting to Neutral.")
+            return self._make_result(sample, anchors, [], FALLBACK_LABEL, warnings)
 
+        # Stage 2 — locate + answer each question, then classify the survivors
+        indexed_sentences, numbered_premise = number_sentences(premise)
+        qa_pairs = []
+        for question in questions:
+            result = locate_and_answer(
+                self.model, self.params, question,
+                indexed_sentences=indexed_sentences, numbered_premise=numbered_premise,
+            )
+            if result["answerable"]:
+                qa_pairs.append(result)
+
+        if not qa_pairs:
+            warnings.append("All questions unanswerable; defaulting to Neutral.")
+            return self._make_result(sample, anchors, qa_pairs, FALLBACK_LABEL, warnings)
+
+        prediction = classify_evidence(self.model, self.params, qa_pairs, hypothesis)
+        return self._make_result(sample, anchors, qa_pairs, prediction, warnings)
+
+    @staticmethod
+    def _make_result(
+        sample:      dict,
+        anchors:     list[str],
+        qa_pairs:    list[dict],
+        prediction:  str,
+        warnings:    list[str],
+    ) -> dict:
         return {
             "id":         sample.get("id"),
             "premise":    sample["premise"],
             "hypothesis": sample["hypothesis"],
-            "label":      sample["label"],
-            "prediction": a_output.label,
-            "stage1_anchors":   q_output.anchors,
-            "stage1_questions": q_output.questions,
-            "stage2_audit": {
-                "audit_table_decomposition": [
-                    {
-                        "question":                       row.question,
-                        "target_anchor":                  row.target_anchor,
-                        "verbatim_premise_evidence_list": row.verbatim_premise_evidence_list,
-                        "integrated_premise_tags":        row.integrated_premise_tags,
-                        "found":                          row.found,
-                    }
-                    for row in a_output.audit_table_decomposition
-                ],
-                "matrix_cross_check_flags": a_output.matrix_cross_check_flags,
-                "label":       a_output.label,
-                "explanation": a_output.explanation,
-            },
+            "gold_label": sample["label"],
+            "prediction": prediction,
+            "qa_pairs":   qa_pairs,
+            "method":     METHOD,
+            "stage1_anchors": anchors,
+            "warnings":       warnings,
         }
 
 
@@ -141,21 +130,15 @@ def run(samples: list[dict], model: str, params: dict = DEFAULT_PARAMS) -> list[
             skipped += 1
             continue
 
-        if result is None:
-            logger.warning(
-                f"[{i+1}/{len(samples)}] id={sample_id} | one or both stages failed, skipping"
-            )
-            skipped += 1
-            continue
-
         results.append(result)
+        warn_str = f" | warnings={result['warnings']}" if result["warnings"] else ""
         logger.info(
             f"[{i+1}/{len(samples)}] id={sample_id} "
-            f"| gold={result['label']} | pred={result['prediction']}"
+            f"| gold={result['gold_label']} | pred={result['prediction']}{warn_str}"
         )
 
     if results:
-        correct = sum(r["label"] == r["prediction"] for r in results)
+        correct = sum(r["gold_label"] == r["prediction"] for r in results)
         accuracy = correct / len(results)
         logger.info("=" * 60)
         logger.info(f"Processed : {len(results)} samples  |  Skipped: {skipped}")

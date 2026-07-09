@@ -6,11 +6,18 @@ Four-stage pipeline:
   Stage 1:  H + keyphrases → ordered 2-3 atomic sub-questions    (LLM)
   Stage 2a: Numbered premise + sub-question → sentence indices    (LLM, per hop)
   Stage 2b: Extracted sentences + prior context → hop answer      (LLM, per hop)
-  Stage 3:  Full evidence chain → holistic NLI label              (LLM)
+  Stage 3:  classify_evidence over the answered hops              (shared, LLM)
+
+Stage 1 (decomposition) and Stage 2 (sequential locate + context-chained hop
+answering) are this method's distinguishing design and are kept as-is. Only
+Stage 2a's locate prompt and Stage 3's classifier are shared with q2_pipeline,
+p_question, and h_question — see prompts/shared_answering.py and
+prompts/shared_classifier.py.
 
 Chain halting rule:
-  If any hop returns NOT_ANSWERABLE → halt chain → Neutral (no Stage 3 call).
-  If chain completes → Stage 3 classifier decides Entailment/Contradiction/Neutral.
+  If a hop returns NOT_ANSWERABLE, the chain halts there, but ALL hops
+  answered up to that point still go to Stage 3 — a halted chain no longer
+  auto-defaults to Neutral (see prompts/h_multihop.py CHANGELOG Fix 1).
 
 Max chain depth = 3 (mitigates error compounding).
 
@@ -20,61 +27,36 @@ gold evidence sentence indices are not available.
 
 from __future__ import annotations
 
-import time
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from config.config import (
     DEFAULT_PARAMS,
     HMDecompOutput,
-    HMAnswerOutput,
-    HLocateOutput,
-    HCompareOutput,
+    AnswerOutput,
+    LocateOutput,
     get_structured_llm,
     logger,
 )
-from prompts.h_question import (
-    H_LOCATE_SYSTEM_PROMPT,
-    H_LOCATE_USER_PROMPT,
+from prompts.shared_answering import (
+    LOCATE_SYSTEM_PROMPT,
+    LOCATE_USER_PROMPT,
 )
 from prompts.h_multihop import (
     HM_DECOMP_SYSTEM_PROMPT,
     HM_DECOMP_USER_PROMPT,
     HM_HOP_ANSWER_SYSTEM_PROMPT,
     HM_HOP_ANSWER_USER_PROMPT,
-    HM_CLASSIFY_SYSTEM_PROMPT,
-    HM_CLASSIFY_USER_PROMPT,
 )
+from prompts.shared_classifier import classify_evidence
 from utils.pos_keyphrase import extract_keyphrases
 from utils.premise_indexer import number_sentences, pull_by_indices
+from utils.retry import call_with_retry
 
+METHOD = "h_multihop"
 MAX_CHAIN_DEPTH = 3
-_RETRY_WAIT     = 30
-_MAX_RETRIES    = 5
 FALLBACK_LABEL  = "Neutral"
 NOT_ANSWERABLE  = "NOT_ANSWERABLE"
 
-
-# ── Retry helper ──────────────────────────────────────────────────────────────
-
-def _call_with_retry(fn, *args, **kwargs):
-    for attempt in range(1, _MAX_RETRIES + 1):
-        try:
-            return fn(*args, **kwargs)
-        except Exception as exc:
-            msg = str(exc).lower()
-            is_capacity = any(k in msg for k in ("capacity", "rate limit", "429", "503", "overloaded"))
-            if is_capacity and attempt < _MAX_RETRIES:
-                logger.warning(
-                    f"Provider at capacity (attempt {attempt}/{_MAX_RETRIES}) "
-                    f"— retrying in {_RETRY_WAIT}s"
-                )
-                time.sleep(_RETRY_WAIT)
-            else:
-                raise
-    return None
-
-
-# ── Pipeline class ────────────────────────────────────────────────────────────
 
 class HMultihopPipeline:
     """Atomic sub-question chaining NLI pipeline."""
@@ -96,27 +78,27 @@ class HMultihopPipeline:
             )),
         ]
         llm = get_structured_llm(self.model, HMDecompOutput, self.params)
-        return _call_with_retry(llm.invoke, messages)
+        return call_with_retry(llm.invoke, messages)
 
-    # ── Stage 2a: Sentence Locator (reuses h_question prompts) ───────────────
+    # ── Stage 2a: Sentence Locator (shared prompt) ───────────────────────────
 
     def stage2a_locate(
         self, numbered_premise: str, sub_question: str
-    ) -> HLocateOutput | None:
+    ) -> LocateOutput | None:
         messages = [
-            SystemMessage(content=H_LOCATE_SYSTEM_PROMPT),
-            HumanMessage(content=H_LOCATE_USER_PROMPT.format(
+            SystemMessage(content=LOCATE_SYSTEM_PROMPT),
+            HumanMessage(content=LOCATE_USER_PROMPT.format(
                 numbered_premise=numbered_premise, question=sub_question,
             )),
         ]
-        llm = get_structured_llm(self.model, HLocateOutput, self.params)
-        return _call_with_retry(llm.invoke, messages)
+        llm = get_structured_llm(self.model, LocateOutput, self.params)
+        return call_with_retry(llm.invoke, messages)
 
-    # ── Stage 2b: Per-hop Answer Extractor ───────────────────────────────────
+    # ── Stage 2b: Per-hop Answer Extractor (kept local — needs context) ──────
 
     def stage2b_answer(
         self, sub_question: str, sentences: list[str], context: str
-    ) -> HMAnswerOutput | None:
+    ) -> AnswerOutput | None:
         context_block  = context if context else "(none)"
         sentences_block = "\n".join(f"- {s}" for s in sentences)
         messages = [
@@ -127,26 +109,12 @@ class HMultihopPipeline:
                 sentences_block=sentences_block,
             )),
         ]
-        llm = get_structured_llm(self.model, HMAnswerOutput, self.params)
-        return _call_with_retry(llm.invoke, messages)
-
-    # ── Stage 3: Chain Classifier ─────────────────────────────────────────────
-
-    def stage3_classify(
-        self, hypothesis: str, chain_block: str
-    ) -> HCompareOutput | None:
-        messages = [
-            SystemMessage(content=HM_CLASSIFY_SYSTEM_PROMPT),
-            HumanMessage(content=HM_CLASSIFY_USER_PROMPT.format(
-                hypothesis=hypothesis, chain_block=chain_block,
-            )),
-        ]
-        llm = get_structured_llm(self.model, HCompareOutput, self.params)
-        return _call_with_retry(llm.invoke, messages)
+        llm = get_structured_llm(self.model, AnswerOutput, self.params)
+        return call_with_retry(llm.invoke, messages)
 
     # ── Full sample ───────────────────────────────────────────────────────────
 
-    def run_sample(self, sample: dict) -> dict | None:
+    def run_sample(self, sample: dict) -> dict:
         premise    = sample["premise"]
         hypothesis = sample["hypothesis"]
         warnings: list[str] = []
@@ -177,14 +145,14 @@ class HMultihopPipeline:
 
         for hop_idx, sub_q in enumerate(sub_questions):
             hop: dict = {
-                "hop_index":          hop_idx,
-                "sub_question":       sub_q,
-                "context_at_hop":     context,
-                "located_indices":    [],
+                "hop_index":           hop_idx,
+                "sub_question":        sub_q,
+                "context_at_hop":      context,
+                "located_indices":     [],
                 "extracted_sentences": [],
-                "answer_from_P":      NOT_ANSWERABLE,
-                "answerable_flag":    False,
-                "halted":             False,
+                "answer_from_P":       NOT_ANSWERABLE,
+                "answerable_flag":     False,
+                "halted":              False,
             }
 
             # Stage 2a — locate
@@ -221,62 +189,45 @@ class HMultihopPipeline:
             # Extend running context for the next hop
             context += f"Q{hop_idx + 1}: {sub_q}\nA{hop_idx + 1}: {hop['answer_from_P']}\n\n"
 
-        # Stage 3 — classify on answered hops (partial chain is fine)
-        answered = [h for h in hops if h["answer_from_P"] != NOT_ANSWERABLE]
-        final_label = FALLBACK_LABEL
-        if not answered:
-            warnings.append("No hop was answered; defaulting to Neutral.")
-        else:
-            chain_block = "\n\n".join(
-                f"Hop {h['hop_index'] + 1}:\n"
-                f"  Q: {h['sub_question']}\n"
-                f"  A: {h['answer_from_P']}"
-                for h in answered
-            )
-            try:
-                clf = self.stage3_classify(hypothesis, chain_block)
-                if clf:
-                    final_label = clf.label
-                else:
-                    warnings.append("Stage 3 returned None; defaulting to Neutral.")
-            except Exception as exc:
-                logger.warning(f"Stage 3 failed: {exc}")
-                warnings.append(f"Stage 3 error: {exc}")
+        # Stage 3 — shared classifier over the answered hops (partial chain is fine)
+        qa_pairs = [
+            {
+                "question":        h["sub_question"],
+                "answer":          h["answer_from_P"],
+                "answerable":      h["answerable_flag"],
+                "located_indices": h["located_indices"],
+            }
+            for h in hops if h["answerable_flag"]
+        ]
 
-        return self._make_result(sample, keyphrases, hops, final_label, warnings)
+        if not qa_pairs:
+            warnings.append("No hop was answered; defaulting to Neutral.")
+            prediction = FALLBACK_LABEL
+        else:
+            prediction = classify_evidence(self.model, self.params, qa_pairs, hypothesis)
+
+        return self._make_result(sample, keyphrases, qa_pairs, prediction, warnings, hops)
 
     @staticmethod
     def _make_result(
         sample:      dict,
         keyphrases:  list[str],
-        hops:        list[dict],
-        final_label: str,
+        qa_pairs:    list[dict],
+        prediction:  str,
         warnings:    list[str],
+        hops:        list[dict] | None = None,
     ) -> dict:
-        # Backward-compatible per_question_details (mirrors h_question shape)
-        per_question_details = [
-            {
-                "question":              h["sub_question"],
-                "located_indices":       h["located_indices"],
-                "gold_evidence_indices": None,
-                "extracted_sentences":   h["extracted_sentences"],
-                "answer_from_P":         h["answer_from_P"],
-                "answerable_flag":       h["answerable_flag"],
-                "per_question_label":    "N/A",
-            }
-            for h in hops
-        ]
         return {
-            "id":                   sample.get("id"),
-            "premise":              sample["premise"],
-            "hypothesis":           sample["hypothesis"],
-            "label":                sample["label"],
-            "prediction":           final_label,
-            "keyphrases":           keyphrases,
-            "gen_questions":        [h["sub_question"] for h in hops],
-            "per_question_details": per_question_details,
-            "chain":                hops,
-            "warnings":             warnings,
+            "id":         sample.get("id"),
+            "premise":    sample["premise"],
+            "hypothesis": sample["hypothesis"],
+            "gold_label": sample["label"],
+            "prediction": prediction,
+            "qa_pairs":   qa_pairs,
+            "method":     METHOD,
+            "keyphrases": keyphrases,
+            "chain":      hops or [],
+            "warnings":   warnings,
         }
 
 
@@ -305,22 +256,15 @@ def run(samples: list[dict], model: str, params: dict = DEFAULT_PARAMS) -> list[
             skipped += 1
             continue
 
-        if result is None:
-            logger.warning(
-                f"[{i+1}/{len(samples)}] id={sample_id} | pipeline returned None, skipping"
-            )
-            skipped += 1
-            continue
-
         results.append(result)
         warn_str = f" | warnings={result['warnings']}" if result["warnings"] else ""
         logger.info(
             f"[{i+1}/{len(samples)}] id={sample_id} "
-            f"| gold={result['label']} | pred={result['prediction']}{warn_str}"
+            f"| gold={result['gold_label']} | pred={result['prediction']}{warn_str}"
         )
 
     if results:
-        correct  = sum(r["label"] == r["prediction"] for r in results)
+        correct  = sum(r["gold_label"] == r["prediction"] for r in results)
         accuracy = correct / len(results)
         logger.info("=" * 60)
         logger.info(f"Processed : {len(results)} samples  |  Skipped: {skipped}")
