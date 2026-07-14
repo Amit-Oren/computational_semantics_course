@@ -20,7 +20,7 @@ from config.config import (
     get_structured_llm,
     logger,
 )
-from prompts.q2_pipeline import (
+from experiments.archived_methods.prompts.q2_pipeline import (
     Q2_QUESTION_SYSTEM_PROMPT,
     Q2_QUESTION_USER_PROMPT,
 )

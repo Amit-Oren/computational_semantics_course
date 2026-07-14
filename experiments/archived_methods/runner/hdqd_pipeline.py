@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Optional
 from langchain_core.messages import SystemMessage, HumanMessage
 from config.config import DEFAULT_PARAMS, HDQDOutput, QuestionListOutput, get_structured_llm, logger
-from prompts.hdqd_pipeline import (
+from experiments.archived_methods.prompts.hdqd_pipeline import (
     HDQD_QUESTION_SYSTEM_PROMPT,
     HDQD_QUESTION_USER_PROMPT,
     HDQD_ANSWER_SYSTEM_PROMPT,

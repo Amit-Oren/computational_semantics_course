@@ -1,7 +1,8 @@
 """
-ablation_p_question_selectors.py — Run p_question across the Stage 1b
-ablation grid: {rouge_l, embedding, llm_relevance} relevance scorers x
-{topk, mmr} selection modes, on the same fixed held-out test-split dev set.
+experiments/ablation_p_question_selectors.py — Run p_question across the
+full ablation grid: {decomposition, freeform} Stage 1a generation methods x
+{rouge_l, embedding} Stage 1b relevance scorers x {topk, mmr} selection
+modes, on the same fixed held-out test-split dev set.
 Reports accuracy + per-label precision/recall/F1 for each config —
 Contradiction recall is the key metric, since that's where the ROUGE-L/topk
 baseline was failing.
@@ -23,15 +24,18 @@ full question set:
   - "kept_but_misclassified": everything needed was already selected and
     answered; Stage 1b is not the bottleneck (classifier issue instead).
 
-Usage:
-    python ablation_p_question_selectors.py --model <model> [--n 20] [--top_k 6]
+Usage (from the repo root):
+    python experiments/ablation_p_question_selectors.py --model <model> [--n 20] [--top_k 6]
         [--selectors rouge_l embedding] [--selections topk mmr] [--mmr_lambda 0.7]
 """
 
 import argparse
 import json
 import os
+import sys
 from datetime import datetime
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # repo root, for the imports below
 
 from config.config import (
     DEFAULT_PARAMS, RESULTS_DIR, P_QUESTION_MMR_LAMBDA, P_QUESTION_MAX_QUESTIONS,
@@ -40,6 +44,7 @@ from config.config import (
 from evaluate_shared_pipeline import pick_dev_set, precision_recall_f1
 from prompts.shared_classifier import classify_evidence
 from runner import p_question
+from runner.p_question import GENERATION_MODES
 from utils.locator_extractor import locate_and_answer
 from utils.premise_indexer import number_sentences
 from utils.question_selectors import SELECTORS, SELECTION_MODES
@@ -90,15 +95,17 @@ def diagnose_sample(sample: dict, result: dict, model: str, params: dict) -> str
 
 
 def run_config(
-    selector: str, selection: str, dev_set: list[dict], model: str, params: dict,
+    generation: str, selector: str, selection: str, dev_set: list[dict], model: str, params: dict,
     top_k: int, mmr_lambda: float, max_questions: int, diagnose: bool = True,
 ) -> list[dict]:
-    tag = f"selector={selector} selection={selection}" + (f" lambda={mmr_lambda}" if selection == "mmr" else "")
+    tag = f"generation={generation} selector={selector} selection={selection}" + (
+        f" lambda={mmr_lambda}" if selection == "mmr" else ""
+    )
     print(f"\n{'=' * 60}\n  Running p_question — {tag}\n{'=' * 60}")
     results = p_question.run(
         dev_set, model=model, params=params,
-        selector=selector, selection=selection, top_k=top_k, mmr_lambda=mmr_lambda,
-        max_questions=max_questions,
+        generation=generation, selector=selector, selection=selection,
+        top_k=top_k, mmr_lambda=mmr_lambda, max_questions=max_questions,
     )
 
     if not diagnose:
@@ -119,6 +126,11 @@ def report(tag: str, results: list[dict]) -> dict:
 
     print(f"\n{'=' * 60}\n  {tag}  ({n} samples)\n{'=' * 60}")
     print(f"  Accuracy: {correct}/{n} = {accuracy:.2%}")
+
+    if results and "n_fact" in results[0]:
+        avg_fact = sum(r["n_fact"] for r in results) / n
+        avg_relation = sum(r["n_relation"] for r in results) / n
+        print(f"  Avg questions generated: {avg_fact:.1f} fact + {avg_relation:.1f} relation")
 
     stats = precision_recall_f1(results)
     print(f"\n  {'Label':<16} {'Support':>8} {'Precision':>10} {'Recall':>8} {'F1':>8}")
@@ -153,8 +165,10 @@ def main():
     parser.add_argument("--mmr_lambda", type=float, default=P_QUESTION_MMR_LAMBDA)
     parser.add_argument("--max_questions", type=int, default=P_QUESTION_MAX_QUESTIONS)
     parser.add_argument("--max_tokens", type=int, default=None)
+    parser.add_argument("--generations", nargs="+", choices=GENERATION_MODES, default=list(GENERATION_MODES),
+                         help="Which Stage 1a generation methods to include in the grid (default: both)")
     parser.add_argument("--selectors", nargs="+", choices=SELECTORS, default=list(SELECTORS),
-                         help="Which relevance scorers to include in the grid (default: all three)")
+                         help="Which relevance scorers to include in the grid (default: all)")
     parser.add_argument("--selections", nargs="+", choices=SELECTION_MODES, default=list(SELECTION_MODES),
                          help="Which selection modes to include in the grid (default: both)")
     parser.add_argument("--repeats", type=int, default=1,
@@ -171,7 +185,7 @@ def main():
     dev_set = pick_dev_set(args.n)
     dev_ids = [s["id"] for s in dev_set]
     print(f"Pinned dev set ({len(dev_ids)} ids, from held-out test split): {dev_ids}")
-    print(f"Grid: {args.selectors} x {args.selections}, top_k={args.top_k}, "
+    print(f"Grid: {args.generations} x {args.selectors} x {args.selections}, top_k={args.top_k}, "
           f"mmr_lambda={args.mmr_lambda}, max_questions={args.max_questions}, repeats={args.repeats}")
 
     os.makedirs(RESULTS_DIR, exist_ok=True)
@@ -181,33 +195,35 @@ def main():
     all_results = {}
     summaries = {}
     spreads: dict[str, list[float]] = {}
-    for selector in args.selectors:
-        for selection in args.selections:
-            base_tag = f"{selector}_{selection}"
-            accuracies = []
-            for rep in range(args.repeats):
-                tag = base_tag if args.repeats == 1 else f"{base_tag}_rep{rep + 1}"
-                results = run_config(
-                    selector, selection, dev_set, args.model, params,
-                    top_k=args.top_k, mmr_lambda=args.mmr_lambda,
-                    max_questions=args.max_questions, diagnose=(rep == 0),
-                )
-                all_results[tag] = results
-                accuracies.append(sum(r["gold_label"] == r["prediction"] for r in results) / len(results))
+    for generation in args.generations:
+        for selector in args.selectors:
+            for selection in args.selections:
+                base_tag = f"{generation}_{selector}_{selection}"
+                accuracies = []
+                for rep in range(args.repeats):
+                    tag = base_tag if args.repeats == 1 else f"{base_tag}_rep{rep + 1}"
+                    results = run_config(
+                        generation, selector, selection, dev_set, args.model, params,
+                        top_k=args.top_k, mmr_lambda=args.mmr_lambda,
+                        max_questions=args.max_questions, diagnose=(rep == 0),
+                    )
+                    all_results[tag] = results
+                    accuracies.append(sum(r["gold_label"] == r["prediction"] for r in results) / len(results))
 
-                out_path = os.path.join(
-                    RESULTS_DIR, f"p_question_{tag}_{safe_model}_devset_{timestamp}.json"
-                )
-                with open(out_path, "w") as f:
-                    json.dump({
-                        "metadata": {"experiment": "p_question", "selector": selector, "selection": selection,
-                                     "top_k": args.top_k, "mmr_lambda": args.mmr_lambda,
-                                     "max_questions": args.max_questions, "model": args.model,
-                                     "dev_ids": dev_ids, "timestamp": datetime.now().isoformat()},
-                        "samples": results,
-                    }, f, indent=2)
-                print(f"Saved {len(results)} results to {out_path}")
-            spreads[base_tag] = accuracies
+                    out_path = os.path.join(
+                        RESULTS_DIR, f"p_question_{tag}_{safe_model}_devset_{timestamp}.json"
+                    )
+                    with open(out_path, "w") as f:
+                        json.dump({
+                            "metadata": {"experiment": "p_question", "generation": generation,
+                                         "selector": selector, "selection": selection,
+                                         "top_k": args.top_k, "mmr_lambda": args.mmr_lambda,
+                                         "max_questions": args.max_questions, "model": args.model,
+                                         "dev_ids": dev_ids, "timestamp": datetime.now().isoformat()},
+                            "samples": results,
+                        }, f, indent=2)
+                    print(f"Saved {len(results)} results to {out_path}")
+                spreads[base_tag] = accuracies
 
     for tag, results in all_results.items():
         summaries[tag] = report(tag, results)

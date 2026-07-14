@@ -41,7 +41,7 @@ from prompts.shared_answering import (
     LOCATE_SYSTEM_PROMPT,
     LOCATE_USER_PROMPT,
 )
-from prompts.h_multihop import (
+from experiments.archived_methods.prompts.h_multihop import (
     HM_DECOMP_SYSTEM_PROMPT,
     HM_DECOMP_USER_PROMPT,
     HM_HOP_ANSWER_SYSTEM_PROMPT,
