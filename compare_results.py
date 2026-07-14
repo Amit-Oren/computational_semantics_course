@@ -3,7 +3,7 @@ compare_results.py — Compare prediction accuracy across experiment result file
 
 Usage:
     # Compare two specific files
-    python compare_results.py results/hdqd_pipeline_qwen2.5-32b.json results/q2_pipeline_qwen2.5-32b.json
+    python compare_results.py results/h_question_qwen2.5-32b.json results/bridge_question_qwen2.5-32b.json
 
     # Auto-discover and compare all files in results/
     python compare_results.py
@@ -203,8 +203,8 @@ def main():
 
     if not paths:
         print("No result files found. Run an experiment first:\n"
-              "  python main.py --experiment hdqd_pipeline --model <model>\n"
-              "  python main.py --experiment q2_pipeline   --model <model>")
+              "  python main.py --experiment h_question      --model <model>\n"
+              "  python main.py --experiment bridge_question --model <model>")
         return
 
     # ── Individual reports ────────────────────────────────────────────────────

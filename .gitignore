@@ -4,3 +4,6 @@ data/ConTRoL-dataset/
 __pycache__/
 logs/
 results/
+.DS_Store
+.claude/
+*.log

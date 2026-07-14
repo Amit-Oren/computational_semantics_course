@@ -1,12 +1,30 @@
 """
 P-Question Pipeline Prompts — Premise Interrogation for NLI
 ===========================================================
-Stage 1a (Atomic-Fact + Relation Decomposition): Premise (blind to H) →
-                                one question per atomic fact and per relation
-                                /comparison the premise expresses.
+Stage 1a has TWO interchangeable question-generation prompts, selected via
+the `generation` flag on the runner (see runner/p_question.py), so the new
+method can be compared against the old one rather than replacing it outright:
+
+  "decomposition" (new) — Premise (blind to H) → one question per atomic
+                           fact and per relation/comparison the premise
+                           expresses. FActScore-style atomic facts (Min et
+                           al., EMNLP 2023) + DAE-style relation verification
+                           (Goyal & Durrett, 2020-2021), so coverage of the
+                           premise's facts and relations is guaranteed by
+                           construction — free-form generation was observed
+                           to skip the specific relation/comparison a
+                           hypothesis depends on (e.g. "X's skill in A
+                           surpassed skill in B") even while covering
+                           everything else salient in the premise.
+  "freeform" (old/baseline) — Premise → up to 15 breadth-first wh-questions,
+                           no explicit fact/relation distinction (every
+                           question is tagged type="fact" downstream, so
+                           n_relation is always 0 for this mode — that's the
+                           structural difference the comparison is testing).
+
 Stage 1b (Selection):          Questions × Hypothesis → relevance scores,
                                 keep top-K (see utils/question_selectors.py;
-                                "topk" or "mmr" selection, three scorers).
+                                "topk" or "mmr" selection, two scorers).
 
 Evidence-finding (Locator + Answer Extractor) and final classification are
 shared components — see utils/locator_extractor.py and
@@ -14,17 +32,10 @@ prompts/shared_classifier.py.
 
 Design goal: ground the NLI decision in premise content by first surfacing
 what the premise explicitly knows, then checking whether that knowledge
-supports, refutes, or is silent about the hypothesis. Stage 1a decomposes the
-premise into its smallest checkable units (FActScore-style atomic facts;
-Min et al., EMNLP 2023) AND the relations/comparisons between them (DAE-style
-relation verification; Goyal & Durrett, 2020-2021), so coverage of the
-premise's facts and relations is guaranteed by construction — free-form
-generation was observed to skip the specific relation/comparison a
-hypothesis depends on (e.g. "X's skill in A surpassed skill in B") even
-while covering everything else salient in the premise.
+supports, refutes, or is silent about the hypothesis.
 """
 
-# ─── Stage 1a: Atomic-Fact + Relation Decomposition ──────────────────────────
+# ─── Stage 1a (new): Atomic-Fact + Relation Decomposition ───────────────────
 
 P_QUESTION_SYSTEM_PROMPT = """\
 You decompose a PREMISE into checkable units for a fact-verification task.
@@ -62,4 +73,40 @@ P_QUESTION_USER_PROMPT = """\
 Premise: "{premise}"
 
 Decompose this premise into atomic-fact and relation/comparison questions.\
+"""
+
+
+# ─── Stage 1a (old/baseline): Free-Form Question Generator ──────────────────
+# Restored verbatim from before the decomposition rewrite, for direct
+# comparison via `--generation freeform`.
+
+P_QUESTION_FREEFORM_SYSTEM_PROMPT = """\
+You are a Factual Question Extractor for Natural Language Inference.
+
+Given a PREMISE, generate up to 15 precise wh-questions covering the facts \
+it contains. Prioritise breadth over exhaustiveness.
+
+Each question must:
+  1. Be answerable solely from the premise.
+  2. Target exactly one fact per question.
+  3. Be a well-formed wh-question ending with (?).
+  4. NOT contain its own answer.
+  5. Include full identifying context — names, locations, groups, and time
+     periods must appear in the question, not just in the answer.
+     (e.g. "What percentage of EUROPEAN women participated..." not
+           "What percentage of women participated...")
+  6. Cover ALL claim types in the premise, including:
+       - Quantitative facts (numbers, percentages, dates, counts)
+       - Qualitative and evaluative claims (were there problems? what was the
+         overall effect? what does the text characterize as X?)
+       - Causal and relational claims (what caused X? what resulted from Y?)
+       - Presupposed facts (facts implied but not the main point of a sentence)
+Output format — JSON only, no extra text:
+{"questions": ["question_1", "question_2", ...]}\
+"""
+
+P_QUESTION_FREEFORM_USER_PROMPT = """\
+Premise: "{premise}"
+
+Generate up to 15 factual questions this premise answers.\
 """

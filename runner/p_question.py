@@ -2,8 +2,8 @@
 P-Question Pipeline Runner — Premise Interrogation for NLI
 ==========================================================
 Four-stage pipeline:
-  Stage 1a: Premise → atomic-fact + relation decomposition, one question per
-            unit (LLM, blind to H) — see prompts/p_question.py
+  Stage 1a: Premise → questions, via one of two interchangeable generation
+            methods (LLM, blind to H) — see prompts/p_question.py
   Stage 1b: Score all questions against H with the selected scorer, then pick
             the final top-K set with the selected selection mode
             (utils/question_selectors.py)
@@ -11,27 +11,31 @@ Four-stage pipeline:
   Stage 2:  classify_evidence over the surviving (question, answer)
             pairs                                                    (shared, LLM)
 
-Stage 1a decomposes the premise into atomic facts AND relations/comparisons
-(FActScore-style atomic decomposition + DAE-style relation verification),
-guaranteeing coverage of the premise's facts and relations by construction —
-free-form generation was observed to miss the specific relation a hypothesis
-depended on even while covering everything else salient in the premise. This
-can produce 20-40 candidates per premise, well above the old free-form cap,
-so the combined (decomposed + NER-coverage) pool is capped, keeping all
-relation-type questions first (scarce, high-value) and filling the rest with
-fact-type up to the cap — see `_cap_questions`.
+Stage 1a has two swappable generation methods (`generation` flag), compared
+side-by-side rather than one replacing the other:
+  "decomposition" (new) — decomposes the premise into atomic facts AND
+               relations/comparisons (FActScore-style atomic decomposition +
+               DAE-style relation verification), guaranteeing coverage of
+               the premise's facts and relations by construction — free-form
+               generation was observed to miss the specific relation a
+               hypothesis depended on even while covering everything else
+               salient in the premise. Can produce 20-40 candidates per
+               premise, so the combined (decomposed + NER-coverage) pool is
+               capped, keeping all relation-type questions first
+               (scarce, high-value) and filling the rest with fact-type up
+               to the cap — see `_cap_questions`.
+  "freeform" (old/baseline) — up to 15 breadth-first wh-questions, no
+               fact/relation distinction (n_relation is always 0).
 
 Stage 1b has two orthogonal, swappable knobs:
-  `selector`:  "rouge_l" (baseline, word-overlap), "embedding" (Sentence-BERT
-               cosine similarity), or "llm_relevance" (LLM judges
-               relevance-to-verdict, 0-5) — how relevance is scored.
+  `selector`:  "rouge_l" (baseline, word-overlap) or "embedding"
+               (Sentence-BERT cosine similarity) — how relevance is scored.
   `selection`: "topk" (plain highest-K) or "mmr" (Maximal Marginal Relevance
                — balances relevance against redundancy so the kept set
                covers distinct facts, not just the single most-relevant one).
-               With a larger decomposed candidate pool, MMR's coverage
-               behavior finally has real redundancy to prune.
 Stage 1c locate_and_answer and Stage 2 classify_evidence are identical
-regardless of which Stage 1b combo is active; see utils/question_selectors.py.
+regardless of which Stage 1a/1b combo is active; see
+utils/question_selectors.py.
 """
 
 from __future__ import annotations
@@ -40,18 +44,22 @@ from langchain_core.messages import SystemMessage, HumanMessage
 
 from config.config import (
     DEFAULT_PARAMS,
+    P_QUESTION_GENERATION,
     P_QUESTION_TOP_K,
     P_QUESTION_SELECTOR,
     P_QUESTION_SELECTION,
     P_QUESTION_MMR_LAMBDA,
     P_QUESTION_MAX_QUESTIONS,
     PQuestionListOutput,
+    PQuestionFreeformOutput,
     get_structured_llm,
     logger,
 )
 from prompts.p_question import (
     P_QUESTION_SYSTEM_PROMPT,
     P_QUESTION_USER_PROMPT,
+    P_QUESTION_FREEFORM_SYSTEM_PROMPT,
+    P_QUESTION_FREEFORM_USER_PROMPT,
 )
 from prompts.shared_classifier import classify_evidence
 from utils.locator_extractor import locate_and_answer
@@ -61,25 +69,30 @@ from utils.retry import call_with_retry
 
 METHOD = "p_question"
 FALLBACK_LABEL = "Neutral"
+GENERATION_MODES = ("decomposition", "freeform")
 
 _SPACY_NLP = None  # loaded once on first use
 
 
 class PQuestionPipeline:
-    """Premise decomposition + swappable Stage 1b scorer/selection + shared evidence-finding/classification."""
+    """Swappable Stage 1a generation + Stage 1b scorer/selection + shared evidence-finding/classification."""
 
     def __init__(
         self,
         model: str,
         params: dict,
+        generation: str = P_QUESTION_GENERATION,
         selector: str = P_QUESTION_SELECTOR,
         selection: str = P_QUESTION_SELECTION,
         top_k: int = P_QUESTION_TOP_K,
         mmr_lambda: float = P_QUESTION_MMR_LAMBDA,
         max_questions: int = P_QUESTION_MAX_QUESTIONS,
     ):
+        if generation not in GENERATION_MODES:
+            raise ValueError(f"Unknown generation mode '{generation}'; choose from {GENERATION_MODES}")
         self.model         = model
         self.params        = params
+        self.generation    = generation
         self.top_k         = top_k
         self.selector      = selector
         self.selection     = selection
@@ -133,14 +146,32 @@ class PQuestionPipeline:
 
     # ── Stage 1a ─────────────────────────────────────────────────────────────
 
-    def stage1a_generate_questions(self, premise: str) -> PQuestionListOutput | None:
-        """Ask the LLM to decompose the premise into atomic-fact + relation questions."""
+    def stage1a_generate_questions(self, premise: str) -> list[dict]:
+        """Ask the LLM to generate Stage 1a questions using the active
+        generation method. Returns a list of {"q", "type"} dicts uniformly —
+        freeform questions are all tagged type="fact" (no relation
+        distinction in that mode), so downstream code (capping,
+        n_fact/n_relation) works unchanged for both methods."""
+        if self.generation == "freeform":
+            messages = [
+                SystemMessage(content=P_QUESTION_FREEFORM_SYSTEM_PROMPT),
+                HumanMessage(content=P_QUESTION_FREEFORM_USER_PROMPT.format(premise=premise)),
+            ]
+            llm = get_structured_llm(self.model, PQuestionFreeformOutput, self.params)
+            out = call_with_retry(llm.invoke, messages)
+            if out is None:
+                return []
+            return [{"q": q, "type": "fact"} for q in out.questions]
+
         messages = [
             SystemMessage(content=P_QUESTION_SYSTEM_PROMPT),
             HumanMessage(content=P_QUESTION_USER_PROMPT.format(premise=premise)),
         ]
         llm = get_structured_llm(self.model, PQuestionListOutput, self.params)
-        return call_with_retry(llm.invoke, messages)
+        out = call_with_retry(llm.invoke, messages)
+        if out is None:
+            return []
+        return [{"q": item.q, "type": item.type} for item in out.questions]
 
     @staticmethod
     def _cap_questions(items: list[dict], cap: int) -> list[dict]:
@@ -180,18 +211,16 @@ class PQuestionPipeline:
         hypothesis = sample["hypothesis"]
         warnings:  list[str] = []
 
-        # Stage 1a — atomic-fact + relation decomposition (premise-blind)
-        q_output = None
+        # Stage 1a — question generation (premise-blind), method per self.generation
+        decomposed: list[dict] = []
         try:
-            q_output = self.stage1a_generate_questions(premise)
+            decomposed = self.stage1a_generate_questions(premise)
         except Exception as exc:
             logger.warning(f"Stage 1a failed: {exc}")
 
-        if q_output is None or not q_output.questions:
+        if not decomposed:
             warnings.append("Stage 1a returned no questions; defaulting to Neutral.")
             return self._make_result(sample, [], [], [], FALLBACK_LABEL, warnings, 0, 0)
-
-        decomposed = [{"q": item.q, "type": item.type} for item in q_output.questions]
 
         ner_questions = self._ner_coverage_questions(premise, [d["q"] for d in decomposed])
         if ner_questions:
@@ -259,6 +288,7 @@ class PQuestionPipeline:
             "prediction":    prediction,
             "qa_pairs":      qa_pairs,
             "method":        METHOD,
+            "generation":    self.generation,
             "selector":      self.selector,
             "selection":     self.selection,
             "mmr_lambda":    self.mmr_lambda,
@@ -276,6 +306,7 @@ def run(
     samples: list[dict],
     model: str,
     params: dict = DEFAULT_PARAMS,
+    generation: str = P_QUESTION_GENERATION,
     selector: str = P_QUESTION_SELECTOR,
     selection: str = P_QUESTION_SELECTION,
     top_k: int = P_QUESTION_TOP_K,
@@ -283,7 +314,7 @@ def run(
     max_questions: int = P_QUESTION_MAX_QUESTIONS,
 ) -> list[dict]:
     pipeline = PQuestionPipeline(
-        model, params, selector=selector, selection=selection,
+        model, params, generation=generation, selector=selector, selection=selection,
         top_k=top_k, mmr_lambda=mmr_lambda, max_questions=max_questions,
     )
 
@@ -292,6 +323,7 @@ def run(
     logger.info(f"Model             : {model}")
     logger.info(f"Temperature       : {params.get('temperature')}")
     logger.info(f"Max tokens        : {params.get('max_tokens')}")
+    logger.info(f"Generation        : {pipeline.generation}")
     logger.info(f"Selector          : {pipeline.selector}")
     logger.info(f"Selection         : {pipeline.selection}")
     if pipeline.selection == "mmr":

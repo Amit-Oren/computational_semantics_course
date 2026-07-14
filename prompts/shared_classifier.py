@@ -1,9 +1,18 @@
-"""Shared NLI Classifier — single call over collected question/answer evidence.
+"""Shared NLI Classifier — single call over collected evidence.
 
-Final classification stage shared by q2_pipeline, p_question, h_question, and
-h_multihop. Question-generation and evidence-gathering differ per method;
-this call is identical everywhere: one evidence block (Q+A pairs kept
-together) + the hypothesis → one label. No per-question voting.
+Final classification stage shared by q2_pipeline, p_question, h_question,
+h_multihop, and bridge_question. Question-generation and evidence-gathering
+differ per method; this call is identical everywhere: one evidence block +
+the hypothesis → one label. No per-question voting.
+
+Two entry points, same prompt/schema/retry machinery underneath (`_classify`):
+  classify_evidence()     — evidence block is (question, answer) pairs.
+  classify_raw_evidence() — evidence block is plain located sentences, no
+                             question framing. Used by retrieve_then_classify
+                             to isolate the Locator's contribution from
+                             question generation — the classifier prompt
+                             itself doesn't care whether "EVIDENCE" is
+                             Q/A-framed or raw sentences.
 """
 
 from __future__ import annotations
@@ -20,6 +29,13 @@ You are a Strict NLI Classifier.
 
 You receive EVIDENCE (question-answer pairs extracted from a premise) and a
 HYPOTHESIS. Determine the logical relationship between them.
+
+EVIDENCE SUFFICIENCY: judge each piece of evidence on its own merit first. If
+ANY single piece of evidence is clearly decisive on its own, that is enough —
+decide from it. Do not let additional evidence that is merely background,
+tangential, or inconclusive water down or "average away" a piece of evidence
+that is independently clear. A strong signal does not become weaker because
+weaker evidence sits next to it in the same block.
 
 Apply these rules in strict priority order:
 
@@ -66,6 +82,28 @@ def build_evidence_block(qa_pairs: list[dict]) -> str:
     )
 
 
+def build_raw_evidence_block(sentences: list[str]) -> str:
+    """Render raw located premise sentences as one evidence block — no
+    question framing, since no question was generated."""
+    return "\n".join(f"- {s}" for s in sentences)
+
+
+def _classify(model: str, params: dict, evidence_block: str, hypothesis: str) -> str:
+    messages = [
+        SystemMessage(content=CLASSIFIER_SYSTEM_PROMPT),
+        HumanMessage(content=CLASSIFIER_USER_PROMPT.format(
+            evidence_block=evidence_block, hypothesis=hypothesis,
+        )),
+    ]
+    llm = get_structured_llm(model, ClassifyOutput, params)
+    try:
+        out = call_with_retry(llm.invoke, messages)
+    except Exception as exc:
+        logger.warning(f"classifier call failed: {exc}")
+        return FALLBACK_LABEL
+    return out.label if out else FALLBACK_LABEL
+
+
 def classify_evidence(model: str, params: dict, qa_pairs: list[dict], hypothesis: str) -> str:
     """Classify hypothesis against collected (question, answer) evidence pairs.
 
@@ -74,17 +112,15 @@ def classify_evidence(model: str, params: dict, qa_pairs: list[dict], hypothesis
     """
     if not qa_pairs:
         return FALLBACK_LABEL
+    return _classify(model, params, build_evidence_block(qa_pairs), hypothesis)
 
-    messages = [
-        SystemMessage(content=CLASSIFIER_SYSTEM_PROMPT),
-        HumanMessage(content=CLASSIFIER_USER_PROMPT.format(
-            evidence_block=build_evidence_block(qa_pairs), hypothesis=hypothesis,
-        )),
-    ]
-    llm = get_structured_llm(model, ClassifyOutput, params)
-    try:
-        out = call_with_retry(llm.invoke, messages)
-    except Exception as exc:
-        logger.warning(f"classify_evidence call failed: {exc}")
+
+def classify_raw_evidence(model: str, params: dict, sentences: list[str], hypothesis: str) -> str:
+    """Classify hypothesis against raw located premise sentences (no
+    question/answer framing — no question was generated for this method).
+
+    Returns "Neutral" directly (no LLM call) when sentences is empty.
+    """
+    if not sentences:
         return FALLBACK_LABEL
-    return out.label if out else FALLBACK_LABEL
+    return _classify(model, params, build_raw_evidence_block(sentences), hypothesis)

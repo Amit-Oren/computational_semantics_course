@@ -4,22 +4,25 @@ import argparse
 from datetime import datetime
 from config.config import (
     MODELS, RESULTS_DIR, DEFAULT_PARAMS,
-    P_QUESTION_SELECTOR, P_QUESTION_SELECTION, P_QUESTION_TOP_K, P_QUESTION_MMR_LAMBDA,
-    P_QUESTION_MAX_QUESTIONS,
+    P_QUESTION_GENERATION, P_QUESTION_SELECTOR, P_QUESTION_SELECTION,
+    P_QUESTION_TOP_K, P_QUESTION_MMR_LAMBDA, P_QUESTION_MAX_QUESTIONS,
     setup_logger,
 )
+from runner.p_question import GENERATION_MODES
 from utils.question_selectors import SELECTORS, SELECTION_MODES
 from data.data import load_data
-from runner import zero_shot, few_shot_cot, hdqd_pipeline, q2_pipeline, p_question, h_question, h_multihop
+from runner import (
+    zero_shot, few_shot_cot, p_question, h_question,
+    bridge_question, retrieve_then_classify,
+)
 
 RUNNERS = {
-    "zero_shot":     zero_shot,
-    "few_shot_cot":  few_shot_cot,
-    "hdqd_pipeline": hdqd_pipeline,
-    "q2_pipeline":   q2_pipeline,
-    "p_question":    p_question,
-    "h_question":    h_question,
-    "h_multihop":    h_multihop,
+    "zero_shot":              zero_shot,
+    "few_shot_cot":           few_shot_cot,
+    "p_question":             p_question,
+    "h_question":             h_question,
+    "bridge_question":        bridge_question,
+    "retrieve_then_classify": retrieve_then_classify,
 }
 
 
@@ -50,6 +53,8 @@ def main():
     parser.add_argument("--model", choices=MODELS.keys(), required=True)
     parser.add_argument("--limit", type=int, default=None, help="Run only the first N samples")
     parser.add_argument("--max_tokens", type=int, default=None, help="Override max tokens per LLM call")
+    parser.add_argument("--generation", choices=GENERATION_MODES, default=P_QUESTION_GENERATION,
+                         help="Stage 1a question-generation method (p_question only)")
     parser.add_argument("--selector", choices=SELECTORS, default=P_QUESTION_SELECTOR,
                          help="Stage 1b relevance scorer (p_question only)")
     parser.add_argument("--selection", choices=SELECTION_MODES, default=P_QUESTION_SELECTION,
@@ -75,6 +80,7 @@ def main():
     if args.experiment == "p_question":
         results = runner.run(
             samples, model=args.model, params=params,
+            generation=args.generation,
             selector=args.selector, selection=args.selection,
             top_k=args.top_k, mmr_lambda=args.mmr_lambda,
             max_questions=args.max_questions,

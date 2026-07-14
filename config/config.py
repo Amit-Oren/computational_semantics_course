@@ -21,6 +21,14 @@ HF_MODEL_MAP = {
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GROQ_API_URL = "https://api.groq.com/openai/v1"
 
+# Local Ollama server (no external API, no shared/rate-limited resource —
+# runs entirely on this machine). `ollama serve` must be running;
+# `brew services start ollama` keeps it up in the background.
+OLLAMA_API_URL = "http://localhost:11434/v1"
+OLLAMA_MODEL_MAP = {
+    "llama3.1-8b-local": "llama3.1:8b",
+}
+
 MODELS = {
     # ── Lab (Tailscale) ───────────────────────────────────────────────────────
     "llama3.1-8b":       "open_source",
@@ -39,6 +47,8 @@ MODELS = {
     "llama-3.1-8b-instant":    "groq",
     "llama-3.3-70b-versatile": "groq",
     "qwen/qwen3-32b":          "groq",
+    # ── Local Ollama ──────────────────────────────────────────────────────────
+    "llama3.1-8b-local": "ollama",
 }
 
 DEFAULT_PARAMS = {
@@ -101,20 +111,22 @@ class Q2QuestionOutput(BaseModel):
 
 
 # ── P-Question Pipeline constants ─────────────────────────────────────────────
-# Stage 1b's question-selection is swappable behind two orthogonal flags —
-# see utils/question_selectors.py. Only Stage 1b changes across ablation
-# runs; Stage 1a generation, Stage 1c locate_and_answer, and Stage 2
+# Stage 1a's generation method and Stage 1b's question-selection are each
+# swappable behind their own flag — see runner/p_question.py and
+# utils/question_selectors.py. Stage 1c locate_and_answer and Stage 2
 # classify_evidence are identical regardless of which combo is active.
-P_QUESTION_TOP_K:     int   = 3
-P_QUESTION_SELECTOR:  str   = "rouge_l"   # "rouge_l" | "embedding" | "llm_relevance"
-P_QUESTION_SELECTION: str   = "topk"      # "topk" | "mmr"
-P_QUESTION_MMR_LAMBDA: float = 0.7        # 1.0 reduces MMR exactly to top-K
+P_QUESTION_GENERATION: str   = "decomposition"  # "decomposition" | "freeform"
+P_QUESTION_TOP_K:      int   = 3
+P_QUESTION_SELECTOR:   str   = "rouge_l"        # "rouge_l" | "embedding"
+P_QUESTION_SELECTION:  str   = "topk"           # "topk" | "mmr"
+P_QUESTION_MMR_LAMBDA: float = 0.7              # 1.0 reduces MMR exactly to top-K
 
-# Stage 1a decomposes the premise into atomic facts + relations (one question
+# Stage 1a decomposition mode extracts atomic facts + relations (one question
 # each) — this can produce 20-40 candidates for a ~500-word premise, well
 # above the old free-form cap. Capped here to bound Stage 1b/1c cost;
 # relation-type questions (scarce, high-value) are kept first, fact-type
-# fills the remainder. See runner/p_question.py._cap_questions.
+# fills the remainder. See runner/p_question.py._cap_questions. Freeform mode
+# self-caps at ~15 via its prompt, so this rarely binds for it.
 P_QUESTION_MAX_QUESTIONS: int = 30
 
 
@@ -163,23 +175,23 @@ class PQuestionListOutput(BaseModel):
         return [item for item in v if item.q]
 
 
-class LLMRelevanceOutput(BaseModel):
-    """Stage 1b llm_relevance scorer output: 0-5 relevance-to-verdict rating."""
-    score: int
+class PQuestionFreeformOutput(BaseModel):
+    """Stage 1a output for `--generation freeform`: the old baseline,
+    breadth-first wh-questions with no fact/relation distinction."""
+    questions: list[str]
 
-    @field_validator("score", mode="before")
+    @field_validator("questions", mode="before")
     @classmethod
-    def coerce_int(cls, v):
+    def coerce_questions_to_list(cls, v):
+        # Some models return a newline-separated string instead of a JSON array
         if isinstance(v, str):
-            import re
-            m = re.search(r"-?\d+", v)
-            return int(m.group()) if m else 0
+            return [line.strip() for line in v.splitlines() if line.strip()]
         return v
 
-    @field_validator("score", mode="after")
+    @field_validator("questions", mode="after")
     @classmethod
-    def clamp_range(cls, v):
-        return max(0, min(5, v))
+    def drop_empty_questions(cls, v):
+        return [q.strip() for q in v if q.strip()]
 
 
 # ── H-Question Pipeline schemas ───────────────────────────────────────────────
@@ -199,6 +211,43 @@ class HQuestionsOutput(BaseModel):
     @classmethod
     def drop_empty(cls, v):
         return [q.strip() for q in v if q.strip()]
+
+
+# ── Bridge-Question Pipeline schemas ───────────────────────────────────────────
+
+class BridgeQuestionOutput(BaseModel):
+    """Stage 1 output: sub-questions (both-texts generation) + which of them
+    are bridging/comparison questions."""
+    questions:      list[str]
+    bridge_indices: list[int] = []
+
+    @field_validator("questions", mode="before")
+    @classmethod
+    def coerce_questions_to_list(cls, v):
+        if isinstance(v, str):
+            return [line.strip() for line in v.splitlines() if line.strip()]
+        return v
+
+    @field_validator("questions", mode="after")
+    @classmethod
+    def drop_empty_questions(cls, v):
+        return [q.strip() for q in v if q.strip()]
+
+    @field_validator("bridge_indices", mode="before")
+    @classmethod
+    def coerce_indices_to_list(cls, v):
+        if v is None:
+            return []
+        if isinstance(v, str):
+            import re
+            return [int(n) for n in re.findall(r"\d+", v)]
+        return v
+
+    @model_validator(mode="after")
+    def drop_out_of_range_indices(self) -> "BridgeQuestionOutput":
+        n = len(self.questions)
+        self.bridge_indices = sorted({i for i in self.bridge_indices if 0 <= i < n})
+        return self
 
 
 # ── H-Multihop Pipeline schemas ───────────────────────────────────────────────
@@ -374,6 +423,17 @@ def get_llm(model: str, params: dict = DEFAULT_PARAMS):
             model=model,
             base_url=GROQ_API_URL,
             api_key=GROQ_API_KEY,
+            temperature=params.get("temperature", 0.0),
+            max_tokens=params.get("max_tokens", 2048),
+            timeout=_REQUEST_TIMEOUT,
+            max_retries=_SDK_MAX_RETRIES,
+        )
+    if MODELS.get(model) == "ollama":
+        from langchain_openai import ChatOpenAI
+        return ChatOpenAI(
+            model=OLLAMA_MODEL_MAP[model],
+            base_url=OLLAMA_API_URL,
+            api_key="ollama",  # unused by Ollama, but the client requires a non-empty value
             temperature=params.get("temperature", 0.0),
             max_tokens=params.get("max_tokens", 2048),
             timeout=_REQUEST_TIMEOUT,

@@ -6,10 +6,8 @@ premise-blind question generation in Stage 1a, the shared Locator/Extractor,
 and the shared classify_evidence — is unaffected by either.
 
 `selector` — how relevance to the hypothesis is scored:
-  rouge_l        — ROUGE-L F-measure (baseline; word-overlap, no model load).
-  embedding      — Sentence-BERT cosine similarity (semantic, no LLM call).
-  llm_relevance  — LLM judges relevance-to-verdict on a 0-5 scale (one call
-                   per question).
+  rouge_l   — ROUGE-L F-measure (baseline; word-overlap, no model load).
+  embedding — Sentence-BERT cosine similarity (semantic, no LLM call).
 
 `selection` — how the final top-K set is chosen from those relevance scores:
   topk — plain highest-K by relevance (may keep several questions that all
@@ -25,12 +23,7 @@ and the shared classify_evidence — is unaffected by either.
 
 from __future__ import annotations
 
-from langchain_core.messages import SystemMessage, HumanMessage
-
-from config.config import LLMRelevanceOutput, get_structured_llm, logger
-from utils.retry import call_with_retry
-
-SELECTORS = ("rouge_l", "embedding", "llm_relevance")
+SELECTORS = ("rouge_l", "embedding")
 SELECTION_MODES = ("topk", "mmr")
 
 _EMBEDDING_MODEL = None  # lazy-loaded once, cached (mirrors the spaCy NER pattern)
@@ -61,87 +54,22 @@ def _score_embedding(question: str, hypothesis: str, **_) -> float:
     return float(util.cos_sim(embeddings[0], embeddings[1]).item())
 
 
-# ─── Scorer 3: LLM relevance-to-verdict judge ────────────────────────────────
-
-LLM_RELEVANCE_SYSTEM_PROMPT = """\
-You judge whether a QUESTION is relevant to deciding a HYPOTHESIS.
-
-Given a QUESTION (generated from a premise) and a HYPOTHESIS, rate how much \
-knowing the answer to this question would help decide whether the hypothesis is \
-True, False, or Unrelated to the premise.
-
-Score 0-5:
-  5 = answering this question would directly decide the hypothesis
-  3 = answering this would give partial evidence toward the hypothesis
-  0 = answering this is irrelevant to the hypothesis either way
-
-Judge by MEANING and logical role, not by shared words. A question can be highly \
-relevant even if it shares no words with the hypothesis (e.g. a question about \
-"European" figures is highly relevant to a hypothesis about "North American" \
-figures, because the answer decides a possible contradiction).
-
-Output JSON only: {"score": <int 0-5>}\
-"""
-
-LLM_RELEVANCE_USER_PROMPT = """\
-QUESTION: "{question}"
-HYPOTHESIS: "{hypothesis}"
-
-Rate how relevant this question is to deciding the hypothesis.\
-"""
-
-
-def _score_llm_relevance(question: str, hypothesis: str, model: str = None, params: dict = None, **_) -> float:
-    messages = [
-        SystemMessage(content=LLM_RELEVANCE_SYSTEM_PROMPT),
-        HumanMessage(content=LLM_RELEVANCE_USER_PROMPT.format(
-            question=question, hypothesis=hypothesis,
-        )),
-    ]
-    llm = get_structured_llm(model, LLMRelevanceOutput, params)
-    try:
-        out = call_with_retry(llm.invoke, messages)
-    except Exception as exc:
-        logger.warning(f"llm_relevance scoring failed for '{question[:60]}': {exc}")
-        return 0.0
-    return float(out.score) if out else 0.0
-
-
 _SCORER_FNS = {
-    "rouge_l":       _score_rouge_l,
-    "embedding":     _score_embedding,
-    "llm_relevance": _score_llm_relevance,
+    "rouge_l":   _score_rouge_l,
+    "embedding": _score_embedding,
 }
-
-
-_MAX_SCORING_WORKERS = 8  # only matters for llm_relevance — its calls are network I/O
 
 
 def _raw_scores(
     questions: list[str], hypothesis: str, selector: str, model: str, params: dict
 ) -> dict[str, float]:
     scorer_fn = _SCORER_FNS[selector]
-
-    if selector == "llm_relevance" and len(questions) > 1:
-        # Each call is an independent network round-trip — run them
-        # concurrently instead of one at a time (rouge_l/embedding score
-        # locally and are already fast, so they stay sequential).
-        from concurrent.futures import ThreadPoolExecutor
-        with ThreadPoolExecutor(max_workers=_MAX_SCORING_WORKERS) as pool:
-            scores = list(pool.map(
-                lambda q: scorer_fn(q, hypothesis, model=model, params=params),
-                questions,
-            ))
-        return dict(zip(questions, scores))
-
     return {q: scorer_fn(q, hypothesis, model=model, params=params) for q in questions}
 
 
 def _normalize_relevance(selector: str, raw_score: float) -> float:
     """Map every selector's raw score onto [0, 1] so relevance is comparable
     across selectors and usable directly in the MMR formula."""
-    if selector == "llm_relevance":
-        return max(0.0, min(1.0, raw_score / 5.0))
     return max(0.0, min(1.0, raw_score))  # ROUGE-L / cosine are already ~[0,1]
 
 

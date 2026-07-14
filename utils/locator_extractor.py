@@ -99,3 +99,43 @@ def locate_and_answer(
         "answerable":      answerable,
         "located_indices": located_indices,
     }
+
+
+def locate_only(
+    model: str,
+    params: dict,
+    query: str,
+    *,
+    premise: str | None = None,
+    indexed_sentences: list[tuple[int, str]] | None = None,
+    numbered_premise: str | None = None,
+) -> dict:
+    """Locate up to 5 relevant premise sentences for `query` — Stage 2 only,
+    no Answer Extractor call. Used by retrieve_then_classify to isolate the
+    Locator's contribution: `query` there is the hypothesis itself, not a
+    generated question.
+
+    Same premise-indexing contract as locate_and_answer: pass either
+    `premise` or a precomputed `(indexed_sentences, numbered_premise)` pair.
+
+    Returns {"located_indices": list[int], "located_sentences": list[str]}.
+    """
+    if indexed_sentences is None or numbered_premise is None:
+        if premise is None:
+            raise ValueError("Provide either `premise` or `indexed_sentences` + `numbered_premise`.")
+        indexed_sentences, numbered_premise = number_sentences(premise)
+
+    located_indices: list[int] = []
+    try:
+        loc = _locate(model, params, numbered_premise, query)
+        if loc and loc.indices:
+            located_indices = loc.indices[:5]
+    except Exception as exc:
+        logger.warning(f"Locator failed for '{query[:60]}': {exc}")
+
+    located_sentences = pull_by_indices(indexed_sentences, located_indices) if located_indices else []
+
+    return {
+        "located_indices":   located_indices,
+        "located_sentences": located_sentences,
+    }
