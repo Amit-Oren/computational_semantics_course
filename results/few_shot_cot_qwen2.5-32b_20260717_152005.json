@@ -1,0 +1,192 @@
+{
+  "metadata": {
+    "experiment": "few_shot_cot",
+    "model": "qwen2.5-32b",
+    "temperature": 0.0,
+    "max_tokens": 2048,
+    "seed": null,
+    "timestamp": "2026-07-17T15:20:05.348709"
+  },
+  "samples": [
+    {
+      "id": "id_0",
+      "label": "Neutral",
+      "prediction": "Neutral",
+      "explanation": "The premise mentions that improvements in medicine increased average lifespan and allowed workers to continue working for longer, but it does not provide information on whether this directly translated into earning more money."
+    },
+    {
+      "id": "id_1",
+      "label": "Contradiction",
+      "prediction": "Contradiction",
+      "explanation": "The premise states that in 1900, only 19% of European women of working age participated in the labour force, not North American women."
+    },
+    {
+      "id": "id_2",
+      "label": "Entailment",
+      "prediction": "Neutral",
+      "explanation": "While the premise mentions that the phenomenon is particularly true for Third World countries, it also notes that this could be witnessed in several Western cities as well."
+    },
+    {
+      "id": "id_3",
+      "label": "Neutral",
+      "prediction": "Entailment",
+      "explanation": "The premise indicates that both America and Europe experienced similar changes, such as a shift from agricultural to service-oriented workforces and an increase in women's participation in the labor force."
+    },
+    {
+      "id": "id_4",
+      "label": "Contradiction",
+      "prediction": "Contradiction",
+      "explanation": "The premise mentions associated problems with the changes in workplace conditions, such as massive unemployment due to the shift from agriculture to modern working environments and overcrowding in cities, which contradicts the hypothesis that there were no significant drawbacks."
+    },
+    {
+      "id": "id_5",
+      "label": "Entailment",
+      "prediction": "Entailment",
+      "explanation": "Given that the store security officer has a grudge against Gareth because he is the best friend of his son, it can be inferred that the security officer had a motive to accuse Gareth of shoplifting."
+    },
+    {
+      "id": "id_6",
+      "label": "Neutral",
+      "prediction": "Neutral",
+      "explanation": "The premise does not provide information about whether Gareth ran away or not upon leaving the store."
+    },
+    {
+      "id": "id_7",
+      "label": "Entailment",
+      "prediction": "Entailment",
+      "explanation": "The premise states that Gareth had not been given a receipt for the goods he had bought, which implies that he did buy some goods at the store."
+    },
+    {
+      "id": "id_8",
+      "label": "Contradiction",
+      "prediction": "Contradiction",
+      "explanation": "The premise states that two years ago, Gareth was caught stealing police road traffic bollards, which contradicts the hypothesis that this was his first offense."
+    },
+    {
+      "id": "id_9",
+      "label": "Contradiction",
+      "prediction": "Contradiction",
+      "explanation": "It is mentioned in the premise that Gareth is an orphan, so it's a contradiction to say that the police rang his mother."
+    },
+    {
+      "id": "id_10",
+      "label": "Neutral",
+      "prediction": "Neutral",
+      "explanation": "The premise does not provide information about who took the victim to the hospital, only that he was taken there immediately after being found unconscious."
+    },
+    {
+      "id": "id_11",
+      "label": "Neutral",
+      "prediction": "Contradiction",
+      "explanation": "The premise states that the victim's child was not mentioned, but it talked about Jo's child who was in care and tested HIV positive."
+    },
+    {
+      "id": "id_12",
+      "label": "Neutral",
+      "prediction": "Neutral",
+      "explanation": "The premise provides information about Peter's drug use and the circumstances of his death, but it does not explicitly state that he died from a drug overdose."
+    },
+    {
+      "id": "id_13",
+      "label": "Entailment",
+      "prediction": "Neutral",
+      "explanation": "The premise mentions that various young people were seen entering the flat but does not specifically mention Jo Hager, so it is uncertain if neighbours saw him."
+    },
+    {
+      "id": "id_14",
+      "label": "Contradiction",
+      "prediction": "Contradiction",
+      "explanation": "The premise states that the 19-year-old male was found unconscious in his flat, which contradicts the hypothesis that he was homeless."
+    },
+    {
+      "id": "id_15",
+      "label": "Neutral",
+      "prediction": "Neutral",
+      "explanation": "The premise provides information about Jake's drug use, but it does not explicitly state the cause of death."
+    },
+    {
+      "id": "id_16",
+      "label": "Neutral",
+      "prediction": "Contradiction",
+      "explanation": "The premise mentions that Joe's child, not the victim's child, was in care."
+    },
+    {
+      "id": "id_17",
+      "label": "Entailment",
+      "prediction": "Neutral",
+      "explanation": "The premise mentions that neighbours saw various young people going into the flat but does not specifically mention Joe Horrocks among them."
+    },
+    {
+      "id": "id_18",
+      "label": "Neutral",
+      "prediction": "Neutral",
+      "explanation": "The premise does not provide information about who took the victim to the hospital, only that he was taken there immediately after being found unconscious."
+    },
+    {
+      "id": "id_19",
+      "label": "Contradiction",
+      "prediction": "Contradiction",
+      "explanation": "The premise states that the 19-year-old male was found unconscious in his flat, which contradicts the hypothesis that he was homeless."
+    },
+    {
+      "id": "id_20",
+      "label": "Neutral",
+      "prediction": "Entailment",
+      "explanation": "The premise states that Jane worked for a firm of accountants called Sayerston, which entails that Jane Scolled was an accountant."
+    },
+    {
+      "id": "id_21",
+      "label": "Contradiction",
+      "prediction": "Contradiction",
+      "explanation": "The premise states that Jane had the day off work on Wednesday 3 October, so she could not have been hit by a car while on her lunch break from work."
+    },
+    {
+      "id": "id_22",
+      "label": "Neutral",
+      "prediction": "Neutral",
+      "explanation": "The premise mentions that a young cyclist was admitted to the same hospital shortly after Jane but does not confirm if this incident happened just after or in relation to Jane's accident."
+    },
+    {
+      "id": "id_23",
+      "label": "Neutral",
+      "prediction": "Neutral",
+      "explanation": "The premise does not provide any information about Mr Sayerston's feelings or thoughts towards Jane's father."
+    },
+    {
+      "id": "id_24",
+      "label": "Entailment",
+      "prediction": "Entailment",
+      "explanation": "The premise mentions that a woman was rushed to Crownsby hospital due to a car accident and later, another cyclist was admitted to the same hospital after being knocked off his bicycle, both on Wednesday 3 October."
+    },
+    {
+      "id": "id_25",
+      "label": "Neutral",
+      "prediction": "Neutral",
+      "explanation": "The premise does not provide information about any hidden money in Mrs Marsh's bedroom, so we cannot determine if the hypothesis is true or false based on the given information."
+    },
+    {
+      "id": "id_26",
+      "label": "Contradiction",
+      "prediction": "Contradiction",
+      "explanation": "The premise states that during the first break-in, Mrs Marsh was out visiting friends, not playing bingo, which contradicts the hypothesis."
+    },
+    {
+      "id": "id_27",
+      "label": "Neutral",
+      "prediction": "Contradiction",
+      "explanation": "In the first break-in, the burglar broke a window to enter while in the second incident, it is implied that the intruder found another way in since the window was boarded up."
+    },
+    {
+      "id": "id_28",
+      "label": "Neutral",
+      "prediction": "Entailment",
+      "explanation": "The premise states that there were two break-ins at Mrs Marsh's home and during the second one, valuable items of silverware and ready cash were stolen, which implies that the burglar was unsuccessful at first attempt."
+    },
+    {
+      "id": "id_29",
+      "label": "Contradiction",
+      "prediction": "Neutral",
+      "explanation": "The premise does not provide information about whether Mrs. Marsh went downstairs or not when she was disturbed by the intruder."
+    }
+  ]
+}

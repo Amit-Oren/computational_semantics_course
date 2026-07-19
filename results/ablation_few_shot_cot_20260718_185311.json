@@ -1,0 +1,182 @@
+[
+  {
+    "id": "id_0",
+    "prediction": "Entailment",
+    "explanation": "The premise suggests that government subsidies for renewable energy are proposed as a means to make it more affordable, which implies that such subsidies could indeed reduce the cost of renewable energy.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_1",
+    "prediction": "Entailment",
+    "explanation": "The premise states that 'renewable energy sources tend more expensive than their fossil-fuel counter parts', which entails the hypothesis that fossil-fuels are currently cheaper than forms of renewable energy.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_10",
+    "prediction": "Contradiction",
+    "explanation": "The premise states that Young's skill as a physician did not equal his skill as a scholar of natural philosophy or linguistics, which contradicts the hypothesis.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_100",
+    "prediction": "Contradiction",
+    "explanation": "The premise indicates that medicine has roots in ancient practices, not solely relying on modern treatments as suggested by the hypothesis.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_101",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses both traditional and modern aspects of medicine, including prevention and various types of treatments, while the hypothesis simplifies it to just curing illness, which does not fully capture the scope presented in the premise.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_102",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses the evolution and importance of uniforms in projecting organizational image but does not provide information about clothing companies' plans to offer financial services.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_103",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses various factors in selecting uniforms but does not specifically state that they should be selected solely by marketing consultants.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_104",
+    "prediction": "Contradiction",
+    "explanation": "The premise states that out of 1000 companies supplying workwear and corporate clothing market, only 22 account for 85% of total sales, which implies most businesses in this sector are not successful.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_105",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses various aspects and impacts of uniforms in different contexts but does not specifically address whether being 'too smart' could negatively affect customers.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_106",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses various aspects and purposes of uniforms over time but does not provide specific information about the quality or care taken in their manufacturing in the past compared to today.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_107",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses various aspects and purposes of uniforms but does not specifically mention whether they make employees feel part of a team or not.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_108",
+    "prediction": "Entailment",
+    "explanation": "The premise discusses the subtlety and potential complexity involved in using uniforms for marketing purposes, indicating that it requires careful consideration of various factors such as color, style, branding, and uniformity to effectively communicate a company's image.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_109",
+    "prediction": "Neutral",
+    "explanation": "The premise only states that traffic jams are common during monsoon, but it does not provide information about the reason behind these jams or the quality of road construction materials.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_11",
+    "prediction": "Contradiction",
+    "explanation": "The premise states that Thomas Young was a child prodigy who excelled at various subjects from an early age, which contradicts the hypothesis suggesting he wasn't brilliant while growing up.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_110",
+    "prediction": "Neutral",
+    "explanation": "The premise states that traffic jams are common during monsoon, but it does not provide information about whether the number of vehicles increases or decreases during this season.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_111",
+    "prediction": "Entailment",
+    "explanation": "Given that almost 70,000 people and the vast majority of respondents did not want the scheme extended during the consultative process, it is reasonable to infer that there will be continued public opposition to the extension.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_112",
+    "prediction": "Entailment",
+    "explanation": "The premise states that extending the zone to a thickly populated area of London will mean many people qualify for the residents discount, implying Kensington and Chelsea have high residential populations.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_113",
+    "prediction": "Neutral",
+    "explanation": "The premise does not provide information about the respondents' feelings towards the fall in traffic levels and lower congestion, only their stance on extending the charge scheme.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_114",
+    "prediction": "Neutral",
+    "explanation": "The premise does not provide specific information about whether residents of Kensington and Chelsea currently need to pay the fee or not, only that extending the zone would allow many people to qualify for a resident discount.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_115",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that there are ten commercial training kitchens in the training facilities.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_116",
+    "prediction": "Neutral",
+    "explanation": "The premise does not provide information about whether all students in the program live at International House or if it is only an option for some.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_117",
+    "prediction": "Entailment",
+    "explanation": "The premise states that each villa-style unit in International House has four students sharing an adjoining kitchenette and lounge area, which entails that four students share a unit in the residence.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_118",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that International House is being used to enhance on-campus training, which entails that the residence is used as part of the training program.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_119",
+    "prediction": "Neutral",
+    "explanation": "The premise does not provide information about who prepares the meals served at the College dining room.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_12",
+    "prediction": "Neutral",
+    "explanation": "The premise mentions that garbage is a factor for potential outbreaks but does not state it is the major concern, leaving room for other factors to be equally or more significant.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_120",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses reduction or elimination of trans fatty acids and mentions a cut in the amount of saturates by one manufacturer, but it does not provide specific information about changes to saturated fat levels in processed meats by major producers.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_121",
+    "prediction": "Neutral",
+    "explanation": "The premise states that over the last decade, intakes of trans fatty acids fell in the UK and are now well below the recommended 2% of total energy. However, it does not provide information on whether this trend is continuing or has stopped.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_122",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses efforts by manufacturers and retailers to remove or reduce trans fatty acids, but it does not provide information on the difficulty of finding a safe substitute.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_123",
+    "prediction": "Contradiction",
+    "explanation": "The premise states that trans fats occur naturally in small amounts in foods produced from ruminant animals, such as milk, beef and lamb, not in all types of meat.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_124",
+    "prediction": "Neutral",
+    "explanation": "The premise states that average intakes of trans fatty acids are below the recommended limit, but it also mentions that dietary advice targets those in the top end of the distribution to reduce their intake, implying some individuals may still consume more than what is considered safe.",
+    "gold_label": "Entailment"
+  }
+]

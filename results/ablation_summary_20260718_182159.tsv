@@ -1,0 +1,19 @@
+tag	n	accuracy	macro_f1	Entailment_R	Contradiction_R	Neutral_R	neutral_fail_count
+bridge_question | agg=aggregated	50	0.72	0.698440342118503	0.72	0.6875	0.7777777777777778	11
+bridge_question | agg=sequential_cot	50	0.58	0.5803030303030303	0.52	0.5625	0.7777777777777778	17
+bridge_question | agg=voting	50	0.62	0.6035267991568803	0.64	0.5	0.7777777777777778	16
+h_question | seeder=pos | agg=aggregated	50	0.78	0.7604210866622214	0.8	0.6875	0.8888888888888888	9
+h_question | seeder=pos | agg=sequential_cot	50	0.64	0.646606334841629	0.56	0.625	0.8888888888888888	17
+h_question | seeder=pos | agg=voting	50	0.74	0.7277634223370657	0.68	0.75	0.8888888888888888	10
+h_question | seeder=srl | agg=aggregated	50	0.74	0.7198067632850241	0.76	0.6875	0.7777777777777778	11
+h_question | seeder=srl | agg=sequential_cot	50	0.7	0.6844444444444444	0.72	0.5625	0.8888888888888888	13
+h_question | seeder=srl | agg=voting	50	0.7	0.682962962962963	0.68	0.6875	0.7777777777777778	9
+p_question | gen=decomposition | agg=aggregated	50	0.46	0.46714285714285725	0.4	0.375	0.7777777777777778	24
+p_question | gen=decomposition | agg=sequential_cot	50	0.32	0.3286140979689367	0.16	0.3125	0.7777777777777778	29
+p_question | gen=decomposition | agg=voting	50	0.26	0.23675213675213677	0.04	0.1875	1.0	36
+p_question | gen=seeded|seeder=pos | agg=aggregated	50	0.44	0.45112233445566785	0.32	0.4375	0.7777777777777778	24
+p_question | gen=seeded|seeder=pos | agg=sequential_cot	50	0.28	0.27936507936507937	0.16	0.1875	0.7777777777777778	33
+p_question | gen=seeded|seeder=pos | agg=voting	50	0.24	0.21832358674463936	0.08	0.125	0.8888888888888888	37
+p_question | gen=seeded|seeder=srl | agg=aggregated	50	0.4	0.4125252525252525	0.28	0.375	0.7777777777777778	26
+p_question | gen=seeded|seeder=srl | agg=sequential_cot	50	0.32	0.32592592592592595	0.2	0.25	0.7777777777777778	29
+p_question | gen=seeded|seeder=srl | agg=voting	50	0.28	0.27517000066019676	0.08	0.25	0.8888888888888888	34

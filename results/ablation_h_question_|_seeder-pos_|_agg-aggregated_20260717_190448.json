@@ -1,0 +1,967 @@
+[
+  {
+    "id": "id_0",
+    "premise": "This passage provides information on the subsidising of renewable energy and its effect on the usage of fossil fuels. The issue of subsidising sources of renewable energy came to the forefront of global politics as record emissions levels continue to be reached despite caps on carbon emissions being agreed up by several global powers. However, renewable energy sources tend more expensive than their fossil-fuel counter parts. In this way, renewable energy cannot be seen as a realistic alternative to fossil-fuel until it is at a price universally achievable. On the opposite side of the spectrum, commentators note that the average temperature is expected to rise by four degrees by the end of the decade. In order to prevent this, they suggest carbon emissions must be reduced by seventy per cent by 2050. Such commentators advocate government subsidised renewable energy forms as a way to achieve this target.",
+    "hypothesis": "Government subsidiary could reduce renewable energy cost",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Does the premise mention any government subsidies for renewable energy?",
+        "answer": "The premise mentions government subsidies for renewable energy.",
+        "answerable": true,
+        "located_indices": [
+          0,
+          6
+        ]
+      },
+      {
+        "question": "According to the premise, do government subsidies have an effect on reducing the cost of renewable energy?",
+        "answer": "The extracted sentences suggest that government subsidies are advocated as a way to make renewable energy more affordable, implying they could have an effect on reducing costs.",
+        "answerable": true,
+        "located_indices": [
+          2,
+          3,
+          6
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Government subsidiary",
+      "renewable energy cost",
+      "reduce"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_1",
+    "premise": "This passage provides information on the subsidising of renewable energy and its effect on the usage of fossil fuels. The issue of subsidising sources of renewable energy came to the forefront of global politics as record emissions levels continue to be reached despite caps on carbon emissions being agreed up by several global powers. However, renewable energy sources tend more expensive than their fossil-fuel counter parts. In this way, renewable energy cannot be seen as a realistic alternative to fossil-fuel until it is at a price universally achievable. On the opposite side of the spectrum, commentators note that the average temperature is expected to rise by four degrees by the end of the decade. In order to prevent this, they suggest carbon emissions must be reduced by seventy per cent by 2050. Such commentators advocate government subsidised renewable energy forms as a way to achieve this target.",
+    "hypothesis": "Fossil-fuels are currently cheaper than forms of renewable energy.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Are fossil-fuels currently cheaper than renewable energy sources?",
+        "answer": "Renewable energy sources are currently more expensive than fossil fuels.",
+        "answerable": true,
+        "located_indices": [
+          2,
+          3
+        ]
+      },
+      {
+        "question": "Does the premise provide information on the current cost comparison between fossil-fuels and renewable energy?",
+        "answer": "The premise indicates that renewable energy sources are currently more expensive than fossil fuels and not realistically achievable at a universal level due to cost.",
+        "answerable": true,
+        "located_indices": [
+          2,
+          3
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Fossil-fuels",
+      "forms",
+      "renewable energy"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_10",
+    "premise": "Thomas Young The Last True Know-It-All Thomas Young (1773-1829) contributed 63 articles to the Encyclopedia Britannica, including 46 biographical entries (mostly on scientists and classicists) and substantial essays on Bridge, Chromatics, Egypt, Languages and Tides. Was someone who could write authoritatively about so many subjects a polymath, a genius or a dilettante? In an ambitious new biography, Andrew Robinson argues that Young is a good contender for the epitaph the last man who knew everything. Young has competition, however: The phrase, which Robinson takes for his title, also serves as the subtitle of two other recent biographies: Leonard Warrens 1998 life of paleontologist Joseph Leidy (1823-1891) and Paula Findlens 2004 book on Athanasius Kircher (1602-1680), another polymath. Young, of course, did more than write encyclopedia entries. He presented his first paper to the Royal Society of London at the age of 20 and was elected a Fellow a week after his 21st birthday. In the paper, Young explained the process of accommodation in the human eye on how the eye focuses properly on objects at varying distances. Young hypothesised that this was achieved by changes in the shape of the lens. Young also theorised that light traveled in waves and ho believed that, to account for the ability to see in color, there must be three receptors in the eye corresponding to the three principal colors to which the retina could respond: red, green, violet. All these hypotheses Were subsequently proved to be correct. Later in his life, when he was in his forties, Young was instrumental in cracking the code that unlocked the unknown script on the Rosetta Stone, a tablet that was found in Egypt by the Napoleonic army in 1799. The stone contains text in three alphabets: Greek, something unrecognisable and Egyptian hieroglyphs. The unrecognisable script is now known as demotic and, as Young deduced, is related directly to hieroglyphic. His initial work on this appeared in his Britannica entry on Egypt. In another entry, he coined the term Indo-European to describe the family of languages spoken throughout most of Europe and northern India. These are the landmark achievements of a man who was a child prodigy and who, unlike many remarkable children, did not disappear into oblivion as an adult. Bom in 1773 in Somerset in England, Young lived from an early age with his maternal grandfather, eventually leaving to attend boarding school. He had devoured books from the age of two, and through his own initiative he excelled at Latin, Greek, mathematics and natural philosophy. After leaving school, he was greatly encouraged by his mothers uncle, Richard Brocklesby, a physician and Fellow of the Royal Society. Following Brocklesbys lead, Young decided to pursue a career in medicine. He studied in London, following the medical circuit, and then moved on to more formal education in Edinburgh, Gottingen and Cambridge. After completing his medical training at the University of Cambridge in 1808, Young set up practice as a physician in London. He soon became a Fellow of the Royal College of Physicians and a few years later was appointed physician at St. Georges Hospital. Youngs skill as a physician, however, did not equal his skill as a scholar of natural philosophy or linguistics. Earlier, in 1801, he had been appointed to a professorship of natural philosophy at the Royal Institution, where he delivered as many as 60 lectures in a year. These were published in two volumes in 1807. In 1804 Young had become secretary to the Royal Society, a post he would hold until his death. His opinions were sought on civic and national matters, such as the introduction of gas lighting to London and methods of ship construction. From 1819 he was superintendent of the Nautical Almanac and secretary to the Board of Longitude. From 1824 to 1829 he was physician to and inspector of calculations for the Palladian Insurance Company. Between 1816 and 1825 he contributed his many and various entries to the Encyclopedia Britannica, and throughout his career he authored numerous books, essays and papers. Young is a perfect subject for a biography perfect, but daunting. Few men contributed so much to so many technical fields. Robinsons aim is to introduce non-scientists to Youngs work and life. He succeeds, providing clear expositions of the technical material (especially that on optics and Egyptian hieroglyphs). Some readers of this book will, like Robinson, find Youngs accomplishments impressive; others will see him as some historians have as a dilettante. Yet despite the rich material presented in this book, readers will not end up knowing Young personally. We catch glimpses of a playful Young, doodling Greek and Latin phrases in his notes on medical lectures and translating the verses that a young lady had written on the walls of a summerhouse into Greek elegiacs. Young was introduced into elite society, attended the theatre and learned to dance and play the flute. In addition, he was an accomplished horseman. However, his personal life looks pale next to his vibrant career and studies. Young married Eliza Maxwell in 1804, and according to Robinson, their marriage was a happy one and she appreciated his work, Almost all we know about her is that she sustained her husband through some rancorous disputes about optics and that she worried about money when his medical career was slow to take off. Very little evidence survives about the complexities of Youngs relationships with his mother and father. Robinson does not credit them, or anyone else, with shaping Youngs extraordinary mind. Despite the lack of details concerning Youngs relationships, however, anyone interested in what it means to be a genius should read this book.",
+    "hypothesis": "Youngs talent as a doctor surpassed his other skills.",
+    "gold_label": "Contradiction",
+    "prediction": "Contradiction",
+    "qa_pairs": [
+      {
+        "question": "Did Young's talent as a doctor exceed his proficiency in other skills?",
+        "answer": "Young's talent as a doctor did not exceed his proficiency in scholarship of natural philosophy or linguistics.",
+        "answerable": true,
+        "located_indices": [
+          23
+        ]
+      },
+      {
+        "question": "Was Young more skilled as a doctor than in any of his other abilities?",
+        "answer": "Young's skill as a physician was not equal to his skills in natural philosophy or linguistics.",
+        "answerable": true,
+        "located_indices": [
+          23
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Youngs talent",
+      "a doctor",
+      "other skills",
+      "surpassed"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_100",
+    "premise": "Traditionally medicine was the science of curing illness with treatments. For thousands of years people would have used plants and would have turned to priests for cures. In more recent times illness has been attributed less to the intervention of gods or magic and instead to natural causes. Medicine today is as much concerned with prevention as cure. Doctors use treatments of many types, including radiation and vaccination, both of which were unknown until very recent times. Other treatments have been known about and practised for centuries. Muslim doctors were skilled surgeons and treated pain with opium. When Europeans first reached the Americas they found healers who used many plants to cure illnesses. The Europeans adopted many of these treatments and some are still effective and in use today.",
+    "hypothesis": "Medicine is a science that owes its success to modern treatments.",
+    "gold_label": "Contradiction",
+    "prediction": "Neutral",
+    "qa_pairs": [
+      {
+        "question": "Is it stated in the premise that medicine can be classified as a science?",
+        "answer": "Traditionally, medicine has been considered the science of curing illnesses with treatments.",
+        "answerable": true,
+        "located_indices": [
+          0
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Medicine",
+      "a science",
+      "success",
+      "modern treatments",
+      "owes"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_101",
+    "premise": "Traditionally medicine was the science of curing illness with treatments. For thousands of years people would have used plants and would have turned to priests for cures. In more recent times illness has been attributed less to the intervention of gods or magic and instead to natural causes. Medicine today is as much concerned with prevention as cure. Doctors use treatments of many types, including radiation and vaccination, both of which were unknown until very recent times. Other treatments have been known about and practised for centuries. Muslim doctors were skilled surgeons and treated pain with opium. When Europeans first reached the Americas they found healers who used many plants to cure illnesses. The Europeans adopted many of these treatments and some are still effective and in use today.",
+    "hypothesis": "Modern medicine is the science of curing illness.",
+    "gold_label": "Contradiction",
+    "prediction": "Contradiction",
+    "qa_pairs": [
+      {
+        "question": "Is modern medicine described as the science of curing illness?",
+        "answer": "Modern medicine is not solely described as the science of curing illness, but also focuses on prevention.",
+        "answerable": true,
+        "located_indices": [
+          0,
+          3
+        ]
+      },
+      {
+        "question": "Does the premise state that modern medicine's purpose is to cure illnesses?",
+        "answer": "Medicine today is as much concerned with prevention as cure, which suggests its purpose is not solely to cure illnesses.",
+        "answerable": true,
+        "located_indices": [
+          0,
+          3
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Modern medicine",
+      "the science",
+      "illness",
+      "curing"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_102",
+    "premise": "Traditionally uniforms were and for some industries still are manufactured to protect the worker. When they were first designed, it is also likely that all uniforms made symbolic sense - those for the military, for example, were originally intended to impress and even terrify the enemy; other uniforms denoted a hierarchy - chefs wore white because they worked with flour, but the main chef wore a black hat to show he supervised. The last 30 years, however, have seen an increasing emphasis on their role in projecting the image of an organisation and in uniting the workforce into a homogeneous unit particularly in customer facing\" industries, and especially in financial services and retailing. From uniforms and workwear has emerged corporate clothing. \"The people you employ are your ambassadors, \" says Peter Griffin, managing director of a major retailer in the UK. \"What they say, how they look, and how they behave is terribly important. \" The result is a new way of looking at corporate workwear. From being a simple means of identifying who is a member of staff, the uniform is emerging as a new channel of marketing communication. Truly effective marketing through visual cues such as uniforms is a subtle art, however. Wittingly or unwittingly, how we look sends all sorts of powerful subliminal messages to other people. Dark colours give an aura of authority while lighter pastel shades suggest approachability. Certain dress style creates a sense of conservatism, others a sense of openness to new ideas. Neatness can suggest efficiency but, if it is overdone, it can spill over and indicate an obsession with power. \"If the company is selling quality, then it must have quality uniforms. If it is selling style, its uniforms must be stylish. If it wants to appear innovative, everybody cant look exactly the same. Subliminally we see all these things, \" says Lynn Elvy, a director of image consultants House of Colour. But translating corporate philosophies into the right mix of colour, style, degree of branding and uniformity can be a fraught process. And it is not always successful. According to Company Clothing magazine, there are 1000 companies supplying the workwear and corporate clothing market. Of these, 22 account for 85% of total sales - 380 million in 1994. A successful uniform needs to balance two key sets of needs. On the one hand, no uniform will work if staff feel uncomfortable or ugly. Giving the wearers a choice has become a key element in the way corporate clothing is introduced and managed. On the other, it is pointless if the look doesnt express the businesss marketing strategy. The greatest challenge in this respect is time. When it comes to human perceptions, first impressions count. Customers will size up the way staff look in just a few seconds, and that few seconds will colour their attitudes from then on. Those few seconds can beReading so important that big companies are prepared to invest years, and millions of pounds, getting them right. In addition, some uniform companies also offer rental services. \"There will be an increasing specialisation in the marketplace, \" predicts Mr Blyth, Customer Services Manager of a large UK bank. The past two or three years have seen consolidation. Increasingly, the big suppliers are becoming managing agents, which means they offer a total service to put together the whole complex operation of a companys corporate clothing package - which includes reliable sourcing, managing the inventory, budget control and distribution to either central locations or to each staff member individually. Huge investments have been made in new systems, information technology and amassing quality assurance accreditations. Corporate clothing does have potential for further growth. Some banks have yet to introduce a full corporate look; police forces are researching a complete new look for the 21st century. And many employees now welcome a company wardrobe. A recent survey of staff found that 90 per cent welcomed having clothing which reflected the corporate identity.",
+    "hypothesis": "Clothing companies are planning to offer financial services in the future.",
+    "gold_label": "Contradiction",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Clothing companies",
+      "financial services",
+      "the future",
+      "planning",
+      "offer"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  },
+  {
+    "id": "id_103",
+    "premise": "Traditionally uniforms were and for some industries still are manufactured to protect the worker. When they were first designed, it is also likely that all uniforms made symbolic sense - those for the military, for example, were originally intended to impress and even terrify the enemy; other uniforms denoted a hierarchy - chefs wore white because they worked with flour, but the main chef wore a black hat to show he supervised. The last 30 years, however, have seen an increasing emphasis on their role in projecting the image of an organisation and in uniting the workforce into a homogeneous unit particularly in customer facing\" industries, and especially in financial services and retailing. From uniforms and workwear has emerged corporate clothing. \"The people you employ are your ambassadors, \" says Peter Griffin, managing director of a major retailer in the UK. \"What they say, how they look, and how they behave is terribly important. \" The result is a new way of looking at corporate workwear. From being a simple means of identifying who is a member of staff, the uniform is emerging as a new channel of marketing communication. Truly effective marketing through visual cues such as uniforms is a subtle art, however. Wittingly or unwittingly, how we look sends all sorts of powerful subliminal messages to other people. Dark colours give an aura of authority while lighter pastel shades suggest approachability. Certain dress style creates a sense of conservatism, others a sense of openness to new ideas. Neatness can suggest efficiency but, if it is overdone, it can spill over and indicate an obsession with power. \"If the company is selling quality, then it must have quality uniforms. If it is selling style, its uniforms must be stylish. If it wants to appear innovative, everybody cant look exactly the same. Subliminally we see all these things, \" says Lynn Elvy, a director of image consultants House of Colour. But translating corporate philosophies into the right mix of colour, style, degree of branding and uniformity can be a fraught process. And it is not always successful. According to Company Clothing magazine, there are 1000 companies supplying the workwear and corporate clothing market. Of these, 22 account for 85% of total sales - 380 million in 1994. A successful uniform needs to balance two key sets of needs. On the one hand, no uniform will work if staff feel uncomfortable or ugly. Giving the wearers a choice has become a key element in the way corporate clothing is introduced and managed. On the other, it is pointless if the look doesnt express the businesss marketing strategy. The greatest challenge in this respect is time. When it comes to human perceptions, first impressions count. Customers will size up the way staff look in just a few seconds, and that few seconds will colour their attitudes from then on. Those few seconds can beReading so important that big companies are prepared to invest years, and millions of pounds, getting them right. In addition, some uniform companies also offer rental services. \"There will be an increasing specialisation in the marketplace, \" predicts Mr Blyth, Customer Services Manager of a large UK bank. The past two or three years have seen consolidation. Increasingly, the big suppliers are becoming managing agents, which means they offer a total service to put together the whole complex operation of a companys corporate clothing package - which includes reliable sourcing, managing the inventory, budget control and distribution to either central locations or to each staff member individually. Huge investments have been made in new systems, information technology and amassing quality assurance accreditations. Corporate clothing does have potential for further growth. Some banks have yet to introduce a full corporate look; police forces are researching a complete new look for the 21st century. And many employees now welcome a company wardrobe. A recent survey of staff found that 90 per cent welcomed having clothing which reflected the corporate identity.",
+    "hypothesis": "Uniforms are best selected by marketing consultants.",
+    "gold_label": "Neutral",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Uniforms",
+      "consultants",
+      "selected",
+      "marketing"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  },
+  {
+    "id": "id_104",
+    "premise": "Traditionally uniforms were and for some industries still are manufactured to protect the worker. When they were first designed, it is also likely that all uniforms made symbolic sense - those for the military, for example, were originally intended to impress and even terrify the enemy; other uniforms denoted a hierarchy - chefs wore white because they worked with flour, but the main chef wore a black hat to show he supervised. The last 30 years, however, have seen an increasing emphasis on their role in projecting the image of an organisation and in uniting the workforce into a homogeneous unit particularly in customer facing\" industries, and especially in financial services and retailing. From uniforms and workwear has emerged corporate clothing. \"The people you employ are your ambassadors, \" says Peter Griffin, managing director of a major retailer in the UK. \"What they say, how they look, and how they behave is terribly important. \" The result is a new way of looking at corporate workwear. From being a simple means of identifying who is a member of staff, the uniform is emerging as a new channel of marketing communication. Truly effective marketing through visual cues such as uniforms is a subtle art, however. Wittingly or unwittingly, how we look sends all sorts of powerful subliminal messages to other people. Dark colours give an aura of authority while lighter pastel shades suggest approachability. Certain dress style creates a sense of conservatism, others a sense of openness to new ideas. Neatness can suggest efficiency but, if it is overdone, it can spill over and indicate an obsession with power. \"If the company is selling quality, then it must have quality uniforms. If it is selling style, its uniforms must be stylish. If it wants to appear innovative, everybody cant look exactly the same. Subliminally we see all these things, \" says Lynn Elvy, a director of image consultants House of Colour. But translating corporate philosophies into the right mix of colour, style, degree of branding and uniformity can be a fraught process. And it is not always successful. According to Company Clothing magazine, there are 1000 companies supplying the workwear and corporate clothing market. Of these, 22 account for 85% of total sales - 380 million in 1994. A successful uniform needs to balance two key sets of needs. On the one hand, no uniform will work if staff feel uncomfortable or ugly. Giving the wearers a choice has become a key element in the way corporate clothing is introduced and managed. On the other, it is pointless if the look doesnt express the businesss marketing strategy. The greatest challenge in this respect is time. When it comes to human perceptions, first impressions count. Customers will size up the way staff look in just a few seconds, and that few seconds will colour their attitudes from then on. Those few seconds can beReading so important that big companies are prepared to invest years, and millions of pounds, getting them right. In addition, some uniform companies also offer rental services. \"There will be an increasing specialisation in the marketplace, \" predicts Mr Blyth, Customer Services Manager of a large UK bank. The past two or three years have seen consolidation. Increasingly, the big suppliers are becoming managing agents, which means they offer a total service to put together the whole complex operation of a companys corporate clothing package - which includes reliable sourcing, managing the inventory, budget control and distribution to either central locations or to each staff member individually. Huge investments have been made in new systems, information technology and amassing quality assurance accreditations. Corporate clothing does have potential for further growth. Some banks have yet to introduce a full corporate look; police forces are researching a complete new look for the 21st century. And many employees now welcome a company wardrobe. A recent survey of staff found that 90 per cent welcomed having clothing which reflected the corporate identity.",
+    "hypothesis": "Most businesses that supply company clothing are successful.",
+    "gold_label": "Contradiction",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Most businesses",
+      "company clothing",
+      "supply"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  },
+  {
+    "id": "id_105",
+    "premise": "Traditionally uniforms were and for some industries still are manufactured to protect the worker. When they were first designed, it is also likely that all uniforms made symbolic sense - those for the military, for example, were originally intended to impress and even terrify the enemy; other uniforms denoted a hierarchy - chefs wore white because they worked with flour, but the main chef wore a black hat to show he supervised. The last 30 years, however, have seen an increasing emphasis on their role in projecting the image of an organisation and in uniting the workforce into a homogeneous unit particularly in customer facing\" industries, and especially in financial services and retailing. From uniforms and workwear has emerged corporate clothing. \"The people you employ are your ambassadors, \" says Peter Griffin, managing director of a major retailer in the UK. \"What they say, how they look, and how they behave is terribly important. \" The result is a new way of looking at corporate workwear. From being a simple means of identifying who is a member of staff, the uniform is emerging as a new channel of marketing communication. Truly effective marketing through visual cues such as uniforms is a subtle art, however. Wittingly or unwittingly, how we look sends all sorts of powerful subliminal messages to other people. Dark colours give an aura of authority while lighter pastel shades suggest approachability. Certain dress style creates a sense of conservatism, others a sense of openness to new ideas. Neatness can suggest efficiency but, if it is overdone, it can spill over and indicate an obsession with power. \"If the company is selling quality, then it must have quality uniforms. If it is selling style, its uniforms must be stylish. If it wants to appear innovative, everybody cant look exactly the same. Subliminally we see all these things, \" says Lynn Elvy, a director of image consultants House of Colour. But translating corporate philosophies into the right mix of colour, style, degree of branding and uniformity can be a fraught process. And it is not always successful. According to Company Clothing magazine, there are 1000 companies supplying the workwear and corporate clothing market. Of these, 22 account for 85% of total sales - 380 million in 1994. A successful uniform needs to balance two key sets of needs. On the one hand, no uniform will work if staff feel uncomfortable or ugly. Giving the wearers a choice has become a key element in the way corporate clothing is introduced and managed. On the other, it is pointless if the look doesnt express the businesss marketing strategy. The greatest challenge in this respect is time. When it comes to human perceptions, first impressions count. Customers will size up the way staff look in just a few seconds, and that few seconds will colour their attitudes from then on. Those few seconds can beReading so important that big companies are prepared to invest years, and millions of pounds, getting them right. In addition, some uniform companies also offer rental services. \"There will be an increasing specialisation in the marketplace, \" predicts Mr Blyth, Customer Services Manager of a large UK bank. The past two or three years have seen consolidation. Increasingly, the big suppliers are becoming managing agents, which means they offer a total service to put together the whole complex operation of a companys corporate clothing package - which includes reliable sourcing, managing the inventory, budget control and distribution to either central locations or to each staff member individually. Huge investments have been made in new systems, information technology and amassing quality assurance accreditations. Corporate clothing does have potential for further growth. Some banks have yet to introduce a full corporate look; police forces are researching a complete new look for the 21st century. And many employees now welcome a company wardrobe. A recent survey of staff found that 90 per cent welcomed having clothing which reflected the corporate identity.",
+    "hypothesis": "Being too smart could have a negative impact on customers.",
+    "gold_label": "Entailment",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "a negative impact",
+      "customers"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  },
+  {
+    "id": "id_106",
+    "premise": "Traditionally uniforms were and for some industries still are manufactured to protect the worker. When they were first designed, it is also likely that all uniforms made symbolic sense - those for the military, for example, were originally intended to impress and even terrify the enemy; other uniforms denoted a hierarchy - chefs wore white because they worked with flour, but the main chef wore a black hat to show he supervised. The last 30 years, however, have seen an increasing emphasis on their role in projecting the image of an organisation and in uniting the workforce into a homogeneous unit particularly in customer facing\" industries, and especially in financial services and retailing. From uniforms and workwear has emerged corporate clothing. \"The people you employ are your ambassadors, \" says Peter Griffin, managing director of a major retailer in the UK. \"What they say, how they look, and how they behave is terribly important. \" The result is a new way of looking at corporate workwear. From being a simple means of identifying who is a member of staff, the uniform is emerging as a new channel of marketing communication. Truly effective marketing through visual cues such as uniforms is a subtle art, however. Wittingly or unwittingly, how we look sends all sorts of powerful subliminal messages to other people. Dark colours give an aura of authority while lighter pastel shades suggest approachability. Certain dress style creates a sense of conservatism, others a sense of openness to new ideas. Neatness can suggest efficiency but, if it is overdone, it can spill over and indicate an obsession with power. \"If the company is selling quality, then it must have quality uniforms. If it is selling style, its uniforms must be stylish. If it wants to appear innovative, everybody cant look exactly the same. Subliminally we see all these things, \" says Lynn Elvy, a director of image consultants House of Colour. But translating corporate philosophies into the right mix of colour, style, degree of branding and uniformity can be a fraught process. And it is not always successful. According to Company Clothing magazine, there are 1000 companies supplying the workwear and corporate clothing market. Of these, 22 account for 85% of total sales - 380 million in 1994. A successful uniform needs to balance two key sets of needs. On the one hand, no uniform will work if staff feel uncomfortable or ugly. Giving the wearers a choice has become a key element in the way corporate clothing is introduced and managed. On the other, it is pointless if the look doesnt express the businesss marketing strategy. The greatest challenge in this respect is time. When it comes to human perceptions, first impressions count. Customers will size up the way staff look in just a few seconds, and that few seconds will colour their attitudes from then on. Those few seconds can beReading so important that big companies are prepared to invest years, and millions of pounds, getting them right. In addition, some uniform companies also offer rental services. \"There will be an increasing specialisation in the marketplace, \" predicts Mr Blyth, Customer Services Manager of a large UK bank. The past two or three years have seen consolidation. Increasingly, the big suppliers are becoming managing agents, which means they offer a total service to put together the whole complex operation of a companys corporate clothing package - which includes reliable sourcing, managing the inventory, budget control and distribution to either central locations or to each staff member individually. Huge investments have been made in new systems, information technology and amassing quality assurance accreditations. Corporate clothing does have potential for further growth. Some banks have yet to introduce a full corporate look; police forces are researching a complete new look for the 21st century. And many employees now welcome a company wardrobe. A recent survey of staff found that 90 per cent welcomed having clothing which reflected the corporate identity.",
+    "hypothesis": "Uniforms were more carefully made in the past than they are today.",
+    "gold_label": "Neutral",
+    "prediction": "Neutral",
+    "qa_pairs": [
+      {
+        "question": "Were uniforms made with greater care in the past compared to today?",
+        "answer": "The extracted sentences do not provide direct comparison of the care in uniform manufacturing between past and present.",
+        "answerable": true,
+        "located_indices": [
+          0,
+          1,
+          26
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Uniforms",
+      "the past",
+      "today",
+      "made"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_107",
+    "premise": "Traditionally uniforms were and for some industries still are manufactured to protect the worker. When they were first designed, it is also likely that all uniforms made symbolic sense - those for the military, for example, were originally intended to impress and even terrify the enemy; other uniforms denoted a hierarchy - chefs wore white because they worked with flour, but the main chef wore a black hat to show he supervised. The last 30 years, however, have seen an increasing emphasis on their role in projecting the image of an organisation and in uniting the workforce into a homogeneous unit particularly in customer facing\" industries, and especially in financial services and retailing. From uniforms and workwear has emerged corporate clothing. \"The people you employ are your ambassadors, \" says Peter Griffin, managing director of a major retailer in the UK. \"What they say, how they look, and how they behave is terribly important. \" The result is a new way of looking at corporate workwear. From being a simple means of identifying who is a member of staff, the uniform is emerging as a new channel of marketing communication. Truly effective marketing through visual cues such as uniforms is a subtle art, however. Wittingly or unwittingly, how we look sends all sorts of powerful subliminal messages to other people. Dark colours give an aura of authority while lighter pastel shades suggest approachability. Certain dress style creates a sense of conservatism, others a sense of openness to new ideas. Neatness can suggest efficiency but, if it is overdone, it can spill over and indicate an obsession with power. \"If the company is selling quality, then it must have quality uniforms. If it is selling style, its uniforms must be stylish. If it wants to appear innovative, everybody cant look exactly the same. Subliminally we see all these things, \" says Lynn Elvy, a director of image consultants House of Colour. But translating corporate philosophies into the right mix of colour, style, degree of branding and uniformity can be a fraught process. And it is not always successful. According to Company Clothing magazine, there are 1000 companies supplying the workwear and corporate clothing market. Of these, 22 account for 85% of total sales - 380 million in 1994. A successful uniform needs to balance two key sets of needs. On the one hand, no uniform will work if staff feel uncomfortable or ugly. Giving the wearers a choice has become a key element in the way corporate clothing is introduced and managed. On the other, it is pointless if the look doesnt express the businesss marketing strategy. The greatest challenge in this respect is time. When it comes to human perceptions, first impressions count. Customers will size up the way staff look in just a few seconds, and that few seconds will colour their attitudes from then on. Those few seconds can beReading so important that big companies are prepared to invest years, and millions of pounds, getting them right. In addition, some uniform companies also offer rental services. \"There will be an increasing specialisation in the marketplace, \" predicts Mr Blyth, Customer Services Manager of a large UK bank. The past two or three years have seen consolidation. Increasingly, the big suppliers are becoming managing agents, which means they offer a total service to put together the whole complex operation of a companys corporate clothing package - which includes reliable sourcing, managing the inventory, budget control and distribution to either central locations or to each staff member individually. Huge investments have been made in new systems, information technology and amassing quality assurance accreditations. Corporate clothing does have potential for further growth. Some banks have yet to introduce a full corporate look; police forces are researching a complete new look for the 21st century. And many employees now welcome a company wardrobe. A recent survey of staff found that 90 per cent welcomed having clothing which reflected the corporate identity.",
+    "hypothesis": "Uniforms make employees feel part of a team.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Do uniforms contribute to employees feeling like they are part of a team?",
+        "answer": "The sentences suggest uniforms unite the workforce into a homogeneous unit, which may contribute to employees feeling like they are part of a team.",
+        "answerable": true,
+        "located_indices": [
+          2,
+          7
+        ]
+      },
+      {
+        "question": "According to the passage, how do employees feel when wearing uniforms?",
+        "answer": "Employees may feel uncomfortable if they feel ugly in uniforms, but many employees now welcome wearing a company wardrobe.",
+        "answerable": true,
+        "located_indices": [
+          21,
+          22,
+          36
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Uniforms",
+      "employees",
+      "part",
+      "a team",
+      "make",
+      "feel"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_108",
+    "premise": "Traditionally uniforms were and for some industries still are manufactured to protect the worker. When they were first designed, it is also likely that all uniforms made symbolic sense - those for the military, for example, were originally intended to impress and even terrify the enemy; other uniforms denoted a hierarchy - chefs wore white because they worked with flour, but the main chef wore a black hat to show he supervised. The last 30 years, however, have seen an increasing emphasis on their role in projecting the image of an organisation and in uniting the workforce into a homogeneous unit particularly in customer facing\" industries, and especially in financial services and retailing. From uniforms and workwear has emerged corporate clothing. \"The people you employ are your ambassadors, \" says Peter Griffin, managing director of a major retailer in the UK. \"What they say, how they look, and how they behave is terribly important. \" The result is a new way of looking at corporate workwear. From being a simple means of identifying who is a member of staff, the uniform is emerging as a new channel of marketing communication. Truly effective marketing through visual cues such as uniforms is a subtle art, however. Wittingly or unwittingly, how we look sends all sorts of powerful subliminal messages to other people. Dark colours give an aura of authority while lighter pastel shades suggest approachability. Certain dress style creates a sense of conservatism, others a sense of openness to new ideas. Neatness can suggest efficiency but, if it is overdone, it can spill over and indicate an obsession with power. \"If the company is selling quality, then it must have quality uniforms. If it is selling style, its uniforms must be stylish. If it wants to appear innovative, everybody cant look exactly the same. Subliminally we see all these things, \" says Lynn Elvy, a director of image consultants House of Colour. But translating corporate philosophies into the right mix of colour, style, degree of branding and uniformity can be a fraught process. And it is not always successful. According to Company Clothing magazine, there are 1000 companies supplying the workwear and corporate clothing market. Of these, 22 account for 85% of total sales - 380 million in 1994. A successful uniform needs to balance two key sets of needs. On the one hand, no uniform will work if staff feel uncomfortable or ugly. Giving the wearers a choice has become a key element in the way corporate clothing is introduced and managed. On the other, it is pointless if the look doesnt express the businesss marketing strategy. The greatest challenge in this respect is time. When it comes to human perceptions, first impressions count. Customers will size up the way staff look in just a few seconds, and that few seconds will colour their attitudes from then on. Those few seconds can beReading so important that big companies are prepared to invest years, and millions of pounds, getting them right. In addition, some uniform companies also offer rental services. \"There will be an increasing specialisation in the marketplace, \" predicts Mr Blyth, Customer Services Manager of a large UK bank. The past two or three years have seen consolidation. Increasingly, the big suppliers are becoming managing agents, which means they offer a total service to put together the whole complex operation of a companys corporate clothing package - which includes reliable sourcing, managing the inventory, budget control and distribution to either central locations or to each staff member individually. Huge investments have been made in new systems, information technology and amassing quality assurance accreditations. Corporate clothing does have potential for further growth. Some banks have yet to introduce a full corporate look; police forces are researching a complete new look for the 21st century. And many employees now welcome a company wardrobe. A recent survey of staff found that 90 per cent welcomed having clothing which reflected the corporate identity.",
+    "hypothesis": "Using uniforms as a marketing tool requires great care.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Does the premise mention that using uniforms for marketing purposes needs careful consideration?",
+        "answer": "The premise suggests that translating corporate philosophies into the right mix for uniforms can be a fraught process, implying careful consideration is needed.",
+        "answerable": true,
+        "located_indices": [
+          8,
+          12,
+          16,
+          17,
+          18
+        ]
+      },
+      {
+        "question": "Does the premise state or imply that caution is necessary when using uniforms as part of a marketing strategy?",
+        "answer": "The premise implies caution is necessary when using uniforms as part of a marketing strategy due to the subtle art required and potential for overdone neatness to indicate an obsession with power.",
+        "answerable": true,
+        "located_indices": [
+          8,
+          12,
+          27,
+          28
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "uniforms",
+      "a marketing tool",
+      "great care",
+      "Using",
+      "requires"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_109",
+    "premise": "Traffic jams on most of the roads in the city have become a regular feature during monsoon.",
+    "hypothesis": "Material used for road construction cannot withstand the fury of monsoon resulting into innumerable pot holes on the roads.",
+    "gold_label": "Entailment",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Material",
+      "road construction",
+      "the fury",
+      "monsoon",
+      "innumerable pot holes",
+      "the roads",
+      "used",
+      "withstand",
+      "resulting"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  },
+  {
+    "id": "id_11",
+    "premise": "Thomas Young The Last True Know-It-All Thomas Young (1773-1829) contributed 63 articles to the Encyclopedia Britannica, including 46 biographical entries (mostly on scientists and classicists) and substantial essays on Bridge, Chromatics, Egypt, Languages and Tides. Was someone who could write authoritatively about so many subjects a polymath, a genius or a dilettante? In an ambitious new biography, Andrew Robinson argues that Young is a good contender for the epitaph the last man who knew everything. Young has competition, however: The phrase, which Robinson takes for his title, also serves as the subtitle of two other recent biographies: Leonard Warrens 1998 life of paleontologist Joseph Leidy (1823-1891) and Paula Findlens 2004 book on Athanasius Kircher (1602-1680), another polymath. Young, of course, did more than write encyclopedia entries. He presented his first paper to the Royal Society of London at the age of 20 and was elected a Fellow a week after his 21st birthday. In the paper, Young explained the process of accommodation in the human eye on how the eye focuses properly on objects at varying distances. Young hypothesised that this was achieved by changes in the shape of the lens. Young also theorised that light traveled in waves and ho believed that, to account for the ability to see in color, there must be three receptors in the eye corresponding to the three principal colors to which the retina could respond: red, green, violet. All these hypotheses Were subsequently proved to be correct. Later in his life, when he was in his forties, Young was instrumental in cracking the code that unlocked the unknown script on the Rosetta Stone, a tablet that was found in Egypt by the Napoleonic army in 1799. The stone contains text in three alphabets: Greek, something unrecognisable and Egyptian hieroglyphs. The unrecognisable script is now known as demotic and, as Young deduced, is related directly to hieroglyphic. His initial work on this appeared in his Britannica entry on Egypt. In another entry, he coined the term Indo-European to describe the family of languages spoken throughout most of Europe and northern India. These are the landmark achievements of a man who was a child prodigy and who, unlike many remarkable children, did not disappear into oblivion as an adult. Bom in 1773 in Somerset in England, Young lived from an early age with his maternal grandfather, eventually leaving to attend boarding school. He had devoured books from the age of two, and through his own initiative he excelled at Latin, Greek, mathematics and natural philosophy. After leaving school, he was greatly encouraged by his mothers uncle, Richard Brocklesby, a physician and Fellow of the Royal Society. Following Brocklesbys lead, Young decided to pursue a career in medicine. He studied in London, following the medical circuit, and then moved on to more formal education in Edinburgh, Gottingen and Cambridge. After completing his medical training at the University of Cambridge in 1808, Young set up practice as a physician in London. He soon became a Fellow of the Royal College of Physicians and a few years later was appointed physician at St. Georges Hospital. Youngs skill as a physician, however, did not equal his skill as a scholar of natural philosophy or linguistics. Earlier, in 1801, he had been appointed to a professorship of natural philosophy at the Royal Institution, where he delivered as many as 60 lectures in a year. These were published in two volumes in 1807. In 1804 Young had become secretary to the Royal Society, a post he would hold until his death. His opinions were sought on civic and national matters, such as the introduction of gas lighting to London and methods of ship construction. From 1819 he was superintendent of the Nautical Almanac and secretary to the Board of Longitude. From 1824 to 1829 he was physician to and inspector of calculations for the Palladian Insurance Company. Between 1816 and 1825 he contributed his many and various entries to the Encyclopedia Britannica, and throughout his career he authored numerous books, essays and papers. Young is a perfect subject for a biography perfect, but daunting. Few men contributed so much to so many technical fields. Robinsons aim is to introduce non-scientists to Youngs work and life. He succeeds, providing clear expositions of the technical material (especially that on optics and Egyptian hieroglyphs). Some readers of this book will, like Robinson, find Youngs accomplishments impressive; others will see him as some historians have as a dilettante. Yet despite the rich material presented in this book, readers will not end up knowing Young personally. We catch glimpses of a playful Young, doodling Greek and Latin phrases in his notes on medical lectures and translating the verses that a young lady had written on the walls of a summerhouse into Greek elegiacs. Young was introduced into elite society, attended the theatre and learned to dance and play the flute. In addition, he was an accomplished horseman. However, his personal life looks pale next to his vibrant career and studies. Young married Eliza Maxwell in 1804, and according to Robinson, their marriage was a happy one and she appreciated his work, Almost all we know about her is that she sustained her husband through some rancorous disputes about optics and that she worried about money when his medical career was slow to take off. Very little evidence survives about the complexities of Youngs relationships with his mother and father. Robinson does not credit them, or anyone else, with shaping Youngs extraordinary mind. Despite the lack of details concerning Youngs relationships, however, anyone interested in what it means to be a genius should read this book.",
+    "hypothesis": "Like others, Young wasnt so brilliant when growing up.",
+    "gold_label": "Contradiction",
+    "prediction": "Contradiction",
+    "qa_pairs": [
+      {
+        "question": "Was Young not considered brilliant when growing up?",
+        "answer": "The extracted sentences suggest Young was exceptionally precocious in his studies, which implies he was likely considered brilliant.",
+        "answerable": true,
+        "located_indices": [
+          17,
+          18
+        ]
+      },
+      {
+        "question": "Did others also not show brilliance when they were growing up?",
+        "answer": "The sentence mentions that unlike many remarkable children, this individual did not fade away in adulthood, implying that others might have disappeared or not shown continued brilliance.",
+        "answerable": true,
+        "located_indices": [
+          15
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "others",
+      "Young",
+      "wasnt",
+      "growing"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_110",
+    "premise": "Traffic jams on most of the roads in the city have become a regular feature during monsoon.",
+    "hypothesis": "Number of vehicles coming on the roads is much more in monsoon as compared to other seasons.",
+    "gold_label": "Neutral",
+    "prediction": "Neutral",
+    "qa_pairs": [
+      {
+        "question": "Does the number of vehicles on the roads during monsoon exceed the number of vehicles on the roads during other seasons?",
+        "answer": "The extracted sentence indicates traffic jams are common during monsoon but does not provide information about the number of vehicles compared to other seasons.",
+        "answerable": true,
+        "located_indices": [
+          0
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Number",
+      "vehicles",
+      "the roads",
+      "monsoon",
+      "other seasons",
+      "coming",
+      "compared"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_111",
+    "premise": "Traffic levels have fallen by 15% and congestion is down by a third. In August the Mayor of London announced a plan to extend the 5 charge for driving in central London during the working week westwards to Kensington and Chelsea. This was despite a consultative process in which almost 70,000 people and the vast majority of respondents said they did not want the scheme extended. However, the problem with the proposed extension is not only political. Extending the zone to a thickly populated area of London will mean that many people will qualify for the residents discount, allowing them to drive to the city without paying any extra. Extending the scheme therefore may mean that total revenues drop from the current 90 million a year.",
+    "hypothesis": "The extended scheme may face continued public opposition.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Does the premise mention any public opposition to the extended scheme?",
+        "answer": "The premise indicates that the vast majority of respondents opposed the extension of the scheme during a consultative process.",
+        "answerable": true,
+        "located_indices": [
+          2
+        ]
+      },
+      {
+        "question": "Is there any indication in the premise that the public opposition to the extended scheme is ongoing or likely to continue?",
+        "answer": "The premise indicates public opposition to extending the scheme but does not provide information on whether this opposition is ongoing or likely to continue.",
+        "answerable": true,
+        "located_indices": [
+          2
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "The extended scheme",
+      "continued public opposition",
+      "face"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_112",
+    "premise": "Traffic levels have fallen by 15% and congestion is down by a third. In August the Mayor of London announced a plan to extend the 5 charge for driving in central London during the working week westwards to Kensington and Chelsea. This was despite a consultative process in which almost 70,000 people and the vast majority of respondents said they did not want the scheme extended. However, the problem with the proposed extension is not only political. Extending the zone to a thickly populated area of London will mean that many people will qualify for the residents discount, allowing them to drive to the city without paying any extra. Extending the scheme therefore may mean that total revenues drop from the current 90 million a year.",
+    "hypothesis": "Kensington and Chelsea have high residential populations.",
+    "gold_label": "Entailment",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Kensington",
+      "Chelsea",
+      "high residential populations"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  },
+  {
+    "id": "id_113",
+    "premise": "Traffic levels have fallen by 15% and congestion is down by a third. In August the Mayor of London announced a plan to extend the 5 charge for driving in central London during the working week westwards to Kensington and Chelsea. This was despite a consultative process in which almost 70,000 people and the vast majority of respondents said they did not want the scheme extended. However, the problem with the proposed extension is not only political. Extending the zone to a thickly populated area of London will mean that many people will qualify for the residents discount, allowing them to drive to the city without paying any extra. Extending the scheme therefore may mean that total revenues drop from the current 90 million a year.",
+    "hypothesis": "Whilst the majority of respondents voted against the extension it is possible that they welcomed the fall in traffic levels and lower congestion.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Did the majority of respondents vote against the extension?",
+        "answer": "The vast majority of respondents did not want the scheme extended.",
+        "answerable": true,
+        "located_indices": [
+          2
+        ]
+      },
+      {
+        "question": "Did the respondents welcome the fall in traffic levels and lower congestion?",
+        "answer": "The extracted sentences do not provide information on whether the respondents welcomed the fall in traffic levels and lower congestion.",
+        "answerable": true,
+        "located_indices": [
+          0,
+          2
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "the majority",
+      "respondents",
+      "the extension",
+      "the fall",
+      "traffic levels",
+      "lower congestion",
+      "voted",
+      "welcomed"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_114",
+    "premise": "Traffic levels have fallen by 15% and congestion is down by a third. In August the Mayor of London announced a plan to extend the 5 charge for driving in central London during the working week westwards to Kensington and Chelsea. This was despite a consultative process in which almost 70,000 people and the vast majority of respondents said they did not want the scheme extended. However, the problem with the proposed extension is not only political. Extending the zone to a thickly populated area of London will mean that many people will qualify for the residents discount, allowing them to drive to the city without paying any extra. Extending the scheme therefore may mean that total revenues drop from the current 90 million a year.",
+    "hypothesis": "People who live in Kensington currently do not have to pay 5 to drive to the city.",
+    "gold_label": "Contradiction",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Do residents of Kensington currently face a $5 fee for driving into the city?",
+        "answer": "Residents of Kensington may face a $5 fee for driving into the city as the Mayor plans to extend the charge to Kensington and Chelsea.",
+        "answerable": true,
+        "located_indices": [
+          1
+        ]
+      },
+      {
+        "question": "Are there any current requirements for people living in Kensington to pay $5 when driving to the city?",
+        "answer": "There is a plan to extend a charge for driving in central London to Kensington and Chelsea, but residents may qualify for a discount that could allow them to drive to the city without paying extra.",
+        "answerable": true,
+        "located_indices": [
+          1,
+          4
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "People",
+      "Kensington",
+      "the city",
+      "live",
+      "pay",
+      "drive",
+      "5"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_115",
+    "premise": "Training Facilities The International College of Hospitality Management has more than 120 professional lecturers and international-standard, training facilities. These include three public restaurants, ten commercial training kitchens, simulated front office training facilities, four computer suites, a fully operational winery, and a food science laboratory. The Learning Resource Centre collection is extensive. The student support services provide professional counselling in the areas of health, learning support, language skills, accommodation and welfare. Childcare facilities are also available on campus. International Home The International College of Hospitality Management has students enrolled from more than 20 countries, some of whom stay on campus in International House. Built in 1999, International House is accommodation comprising villa-style units. Each student has their own bedroom, sharing en suite facilities with another student. An adjoining kitchenette and lounge area is shared by the four students in the villa. All meals are served in the College dining room which is next to the student common room. Student privacy and security are priorities. A computer outlet in each bedroom enables student to connect into the College network, providing 24 hour-a-day access. The residence is a two-minute walk to the Colleges sporting and training facilities, and is on a regular bus service to the city centre 10 km away. International House is also being used to enhance on-campus training, from Monday to Friday, Year 1 students, supervised by 2nd Years, are assigned kitchen, waiting, housekeeping and receptionist duties. Simulated check-in/check-out exercises, receptionist duties and breakfast service to a limited number of rooms are also part of the program.",
+    "hypothesis": "The training facility has 10 kitchens",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "How many kitchens are there in the training facility?",
+        "answer": "There are ten commercial training kitchens in the training facility.",
+        "answerable": true,
+        "located_indices": [
+          1
+        ]
+      },
+      {
+        "question": "Does the training facility have exactly 10 kitchens?",
+        "answer": "The training facility has ten commercial training kitchens.",
+        "answerable": true,
+        "located_indices": [
+          1
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "The training facility",
+      "10 kitchens"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_116",
+    "premise": "Training Facilities The International College of Hospitality Management has more than 120 professional lecturers and international-standard, training facilities. These include three public restaurants, ten commercial training kitchens, simulated front office training facilities, four computer suites, a fully operational winery, and a food science laboratory. The Learning Resource Centre collection is extensive. The student support services provide professional counselling in the areas of health, learning support, language skills, accommodation and welfare. Childcare facilities are also available on campus. International Home The International College of Hospitality Management has students enrolled from more than 20 countries, some of whom stay on campus in International House. Built in 1999, International House is accommodation comprising villa-style units. Each student has their own bedroom, sharing en suite facilities with another student. An adjoining kitchenette and lounge area is shared by the four students in the villa. All meals are served in the College dining room which is next to the student common room. Student privacy and security are priorities. A computer outlet in each bedroom enables student to connect into the College network, providing 24 hour-a-day access. The residence is a two-minute walk to the Colleges sporting and training facilities, and is on a regular bus service to the city centre 10 km away. International House is also being used to enhance on-campus training, from Monday to Friday, Year 1 students, supervised by 2nd Years, are assigned kitchen, waiting, housekeeping and receptionist duties. Simulated check-in/check-out exercises, receptionist duties and breakfast service to a limited number of rooms are also part of the program.",
+    "hypothesis": "All students in the program live at International House",
+    "gold_label": "Contradiction",
+    "prediction": "Contradiction",
+    "qa_pairs": [
+      {
+        "question": "Do all students in the program reside at International House?",
+        "answer": "Not all students in the program reside at International House.",
+        "answerable": true,
+        "located_indices": [
+          5,
+          12
+        ]
+      },
+      {
+        "question": "Are there any students in the program who do not live at International House?",
+        "answer": "The extracted sentence does not specify if all students live at International House or if there are students who do not.",
+        "answerable": true,
+        "located_indices": [
+          5
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "All students",
+      "the program live",
+      "International House"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_117",
+    "premise": "Training Facilities The International College of Hospitality Management has more than 120 professional lecturers and international-standard, training facilities. These include three public restaurants, ten commercial training kitchens, simulated front office training facilities, four computer suites, a fully operational winery, and a food science laboratory. The Learning Resource Centre collection is extensive. The student support services provide professional counselling in the areas of health, learning support, language skills, accommodation and welfare. Childcare facilities are also available on campus. International Home The International College of Hospitality Management has students enrolled from more than 20 countries, some of whom stay on campus in International House. Built in 1999, International House is accommodation comprising villa-style units. Each student has their own bedroom, sharing en suite facilities with another student. An adjoining kitchenette and lounge area is shared by the four students in the villa. All meals are served in the College dining room which is next to the student common room. Student privacy and security are priorities. A computer outlet in each bedroom enables student to connect into the College network, providing 24 hour-a-day access. The residence is a two-minute walk to the Colleges sporting and training facilities, and is on a regular bus service to the city centre 10 km away. International House is also being used to enhance on-campus training, from Monday to Friday, Year 1 students, supervised by 2nd Years, are assigned kitchen, waiting, housekeeping and receptionist duties. Simulated check-in/check-out exercises, receptionist duties and breakfast service to a limited number of rooms are also part of the program.",
+    "hypothesis": "Four students share a unit in the residence",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Does the text specify that four students are sharing a unit in the residence?",
+        "answer": "The text specifies that four students are sharing a unit in the residence.",
+        "answerable": true,
+        "located_indices": [
+          7,
+          8
+        ]
+      },
+      {
+        "question": "Is there any mention of the number of units occupied by students in the residence?",
+        "answer": "The extracted sentences do not provide a specific number of units occupied by students in the residence.",
+        "answerable": true,
+        "located_indices": [
+          6,
+          7,
+          8
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Four students share",
+      "a unit",
+      "the residence"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_118",
+    "premise": "Training Facilities The International College of Hospitality Management has more than 120 professional lecturers and international-standard, training facilities. These include three public restaurants, ten commercial training kitchens, simulated front office training facilities, four computer suites, a fully operational winery, and a food science laboratory. The Learning Resource Centre collection is extensive. The student support services provide professional counselling in the areas of health, learning support, language skills, accommodation and welfare. Childcare facilities are also available on campus. International Home The International College of Hospitality Management has students enrolled from more than 20 countries, some of whom stay on campus in International House. Built in 1999, International House is accommodation comprising villa-style units. Each student has their own bedroom, sharing en suite facilities with another student. An adjoining kitchenette and lounge area is shared by the four students in the villa. All meals are served in the College dining room which is next to the student common room. Student privacy and security are priorities. A computer outlet in each bedroom enables student to connect into the College network, providing 24 hour-a-day access. The residence is a two-minute walk to the Colleges sporting and training facilities, and is on a regular bus service to the city centre 10 km away. International House is also being used to enhance on-campus training, from Monday to Friday, Year 1 students, supervised by 2nd Years, are assigned kitchen, waiting, housekeeping and receptionist duties. Simulated check-in/check-out exercises, receptionist duties and breakfast service to a limited number of rooms are also part of the program.",
+    "hypothesis": "The residence is used as part of the training program",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Is the residence utilized for any activities related to the training program?",
+        "answer": "The residence is utilized for activities related to the training program, including kitchen, waiting, housekeeping, and receptionist duties.",
+        "answerable": true,
+        "located_indices": [
+          12,
+          13,
+          14
+        ]
+      },
+      {
+        "question": "Does the training program include using the residence as one of its components?",
+        "answer": "The residence is mentioned as being close to training facilities, but it does not explicitly state that using the residence is a component of the training program.",
+        "answerable": true,
+        "located_indices": [
+          12,
+          13,
+          14
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "The residence",
+      "part",
+      "the training program",
+      "used"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_119",
+    "premise": "Training Facilities The International College of Hospitality Management has more than 120 professional lecturers and international-standard, training facilities. These include three public restaurants, ten commercial training kitchens, simulated front office training facilities, four computer suites, a fully operational winery, and a food science laboratory. The Learning Resource Centre collection is extensive. The student support services provide professional counselling in the areas of health, learning support, language skills, accommodation and welfare. Childcare facilities are also available on campus. International Home The International College of Hospitality Management has students enrolled from more than 20 countries, some of whom stay on campus in International House. Built in 1999, International House is accommodation comprising villa-style units. Each student has their own bedroom, sharing en suite facilities with another student. An adjoining kitchenette and lounge area is shared by the four students in the villa. All meals are served in the College dining room which is next to the student common room. Student privacy and security are priorities. A computer outlet in each bedroom enables student to connect into the College network, providing 24 hour-a-day access. The residence is a two-minute walk to the Colleges sporting and training facilities, and is on a regular bus service to the city centre 10 km away. International House is also being used to enhance on-campus training, from Monday to Friday, Year 1 students, supervised by 2nd Years, are assigned kitchen, waiting, housekeeping and receptionist duties. Simulated check-in/check-out exercises, receptionist duties and breakfast service to a limited number of rooms are also part of the program.",
+    "hypothesis": "All meals in the residence are prepared by the students",
+    "gold_label": "Neutral",
+    "prediction": "Neutral",
+    "qa_pairs": [
+      {
+        "question": "Are all meals in the residence prepared by the students?",
+        "answer": "The extracted sentence does not provide information on who prepares the meals.",
+        "answerable": true,
+        "located_indices": [
+          9
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "All meals",
+      "the residence",
+      "the students",
+      "prepared"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_12",
+    "premise": "Though no heavy rain has been received in the city and water is receding from most areas in Chennai and massive relief operations are underway, the city is staring at an outbreak of epidemics with tones of stinking garbage littering the streets as bright sunshine further eased the situation.",
+    "hypothesis": "Garbage in the city is the major concern of epidemics.",
+    "gold_label": "Entailment",
+    "prediction": "Neutral",
+    "qa_pairs": [
+      {
+        "question": "Does the premise state that garbage in the city is primarily responsible for causing epidemics?",
+        "answer": "The premise mentions that there is a risk of epidemics due to stinking garbage in the streets, but it does not state that garbage is primarily responsible for causing epidemics.",
+        "answerable": true,
+        "located_indices": [
+          0
+        ]
+      },
+      {
+        "question": "Is there mention in the premise of other concerns related to epidemics besides garbage in the city?",
+        "answer": "The extracted sentence mentions garbage littering the streets as a concern related to potential outbreaks of epidemics in Chennai.",
+        "answerable": true,
+        "located_indices": [
+          0
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Garbage",
+      "the city",
+      "the major concern",
+      "epidemics"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_120",
+    "premise": "Trans Fatty Acids A recent editorial in the British Medical Journal (BMJ), written by researchers from the University of Oxford, has called for food labels to list trans fats as well as cholesterol and saturated fat. Trans fats (or trans fatty acids) are a type of unsaturated fatty acid. They occur naturally in small amounts in foods produced from ruminant animals e. g. milk, beef and lamb. However, most of the trans fatty acids in the diet are produced during the process of partial hydrogenation (hardening) of vegetable oils into semi-solid fats. They are therefore found in hard margarines, partially hydrogenated cooking oils, and in some bakery products, fried foods, and other processed foods that are made using these. Trans fatty acids have an adverse effect on certain chemicals, known as lipids, which are found in the blood and have been shown to increase the risk of heart disease. They also increase LDL-cholesterol (the bad cholesterol) and decrease HDL-cholesterol (the good cholesterol). They may also have adverse effects on cardiovascular disease risk that are independent of an effect on blood lipids (Mozaffarian et al. 2006). In a recent review of prospective studies investigating the effects of trans fatty acids, a 2% increase in energy intake from trans fatty acids was associated with a 23% increase in the incidence of heart disease. The authors also reported that the adverse effects of trans fatty acids were observed even at very low intakes (3% of total daily energy intake, or about 2-7g per day) (Mozaffarian et al. 2006). However, in this recent review it is only trans fatty acids produced during the hardening of vegetable oils that are found to be harmful to health. The public health implications of consuming trans fatty acids from ruminant products are considered to be relatively limited. Over the last decade, population intakes of trans fatty acids in the UK fell and are now, on average, well below the recommended 2% of total energy set by the Department of Health in 1991, at 1.2% of energy (Henderson et al. 2003). This is not to say that intakes of trans fatty acids are not still a problem, and dietary advice states that those individuals who are in the top end of the distribution of intake should still make efforts to reduce their intakes. Currently, trans fatty acids in foods are labelled in the USA, but not in the UK and Europe. The UK Food Standards Agency (FSA) is in favour of the revision of the European directive that governs the content and format of food labels so that trans fatty acids are labelled. This should enable consumers to make better food choices with regard to heart health (Clarke & Lewington 2006). Recognising the adverse health effects of trans fatty acids, many food manufacturers and retailers have been systematically removing them from their products in recent years. For example, they have been absent for some time from major brands of margarine and other fat spreads, which are now manufactured using a different technique. Also, many companies now have guidelines in place that are resulting in reformulation and reduction or elimination of trans fatty acids in products where they have in the past been found, such as snack products, fried products and baked goods. Consequently, the vast majority of savoury biscuits and crisps produced in the UK do not contain partially hydrogenated oils. Similarly, changes are being made to the way bakery products are manufactured. For example, a leading European manufacturer of major brands of biscuits, cakes and snacks has recently announced that these are now made without partially hydrogenated vegetable oils, a transition that began in 2004. Alongside these changes, the manufacturer has also reported a cut in the amount of saturates. It is clear that a major technical challenge in achieving such changes is to avoid simply exchanging trans fatty acids for saturated fatty acids, which also have damaging health effects. Foods that are labelled as containing partially-hydrogenated oils or fats are a source of trans fatty acids (sometimes partially-hydrogenated fats are just labelled as hydrogenated fats). These foods include hard margarines, some fried products and some manufactured bakery products e. g. biscuits, pastries and cakes. It is important to note that intake may have changed in the light of reformulation of foods that has taken place over the past six years in the UK, as referred to earlier. Furthermore, the average intake of trans fatty acids is lower in the UK than in the USA (where legislation has now been introduced). However, this does not mean there is room for complacency, as the intake in some sectors of the population is known to be higher than recommended.",
+    "hypothesis": "The amount of saturated fats in processed meats is being reduced by some major producers.",
+    "gold_label": "Neutral",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "The amount",
+      "saturated fats",
+      "processed meats",
+      "some major producers",
+      "reduced"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  },
+  {
+    "id": "id_121",
+    "premise": "Trans Fatty Acids A recent editorial in the British Medical Journal (BMJ), written by researchers from the University of Oxford, has called for food labels to list trans fats as well as cholesterol and saturated fat. Trans fats (or trans fatty acids) are a type of unsaturated fatty acid. They occur naturally in small amounts in foods produced from ruminant animals e. g. milk, beef and lamb. However, most of the trans fatty acids in the diet are produced during the process of partial hydrogenation (hardening) of vegetable oils into semi-solid fats. They are therefore found in hard margarines, partially hydrogenated cooking oils, and in some bakery products, fried foods, and other processed foods that are made using these. Trans fatty acids have an adverse effect on certain chemicals, known as lipids, which are found in the blood and have been shown to increase the risk of heart disease. They also increase LDL-cholesterol (the bad cholesterol) and decrease HDL-cholesterol (the good cholesterol). They may also have adverse effects on cardiovascular disease risk that are independent of an effect on blood lipids (Mozaffarian et al. 2006). In a recent review of prospective studies investigating the effects of trans fatty acids, a 2% increase in energy intake from trans fatty acids was associated with a 23% increase in the incidence of heart disease. The authors also reported that the adverse effects of trans fatty acids were observed even at very low intakes (3% of total daily energy intake, or about 2-7g per day) (Mozaffarian et al. 2006). However, in this recent review it is only trans fatty acids produced during the hardening of vegetable oils that are found to be harmful to health. The public health implications of consuming trans fatty acids from ruminant products are considered to be relatively limited. Over the last decade, population intakes of trans fatty acids in the UK fell and are now, on average, well below the recommended 2% of total energy set by the Department of Health in 1991, at 1.2% of energy (Henderson et al. 2003). This is not to say that intakes of trans fatty acids are not still a problem, and dietary advice states that those individuals who are in the top end of the distribution of intake should still make efforts to reduce their intakes. Currently, trans fatty acids in foods are labelled in the USA, but not in the UK and Europe. The UK Food Standards Agency (FSA) is in favour of the revision of the European directive that governs the content and format of food labels so that trans fatty acids are labelled. This should enable consumers to make better food choices with regard to heart health (Clarke & Lewington 2006). Recognising the adverse health effects of trans fatty acids, many food manufacturers and retailers have been systematically removing them from their products in recent years. For example, they have been absent for some time from major brands of margarine and other fat spreads, which are now manufactured using a different technique. Also, many companies now have guidelines in place that are resulting in reformulation and reduction or elimination of trans fatty acids in products where they have in the past been found, such as snack products, fried products and baked goods. Consequently, the vast majority of savoury biscuits and crisps produced in the UK do not contain partially hydrogenated oils. Similarly, changes are being made to the way bakery products are manufactured. For example, a leading European manufacturer of major brands of biscuits, cakes and snacks has recently announced that these are now made without partially hydrogenated vegetable oils, a transition that began in 2004. Alongside these changes, the manufacturer has also reported a cut in the amount of saturates. It is clear that a major technical challenge in achieving such changes is to avoid simply exchanging trans fatty acids for saturated fatty acids, which also have damaging health effects. Foods that are labelled as containing partially-hydrogenated oils or fats are a source of trans fatty acids (sometimes partially-hydrogenated fats are just labelled as hydrogenated fats). These foods include hard margarines, some fried products and some manufactured bakery products e. g. biscuits, pastries and cakes. It is important to note that intake may have changed in the light of reformulation of foods that has taken place over the past six years in the UK, as referred to earlier. Furthermore, the average intake of trans fatty acids is lower in the UK than in the USA (where legislation has now been introduced). However, this does not mean there is room for complacency, as the intake in some sectors of the population is known to be higher than recommended.",
+    "hypothesis": "In Britain, the intake of trans fatty acids is continuing to decline.",
+    "gold_label": "Neutral",
+    "prediction": "Neutral",
+    "qa_pairs": [
+      {
+        "question": "Does the data show a consistent decrease in the consumption of trans fatty acids in Britain?",
+        "answer": "The data shows a decrease in trans fatty acid consumption in the UK, but it does not specify if this decrease is consistent over time.",
+        "answerable": true,
+        "located_indices": [
+          14,
+          20,
+          30
+        ]
+      },
+      {
+        "question": "Is there evidence indicating that the intake of trans fatty acids has not increased in Britain?",
+        "answer": "The intake of trans fatty acids in Britain has fallen over the last decade and is now below the recommended level.",
+        "answerable": true,
+        "located_indices": [
+          14,
+          30,
+          32
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Britain",
+      "the intake",
+      "trans",
+      "fatty acids",
+      "continuing",
+      "decline"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_122",
+    "premise": "Trans Fatty Acids A recent editorial in the British Medical Journal (BMJ), written by researchers from the University of Oxford, has called for food labels to list trans fats as well as cholesterol and saturated fat. Trans fats (or trans fatty acids) are a type of unsaturated fatty acid. They occur naturally in small amounts in foods produced from ruminant animals e. g. milk, beef and lamb. However, most of the trans fatty acids in the diet are produced during the process of partial hydrogenation (hardening) of vegetable oils into semi-solid fats. They are therefore found in hard margarines, partially hydrogenated cooking oils, and in some bakery products, fried foods, and other processed foods that are made using these. Trans fatty acids have an adverse effect on certain chemicals, known as lipids, which are found in the blood and have been shown to increase the risk of heart disease. They also increase LDL-cholesterol (the bad cholesterol) and decrease HDL-cholesterol (the good cholesterol). They may also have adverse effects on cardiovascular disease risk that are independent of an effect on blood lipids (Mozaffarian et al. 2006). In a recent review of prospective studies investigating the effects of trans fatty acids, a 2% increase in energy intake from trans fatty acids was associated with a 23% increase in the incidence of heart disease. The authors also reported that the adverse effects of trans fatty acids were observed even at very low intakes (3% of total daily energy intake, or about 2-7g per day) (Mozaffarian et al. 2006). However, in this recent review it is only trans fatty acids produced during the hardening of vegetable oils that are found to be harmful to health. The public health implications of consuming trans fatty acids from ruminant products are considered to be relatively limited. Over the last decade, population intakes of trans fatty acids in the UK fell and are now, on average, well below the recommended 2% of total energy set by the Department of Health in 1991, at 1.2% of energy (Henderson et al. 2003). This is not to say that intakes of trans fatty acids are not still a problem, and dietary advice states that those individuals who are in the top end of the distribution of intake should still make efforts to reduce their intakes. Currently, trans fatty acids in foods are labelled in the USA, but not in the UK and Europe. The UK Food Standards Agency (FSA) is in favour of the revision of the European directive that governs the content and format of food labels so that trans fatty acids are labelled. This should enable consumers to make better food choices with regard to heart health (Clarke & Lewington 2006). Recognising the adverse health effects of trans fatty acids, many food manufacturers and retailers have been systematically removing them from their products in recent years. For example, they have been absent for some time from major brands of margarine and other fat spreads, which are now manufactured using a different technique. Also, many companies now have guidelines in place that are resulting in reformulation and reduction or elimination of trans fatty acids in products where they have in the past been found, such as snack products, fried products and baked goods. Consequently, the vast majority of savoury biscuits and crisps produced in the UK do not contain partially hydrogenated oils. Similarly, changes are being made to the way bakery products are manufactured. For example, a leading European manufacturer of major brands of biscuits, cakes and snacks has recently announced that these are now made without partially hydrogenated vegetable oils, a transition that began in 2004. Alongside these changes, the manufacturer has also reported a cut in the amount of saturates. It is clear that a major technical challenge in achieving such changes is to avoid simply exchanging trans fatty acids for saturated fatty acids, which also have damaging health effects. Foods that are labelled as containing partially-hydrogenated oils or fats are a source of trans fatty acids (sometimes partially-hydrogenated fats are just labelled as hydrogenated fats). These foods include hard margarines, some fried products and some manufactured bakery products e. g. biscuits, pastries and cakes. It is important to note that intake may have changed in the light of reformulation of foods that has taken place over the past six years in the UK, as referred to earlier. Furthermore, the average intake of trans fatty acids is lower in the UK than in the USA (where legislation has now been introduced). However, this does not mean there is room for complacency, as the intake in some sectors of the population is known to be higher than recommended.",
+    "hypothesis": "It is proving difficult to find a safe substitute for trans fatty acids.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Does the text state that there are challenges in identifying a safe alternative to trans fatty acids?",
+        "answer": "The text indicates there are challenges in avoiding the exchange of trans fatty acids for other harmful alternatives, implying challenges in identifying a safe alternative.",
+        "answerable": true,
+        "located_indices": [
+          27
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "a safe substitute",
+      "trans",
+      "fatty acids",
+      "proving",
+      "find"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_123",
+    "premise": "Trans Fatty Acids A recent editorial in the British Medical Journal (BMJ), written by researchers from the University of Oxford, has called for food labels to list trans fats as well as cholesterol and saturated fat. Trans fats (or trans fatty acids) are a type of unsaturated fatty acid. They occur naturally in small amounts in foods produced from ruminant animals e. g. milk, beef and lamb. However, most of the trans fatty acids in the diet are produced during the process of partial hydrogenation (hardening) of vegetable oils into semi-solid fats. They are therefore found in hard margarines, partially hydrogenated cooking oils, and in some bakery products, fried foods, and other processed foods that are made using these. Trans fatty acids have an adverse effect on certain chemicals, known as lipids, which are found in the blood and have been shown to increase the risk of heart disease. They also increase LDL-cholesterol (the bad cholesterol) and decrease HDL-cholesterol (the good cholesterol). They may also have adverse effects on cardiovascular disease risk that are independent of an effect on blood lipids (Mozaffarian et al. 2006). In a recent review of prospective studies investigating the effects of trans fatty acids, a 2% increase in energy intake from trans fatty acids was associated with a 23% increase in the incidence of heart disease. The authors also reported that the adverse effects of trans fatty acids were observed even at very low intakes (3% of total daily energy intake, or about 2-7g per day) (Mozaffarian et al. 2006). However, in this recent review it is only trans fatty acids produced during the hardening of vegetable oils that are found to be harmful to health. The public health implications of consuming trans fatty acids from ruminant products are considered to be relatively limited. Over the last decade, population intakes of trans fatty acids in the UK fell and are now, on average, well below the recommended 2% of total energy set by the Department of Health in 1991, at 1.2% of energy (Henderson et al. 2003). This is not to say that intakes of trans fatty acids are not still a problem, and dietary advice states that those individuals who are in the top end of the distribution of intake should still make efforts to reduce their intakes. Currently, trans fatty acids in foods are labelled in the USA, but not in the UK and Europe. The UK Food Standards Agency (FSA) is in favour of the revision of the European directive that governs the content and format of food labels so that trans fatty acids are labelled. This should enable consumers to make better food choices with regard to heart health (Clarke & Lewington 2006). Recognising the adverse health effects of trans fatty acids, many food manufacturers and retailers have been systematically removing them from their products in recent years. For example, they have been absent for some time from major brands of margarine and other fat spreads, which are now manufactured using a different technique. Also, many companies now have guidelines in place that are resulting in reformulation and reduction or elimination of trans fatty acids in products where they have in the past been found, such as snack products, fried products and baked goods. Consequently, the vast majority of savoury biscuits and crisps produced in the UK do not contain partially hydrogenated oils. Similarly, changes are being made to the way bakery products are manufactured. For example, a leading European manufacturer of major brands of biscuits, cakes and snacks has recently announced that these are now made without partially hydrogenated vegetable oils, a transition that began in 2004. Alongside these changes, the manufacturer has also reported a cut in the amount of saturates. It is clear that a major technical challenge in achieving such changes is to avoid simply exchanging trans fatty acids for saturated fatty acids, which also have damaging health effects. Foods that are labelled as containing partially-hydrogenated oils or fats are a source of trans fatty acids (sometimes partially-hydrogenated fats are just labelled as hydrogenated fats). These foods include hard margarines, some fried products and some manufactured bakery products e. g. biscuits, pastries and cakes. It is important to note that intake may have changed in the light of reformulation of foods that has taken place over the past six years in the UK, as referred to earlier. Furthermore, the average intake of trans fatty acids is lower in the UK than in the USA (where legislation has now been introduced). However, this does not mean there is room for complacency, as the intake in some sectors of the population is known to be higher than recommended.",
+    "hypothesis": "Trans fatty acids are found in all types of meat.",
+    "gold_label": "Contradiction",
+    "prediction": "Contradiction",
+    "qa_pairs": [
+      {
+        "question": "Does the text specify that trans fatty acids are present in every type of meat?",
+        "answer": "The text specifies that trans fatty acids occur naturally in small amounts in some meats like beef and lamb, but does not claim they are present in every type of meat.",
+        "answerable": true,
+        "located_indices": [
+          2
+        ]
+      },
+      {
+        "question": "Are there any types of meat mentioned in the text that do not contain trans fatty acids?",
+        "answer": "The extracted sentence mentions meat types (beef and lamb) that contain trans fatty acids, but does not provide information on meats that do not contain them.",
+        "answerable": true,
+        "located_indices": [
+          2
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Trans",
+      "fatty acids",
+      "all types",
+      "meat",
+      "found"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_124",
+    "premise": "Trans Fatty Acids A recent editorial in the British Medical Journal (BMJ), written by researchers from the University of Oxford, has called for food labels to list trans fats as well as cholesterol and saturated fat. Trans fats (or trans fatty acids) are a type of unsaturated fatty acid. They occur naturally in small amounts in foods produced from ruminant animals e. g. milk, beef and lamb. However, most of the trans fatty acids in the diet are produced during the process of partial hydrogenation (hardening) of vegetable oils into semi-solid fats. They are therefore found in hard margarines, partially hydrogenated cooking oils, and in some bakery products, fried foods, and other processed foods that are made using these. Trans fatty acids have an adverse effect on certain chemicals, known as lipids, which are found in the blood and have been shown to increase the risk of heart disease. They also increase LDL-cholesterol (the bad cholesterol) and decrease HDL-cholesterol (the good cholesterol). They may also have adverse effects on cardiovascular disease risk that are independent of an effect on blood lipids (Mozaffarian et al. 2006). In a recent review of prospective studies investigating the effects of trans fatty acids, a 2% increase in energy intake from trans fatty acids was associated with a 23% increase in the incidence of heart disease. The authors also reported that the adverse effects of trans fatty acids were observed even at very low intakes (3% of total daily energy intake, or about 2-7g per day) (Mozaffarian et al. 2006). However, in this recent review it is only trans fatty acids produced during the hardening of vegetable oils that are found to be harmful to health. The public health implications of consuming trans fatty acids from ruminant products are considered to be relatively limited. Over the last decade, population intakes of trans fatty acids in the UK fell and are now, on average, well below the recommended 2% of total energy set by the Department of Health in 1991, at 1.2% of energy (Henderson et al. 2003). This is not to say that intakes of trans fatty acids are not still a problem, and dietary advice states that those individuals who are in the top end of the distribution of intake should still make efforts to reduce their intakes. Currently, trans fatty acids in foods are labelled in the USA, but not in the UK and Europe. The UK Food Standards Agency (FSA) is in favour of the revision of the European directive that governs the content and format of food labels so that trans fatty acids are labelled. This should enable consumers to make better food choices with regard to heart health (Clarke & Lewington 2006). Recognising the adverse health effects of trans fatty acids, many food manufacturers and retailers have been systematically removing them from their products in recent years. For example, they have been absent for some time from major brands of margarine and other fat spreads, which are now manufactured using a different technique. Also, many companies now have guidelines in place that are resulting in reformulation and reduction or elimination of trans fatty acids in products where they have in the past been found, such as snack products, fried products and baked goods. Consequently, the vast majority of savoury biscuits and crisps produced in the UK do not contain partially hydrogenated oils. Similarly, changes are being made to the way bakery products are manufactured. For example, a leading European manufacturer of major brands of biscuits, cakes and snacks has recently announced that these are now made without partially hydrogenated vegetable oils, a transition that began in 2004. Alongside these changes, the manufacturer has also reported a cut in the amount of saturates. It is clear that a major technical challenge in achieving such changes is to avoid simply exchanging trans fatty acids for saturated fatty acids, which also have damaging health effects. Foods that are labelled as containing partially-hydrogenated oils or fats are a source of trans fatty acids (sometimes partially-hydrogenated fats are just labelled as hydrogenated fats). These foods include hard margarines, some fried products and some manufactured bakery products e. g. biscuits, pastries and cakes. It is important to note that intake may have changed in the light of reformulation of foods that has taken place over the past six years in the UK, as referred to earlier. Furthermore, the average intake of trans fatty acids is lower in the UK than in the USA (where legislation has now been introduced). However, this does not mean there is room for complacency, as the intake in some sectors of the population is known to be higher than recommended.",
+    "hypothesis": "Some people are still consuming larger quantities of trans fatty acids than the experts consider safe.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Does the text mention that some individuals are consuming amounts of trans fatty acids above what is deemed safe by experts?",
+        "answer": "The text indicates that some individuals are consuming trans fatty acids at levels higher than recommended.",
+        "answerable": true,
+        "located_indices": [
+          16,
+          32
+        ]
+      },
+      {
+        "question": "Is there any information in the text about expert recommendations on the consumption levels of trans fatty acids?",
+        "answer": "The text mentions dietary advice for reducing intakes of trans fatty acids but does not specifically detail expert recommendations on consumption levels.",
+        "answerable": true,
+        "located_indices": [
+          14,
+          16
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Some people",
+      "larger quantities",
+      "trans",
+      "fatty acids",
+      "the experts",
+      "consuming",
+      "consider"
+    ],
+    "warnings": []
+  }
+]

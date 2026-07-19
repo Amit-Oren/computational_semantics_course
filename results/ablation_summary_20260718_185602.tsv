@@ -1,0 +1,3 @@
+tag	n	accuracy	macro_f1	Entailment_R	Contradiction_R	Neutral_R	neutral_fail_count
+zero_shot	50	0.64	0.6183261183261183	0.68	0.375	1.0	18
+few_shot_cot	50	0.7	0.6824494949494949	0.72	0.5	1.0	14

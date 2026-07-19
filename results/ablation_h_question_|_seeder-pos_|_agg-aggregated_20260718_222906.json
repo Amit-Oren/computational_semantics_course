@@ -1,0 +1,1704 @@
+[
+  {
+    "id": "id_0",
+    "premise": "This passage provides information on the subsidising of renewable energy and its effect on the usage of fossil fuels. The issue of subsidising sources of renewable energy came to the forefront of global politics as record emissions levels continue to be reached despite caps on carbon emissions being agreed up by several global powers. However, renewable energy sources tend more expensive than their fossil-fuel counter parts. In this way, renewable energy cannot be seen as a realistic alternative to fossil-fuel until it is at a price universally achievable. On the opposite side of the spectrum, commentators note that the average temperature is expected to rise by four degrees by the end of the decade. In order to prevent this, they suggest carbon emissions must be reduced by seventy per cent by 2050. Such commentators advocate government subsidised renewable energy forms as a way to achieve this target.",
+    "hypothesis": "Government subsidiary could reduce renewable energy cost",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Does the government subsidiary play a role in decreasing the expenses associated with renewable energy production?",
+        "answer": "Government subsidised renewable energy forms are advocated by some as a means to make them more affordable.",
+        "answerable": true,
+        "located_indices": [
+          2,
+          3,
+          6
+        ]
+      },
+      {
+        "question": "Is the primary goal of the government subsidiary to lower the financial burden of transitioning to renewable energy sources?",
+        "answer": "The primary goal of the government subsidiary is to make renewable energy universally affordable.",
+        "answerable": true,
+        "located_indices": [
+          3,
+          6
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Government subsidiary",
+      "renewable energy cost",
+      "reduce"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_1",
+    "premise": "This passage provides information on the subsidising of renewable energy and its effect on the usage of fossil fuels. The issue of subsidising sources of renewable energy came to the forefront of global politics as record emissions levels continue to be reached despite caps on carbon emissions being agreed up by several global powers. However, renewable energy sources tend more expensive than their fossil-fuel counter parts. In this way, renewable energy cannot be seen as a realistic alternative to fossil-fuel until it is at a price universally achievable. On the opposite side of the spectrum, commentators note that the average temperature is expected to rise by four degrees by the end of the decade. In order to prevent this, they suggest carbon emissions must be reduced by seventy per cent by 2050. Such commentators advocate government subsidised renewable energy forms as a way to achieve this target.",
+    "hypothesis": "Fossil-fuels are currently cheaper than forms of renewable energy.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Are fossil-fuels generally less expensive to produce or purchase compared to renewable energy sources?",
+        "answer": "Fossil fuels are generally less expensive to produce or purchase compared to renewable energy sources.",
+        "answerable": true,
+        "located_indices": [
+          2,
+          3
+        ]
+      },
+      {
+        "question": "Is the cost per unit of energy generated from fossil-fuels lower than that of renewable energy alternatives?",
+        "answer": "The cost per unit of energy generated from renewable energy alternatives tends to be higher than that of fossil fuels.",
+        "answerable": true,
+        "located_indices": [
+          2,
+          3
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Fossil-fuels",
+      "forms",
+      "renewable energy"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_10",
+    "premise": "Thomas Young The Last True Know-It-All Thomas Young (1773-1829) contributed 63 articles to the Encyclopedia Britannica, including 46 biographical entries (mostly on scientists and classicists) and substantial essays on Bridge, Chromatics, Egypt, Languages and Tides. Was someone who could write authoritatively about so many subjects a polymath, a genius or a dilettante? In an ambitious new biography, Andrew Robinson argues that Young is a good contender for the epitaph the last man who knew everything. Young has competition, however: The phrase, which Robinson takes for his title, also serves as the subtitle of two other recent biographies: Leonard Warrens 1998 life of paleontologist Joseph Leidy (1823-1891) and Paula Findlens 2004 book on Athanasius Kircher (1602-1680), another polymath. Young, of course, did more than write encyclopedia entries. He presented his first paper to the Royal Society of London at the age of 20 and was elected a Fellow a week after his 21st birthday. In the paper, Young explained the process of accommodation in the human eye on how the eye focuses properly on objects at varying distances. Young hypothesised that this was achieved by changes in the shape of the lens. Young also theorised that light traveled in waves and ho believed that, to account for the ability to see in color, there must be three receptors in the eye corresponding to the three principal colors to which the retina could respond: red, green, violet. All these hypotheses Were subsequently proved to be correct. Later in his life, when he was in his forties, Young was instrumental in cracking the code that unlocked the unknown script on the Rosetta Stone, a tablet that was found in Egypt by the Napoleonic army in 1799. The stone contains text in three alphabets: Greek, something unrecognisable and Egyptian hieroglyphs. The unrecognisable script is now known as demotic and, as Young deduced, is related directly to hieroglyphic. His initial work on this appeared in his Britannica entry on Egypt. In another entry, he coined the term Indo-European to describe the family of languages spoken throughout most of Europe and northern India. These are the landmark achievements of a man who was a child prodigy and who, unlike many remarkable children, did not disappear into oblivion as an adult. Bom in 1773 in Somerset in England, Young lived from an early age with his maternal grandfather, eventually leaving to attend boarding school. He had devoured books from the age of two, and through his own initiative he excelled at Latin, Greek, mathematics and natural philosophy. After leaving school, he was greatly encouraged by his mothers uncle, Richard Brocklesby, a physician and Fellow of the Royal Society. Following Brocklesbys lead, Young decided to pursue a career in medicine. He studied in London, following the medical circuit, and then moved on to more formal education in Edinburgh, Gottingen and Cambridge. After completing his medical training at the University of Cambridge in 1808, Young set up practice as a physician in London. He soon became a Fellow of the Royal College of Physicians and a few years later was appointed physician at St. Georges Hospital. Youngs skill as a physician, however, did not equal his skill as a scholar of natural philosophy or linguistics. Earlier, in 1801, he had been appointed to a professorship of natural philosophy at the Royal Institution, where he delivered as many as 60 lectures in a year. These were published in two volumes in 1807. In 1804 Young had become secretary to the Royal Society, a post he would hold until his death. His opinions were sought on civic and national matters, such as the introduction of gas lighting to London and methods of ship construction. From 1819 he was superintendent of the Nautical Almanac and secretary to the Board of Longitude. From 1824 to 1829 he was physician to and inspector of calculations for the Palladian Insurance Company. Between 1816 and 1825 he contributed his many and various entries to the Encyclopedia Britannica, and throughout his career he authored numerous books, essays and papers. Young is a perfect subject for a biography perfect, but daunting. Few men contributed so much to so many technical fields. Robinsons aim is to introduce non-scientists to Youngs work and life. He succeeds, providing clear expositions of the technical material (especially that on optics and Egyptian hieroglyphs). Some readers of this book will, like Robinson, find Youngs accomplishments impressive; others will see him as some historians have as a dilettante. Yet despite the rich material presented in this book, readers will not end up knowing Young personally. We catch glimpses of a playful Young, doodling Greek and Latin phrases in his notes on medical lectures and translating the verses that a young lady had written on the walls of a summerhouse into Greek elegiacs. Young was introduced into elite society, attended the theatre and learned to dance and play the flute. In addition, he was an accomplished horseman. However, his personal life looks pale next to his vibrant career and studies. Young married Eliza Maxwell in 1804, and according to Robinson, their marriage was a happy one and she appreciated his work, Almost all we know about her is that she sustained her husband through some rancorous disputes about optics and that she worried about money when his medical career was slow to take off. Very little evidence survives about the complexities of Youngs relationships with his mother and father. Robinson does not credit them, or anyone else, with shaping Youngs extraordinary mind. Despite the lack of details concerning Youngs relationships, however, anyone interested in what it means to be a genius should read this book.",
+    "hypothesis": "Youngs talent as a doctor surpassed his other skills.",
+    "gold_label": "Contradiction",
+    "prediction": "Contradiction",
+    "qa_pairs": [
+      {
+        "question": "Was Young exceptionally skilled in medicine compared to his abilities in other areas?",
+        "answer": "Young was not exceptionally skilled in medicine compared to his abilities in other areas.",
+        "answerable": true,
+        "located_indices": [
+          23
+        ]
+      },
+      {
+        "question": "Did Young's medical expertise stand out among his various talents?",
+        "answer": "Young's medical expertise was not exceptional compared to his other skills.",
+        "answerable": true,
+        "located_indices": [
+          23
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Youngs talent",
+      "a doctor",
+      "other skills",
+      "surpassed"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_100",
+    "premise": "Traditionally medicine was the science of curing illness with treatments. For thousands of years people would have used plants and would have turned to priests for cures. In more recent times illness has been attributed less to the intervention of gods or magic and instead to natural causes. Medicine today is as much concerned with prevention as cure. Doctors use treatments of many types, including radiation and vaccination, both of which were unknown until very recent times. Other treatments have been known about and practised for centuries. Muslim doctors were skilled surgeons and treated pain with opium. When Europeans first reached the Americas they found healers who used many plants to cure illnesses. The Europeans adopted many of these treatments and some are still effective and in use today.",
+    "hypothesis": "Medicine is a science that owes its success to modern treatments.",
+    "gold_label": "Contradiction",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Is medicine considered a field of study based on scientific principles?",
+        "answer": "Traditionally, medicine was considered a science.",
+        "answerable": true,
+        "located_indices": [
+          0,
+          2
+        ]
+      },
+      {
+        "question": "Have recent advancements in medical treatments contributed significantly to its effectiveness?",
+        "answer": "Recent advancements in medical treatments include the development of radiation and vaccination.",
+        "answerable": true,
+        "located_indices": [
+          2,
+          4
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Medicine",
+      "a science",
+      "success",
+      "modern treatments",
+      "owes"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_101",
+    "premise": "Traditionally medicine was the science of curing illness with treatments. For thousands of years people would have used plants and would have turned to priests for cures. In more recent times illness has been attributed less to the intervention of gods or magic and instead to natural causes. Medicine today is as much concerned with prevention as cure. Doctors use treatments of many types, including radiation and vaccination, both of which were unknown until very recent times. Other treatments have been known about and practised for centuries. Muslim doctors were skilled surgeons and treated pain with opium. When Europeans first reached the Americas they found healers who used many plants to cure illnesses. The Europeans adopted many of these treatments and some are still effective and in use today.",
+    "hypothesis": "Modern medicine is the science of curing illness.",
+    "gold_label": "Contradiction",
+    "prediction": "Contradiction",
+    "qa_pairs": [
+      {
+        "question": "Is modern medicine primarily focused on treating and eliminating diseases?",
+        "answer": "Medicine today is also concerned with prevention, in addition to cure.",
+        "answerable": true,
+        "located_indices": [
+          0,
+          3
+        ]
+      },
+      {
+        "question": "Does modern medicine involve the application of scientific principles to understand and address illnesses?",
+        "answer": "The extracted sentences do not explicitly state that modern medicine involves the application of scientific principles, but they suggest a shift towards understanding illnesses through natural causes.",
+        "answerable": true,
+        "located_indices": [
+          2,
+          3
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Modern medicine",
+      "the science",
+      "illness",
+      "curing"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_102",
+    "premise": "Traditionally uniforms were and for some industries still are manufactured to protect the worker. When they were first designed, it is also likely that all uniforms made symbolic sense - those for the military, for example, were originally intended to impress and even terrify the enemy; other uniforms denoted a hierarchy - chefs wore white because they worked with flour, but the main chef wore a black hat to show he supervised. The last 30 years, however, have seen an increasing emphasis on their role in projecting the image of an organisation and in uniting the workforce into a homogeneous unit particularly in customer facing\" industries, and especially in financial services and retailing. From uniforms and workwear has emerged corporate clothing. \"The people you employ are your ambassadors, \" says Peter Griffin, managing director of a major retailer in the UK. \"What they say, how they look, and how they behave is terribly important. \" The result is a new way of looking at corporate workwear. From being a simple means of identifying who is a member of staff, the uniform is emerging as a new channel of marketing communication. Truly effective marketing through visual cues such as uniforms is a subtle art, however. Wittingly or unwittingly, how we look sends all sorts of powerful subliminal messages to other people. Dark colours give an aura of authority while lighter pastel shades suggest approachability. Certain dress style creates a sense of conservatism, others a sense of openness to new ideas. Neatness can suggest efficiency but, if it is overdone, it can spill over and indicate an obsession with power. \"If the company is selling quality, then it must have quality uniforms. If it is selling style, its uniforms must be stylish. If it wants to appear innovative, everybody cant look exactly the same. Subliminally we see all these things, \" says Lynn Elvy, a director of image consultants House of Colour. But translating corporate philosophies into the right mix of colour, style, degree of branding and uniformity can be a fraught process. And it is not always successful. According to Company Clothing magazine, there are 1000 companies supplying the workwear and corporate clothing market. Of these, 22 account for 85% of total sales - 380 million in 1994. A successful uniform needs to balance two key sets of needs. On the one hand, no uniform will work if staff feel uncomfortable or ugly. Giving the wearers a choice has become a key element in the way corporate clothing is introduced and managed. On the other, it is pointless if the look doesnt express the businesss marketing strategy. The greatest challenge in this respect is time. When it comes to human perceptions, first impressions count. Customers will size up the way staff look in just a few seconds, and that few seconds will colour their attitudes from then on. Those few seconds can beReading so important that big companies are prepared to invest years, and millions of pounds, getting them right. In addition, some uniform companies also offer rental services. \"There will be an increasing specialisation in the marketplace, \" predicts Mr Blyth, Customer Services Manager of a large UK bank. The past two or three years have seen consolidation. Increasingly, the big suppliers are becoming managing agents, which means they offer a total service to put together the whole complex operation of a companys corporate clothing package - which includes reliable sourcing, managing the inventory, budget control and distribution to either central locations or to each staff member individually. Huge investments have been made in new systems, information technology and amassing quality assurance accreditations. Corporate clothing does have potential for further growth. Some banks have yet to introduce a full corporate look; police forces are researching a complete new look for the 21st century. And many employees now welcome a company wardrobe. A recent survey of staff found that 90 per cent welcomed having clothing which reflected the corporate identity.",
+    "hypothesis": "Clothing companies are planning to offer financial services in the future.",
+    "gold_label": "Contradiction",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Clothing companies",
+      "financial services",
+      "the future",
+      "planning",
+      "offer"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  },
+  {
+    "id": "id_103",
+    "premise": "Traditionally uniforms were and for some industries still are manufactured to protect the worker. When they were first designed, it is also likely that all uniforms made symbolic sense - those for the military, for example, were originally intended to impress and even terrify the enemy; other uniforms denoted a hierarchy - chefs wore white because they worked with flour, but the main chef wore a black hat to show he supervised. The last 30 years, however, have seen an increasing emphasis on their role in projecting the image of an organisation and in uniting the workforce into a homogeneous unit particularly in customer facing\" industries, and especially in financial services and retailing. From uniforms and workwear has emerged corporate clothing. \"The people you employ are your ambassadors, \" says Peter Griffin, managing director of a major retailer in the UK. \"What they say, how they look, and how they behave is terribly important. \" The result is a new way of looking at corporate workwear. From being a simple means of identifying who is a member of staff, the uniform is emerging as a new channel of marketing communication. Truly effective marketing through visual cues such as uniforms is a subtle art, however. Wittingly or unwittingly, how we look sends all sorts of powerful subliminal messages to other people. Dark colours give an aura of authority while lighter pastel shades suggest approachability. Certain dress style creates a sense of conservatism, others a sense of openness to new ideas. Neatness can suggest efficiency but, if it is overdone, it can spill over and indicate an obsession with power. \"If the company is selling quality, then it must have quality uniforms. If it is selling style, its uniforms must be stylish. If it wants to appear innovative, everybody cant look exactly the same. Subliminally we see all these things, \" says Lynn Elvy, a director of image consultants House of Colour. But translating corporate philosophies into the right mix of colour, style, degree of branding and uniformity can be a fraught process. And it is not always successful. According to Company Clothing magazine, there are 1000 companies supplying the workwear and corporate clothing market. Of these, 22 account for 85% of total sales - 380 million in 1994. A successful uniform needs to balance two key sets of needs. On the one hand, no uniform will work if staff feel uncomfortable or ugly. Giving the wearers a choice has become a key element in the way corporate clothing is introduced and managed. On the other, it is pointless if the look doesnt express the businesss marketing strategy. The greatest challenge in this respect is time. When it comes to human perceptions, first impressions count. Customers will size up the way staff look in just a few seconds, and that few seconds will colour their attitudes from then on. Those few seconds can beReading so important that big companies are prepared to invest years, and millions of pounds, getting them right. In addition, some uniform companies also offer rental services. \"There will be an increasing specialisation in the marketplace, \" predicts Mr Blyth, Customer Services Manager of a large UK bank. The past two or three years have seen consolidation. Increasingly, the big suppliers are becoming managing agents, which means they offer a total service to put together the whole complex operation of a companys corporate clothing package - which includes reliable sourcing, managing the inventory, budget control and distribution to either central locations or to each staff member individually. Huge investments have been made in new systems, information technology and amassing quality assurance accreditations. Corporate clothing does have potential for further growth. Some banks have yet to introduce a full corporate look; police forces are researching a complete new look for the 21st century. And many employees now welcome a company wardrobe. A recent survey of staff found that 90 per cent welcomed having clothing which reflected the corporate identity.",
+    "hypothesis": "Uniforms are best selected by marketing consultants.",
+    "gold_label": "Neutral",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Uniforms",
+      "consultants",
+      "selected",
+      "marketing"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  },
+  {
+    "id": "id_104",
+    "premise": "Traditionally uniforms were and for some industries still are manufactured to protect the worker. When they were first designed, it is also likely that all uniforms made symbolic sense - those for the military, for example, were originally intended to impress and even terrify the enemy; other uniforms denoted a hierarchy - chefs wore white because they worked with flour, but the main chef wore a black hat to show he supervised. The last 30 years, however, have seen an increasing emphasis on their role in projecting the image of an organisation and in uniting the workforce into a homogeneous unit particularly in customer facing\" industries, and especially in financial services and retailing. From uniforms and workwear has emerged corporate clothing. \"The people you employ are your ambassadors, \" says Peter Griffin, managing director of a major retailer in the UK. \"What they say, how they look, and how they behave is terribly important. \" The result is a new way of looking at corporate workwear. From being a simple means of identifying who is a member of staff, the uniform is emerging as a new channel of marketing communication. Truly effective marketing through visual cues such as uniforms is a subtle art, however. Wittingly or unwittingly, how we look sends all sorts of powerful subliminal messages to other people. Dark colours give an aura of authority while lighter pastel shades suggest approachability. Certain dress style creates a sense of conservatism, others a sense of openness to new ideas. Neatness can suggest efficiency but, if it is overdone, it can spill over and indicate an obsession with power. \"If the company is selling quality, then it must have quality uniforms. If it is selling style, its uniforms must be stylish. If it wants to appear innovative, everybody cant look exactly the same. Subliminally we see all these things, \" says Lynn Elvy, a director of image consultants House of Colour. But translating corporate philosophies into the right mix of colour, style, degree of branding and uniformity can be a fraught process. And it is not always successful. According to Company Clothing magazine, there are 1000 companies supplying the workwear and corporate clothing market. Of these, 22 account for 85% of total sales - 380 million in 1994. A successful uniform needs to balance two key sets of needs. On the one hand, no uniform will work if staff feel uncomfortable or ugly. Giving the wearers a choice has become a key element in the way corporate clothing is introduced and managed. On the other, it is pointless if the look doesnt express the businesss marketing strategy. The greatest challenge in this respect is time. When it comes to human perceptions, first impressions count. Customers will size up the way staff look in just a few seconds, and that few seconds will colour their attitudes from then on. Those few seconds can beReading so important that big companies are prepared to invest years, and millions of pounds, getting them right. In addition, some uniform companies also offer rental services. \"There will be an increasing specialisation in the marketplace, \" predicts Mr Blyth, Customer Services Manager of a large UK bank. The past two or three years have seen consolidation. Increasingly, the big suppliers are becoming managing agents, which means they offer a total service to put together the whole complex operation of a companys corporate clothing package - which includes reliable sourcing, managing the inventory, budget control and distribution to either central locations or to each staff member individually. Huge investments have been made in new systems, information technology and amassing quality assurance accreditations. Corporate clothing does have potential for further growth. Some banks have yet to introduce a full corporate look; police forces are researching a complete new look for the 21st century. And many employees now welcome a company wardrobe. A recent survey of staff found that 90 per cent welcomed having clothing which reflected the corporate identity.",
+    "hypothesis": "Most businesses that supply company clothing are successful.",
+    "gold_label": "Contradiction",
+    "prediction": "Neutral",
+    "qa_pairs": [
+      {
+        "question": "Are there many companies that provide clothing to other businesses and also report high profits?",
+        "answer": "There are at least 22 companies that provide clothing to other businesses and report high sales.",
+        "answerable": true,
+        "located_indices": [
+          19,
+          20
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Most businesses",
+      "company clothing",
+      "supply"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_105",
+    "premise": "Traditionally uniforms were and for some industries still are manufactured to protect the worker. When they were first designed, it is also likely that all uniforms made symbolic sense - those for the military, for example, were originally intended to impress and even terrify the enemy; other uniforms denoted a hierarchy - chefs wore white because they worked with flour, but the main chef wore a black hat to show he supervised. The last 30 years, however, have seen an increasing emphasis on their role in projecting the image of an organisation and in uniting the workforce into a homogeneous unit particularly in customer facing\" industries, and especially in financial services and retailing. From uniforms and workwear has emerged corporate clothing. \"The people you employ are your ambassadors, \" says Peter Griffin, managing director of a major retailer in the UK. \"What they say, how they look, and how they behave is terribly important. \" The result is a new way of looking at corporate workwear. From being a simple means of identifying who is a member of staff, the uniform is emerging as a new channel of marketing communication. Truly effective marketing through visual cues such as uniforms is a subtle art, however. Wittingly or unwittingly, how we look sends all sorts of powerful subliminal messages to other people. Dark colours give an aura of authority while lighter pastel shades suggest approachability. Certain dress style creates a sense of conservatism, others a sense of openness to new ideas. Neatness can suggest efficiency but, if it is overdone, it can spill over and indicate an obsession with power. \"If the company is selling quality, then it must have quality uniforms. If it is selling style, its uniforms must be stylish. If it wants to appear innovative, everybody cant look exactly the same. Subliminally we see all these things, \" says Lynn Elvy, a director of image consultants House of Colour. But translating corporate philosophies into the right mix of colour, style, degree of branding and uniformity can be a fraught process. And it is not always successful. According to Company Clothing magazine, there are 1000 companies supplying the workwear and corporate clothing market. Of these, 22 account for 85% of total sales - 380 million in 1994. A successful uniform needs to balance two key sets of needs. On the one hand, no uniform will work if staff feel uncomfortable or ugly. Giving the wearers a choice has become a key element in the way corporate clothing is introduced and managed. On the other, it is pointless if the look doesnt express the businesss marketing strategy. The greatest challenge in this respect is time. When it comes to human perceptions, first impressions count. Customers will size up the way staff look in just a few seconds, and that few seconds will colour their attitudes from then on. Those few seconds can beReading so important that big companies are prepared to invest years, and millions of pounds, getting them right. In addition, some uniform companies also offer rental services. \"There will be an increasing specialisation in the marketplace, \" predicts Mr Blyth, Customer Services Manager of a large UK bank. The past two or three years have seen consolidation. Increasingly, the big suppliers are becoming managing agents, which means they offer a total service to put together the whole complex operation of a companys corporate clothing package - which includes reliable sourcing, managing the inventory, budget control and distribution to either central locations or to each staff member individually. Huge investments have been made in new systems, information technology and amassing quality assurance accreditations. Corporate clothing does have potential for further growth. Some banks have yet to introduce a full corporate look; police forces are researching a complete new look for the 21st century. And many employees now welcome a company wardrobe. A recent survey of staff found that 90 per cent welcomed having clothing which reflected the corporate identity.",
+    "hypothesis": "Being too smart could have a negative impact on customers.",
+    "gold_label": "Entailment",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "a negative impact",
+      "customers"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  },
+  {
+    "id": "id_106",
+    "premise": "Traditionally uniforms were and for some industries still are manufactured to protect the worker. When they were first designed, it is also likely that all uniforms made symbolic sense - those for the military, for example, were originally intended to impress and even terrify the enemy; other uniforms denoted a hierarchy - chefs wore white because they worked with flour, but the main chef wore a black hat to show he supervised. The last 30 years, however, have seen an increasing emphasis on their role in projecting the image of an organisation and in uniting the workforce into a homogeneous unit particularly in customer facing\" industries, and especially in financial services and retailing. From uniforms and workwear has emerged corporate clothing. \"The people you employ are your ambassadors, \" says Peter Griffin, managing director of a major retailer in the UK. \"What they say, how they look, and how they behave is terribly important. \" The result is a new way of looking at corporate workwear. From being a simple means of identifying who is a member of staff, the uniform is emerging as a new channel of marketing communication. Truly effective marketing through visual cues such as uniforms is a subtle art, however. Wittingly or unwittingly, how we look sends all sorts of powerful subliminal messages to other people. Dark colours give an aura of authority while lighter pastel shades suggest approachability. Certain dress style creates a sense of conservatism, others a sense of openness to new ideas. Neatness can suggest efficiency but, if it is overdone, it can spill over and indicate an obsession with power. \"If the company is selling quality, then it must have quality uniforms. If it is selling style, its uniforms must be stylish. If it wants to appear innovative, everybody cant look exactly the same. Subliminally we see all these things, \" says Lynn Elvy, a director of image consultants House of Colour. But translating corporate philosophies into the right mix of colour, style, degree of branding and uniformity can be a fraught process. And it is not always successful. According to Company Clothing magazine, there are 1000 companies supplying the workwear and corporate clothing market. Of these, 22 account for 85% of total sales - 380 million in 1994. A successful uniform needs to balance two key sets of needs. On the one hand, no uniform will work if staff feel uncomfortable or ugly. Giving the wearers a choice has become a key element in the way corporate clothing is introduced and managed. On the other, it is pointless if the look doesnt express the businesss marketing strategy. The greatest challenge in this respect is time. When it comes to human perceptions, first impressions count. Customers will size up the way staff look in just a few seconds, and that few seconds will colour their attitudes from then on. Those few seconds can beReading so important that big companies are prepared to invest years, and millions of pounds, getting them right. In addition, some uniform companies also offer rental services. \"There will be an increasing specialisation in the marketplace, \" predicts Mr Blyth, Customer Services Manager of a large UK bank. The past two or three years have seen consolidation. Increasingly, the big suppliers are becoming managing agents, which means they offer a total service to put together the whole complex operation of a companys corporate clothing package - which includes reliable sourcing, managing the inventory, budget control and distribution to either central locations or to each staff member individually. Huge investments have been made in new systems, information technology and amassing quality assurance accreditations. Corporate clothing does have potential for further growth. Some banks have yet to introduce a full corporate look; police forces are researching a complete new look for the 21st century. And many employees now welcome a company wardrobe. A recent survey of staff found that 90 per cent welcomed having clothing which reflected the corporate identity.",
+    "hypothesis": "Uniforms were more carefully made in the past than they are today.",
+    "gold_label": "Neutral",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Were uniforms constructed with greater attention to detail in previous eras?",
+        "answer": "Uniforms were originally designed with symbolic meaning and attention to detail, such as chefs wearing white due to working with flour.",
+        "answerable": true,
+        "located_indices": [
+          1,
+          2
+        ]
+      },
+      {
+        "question": "Is there a noticeable decline in the quality of uniform manufacturing over time?",
+        "answer": "The extracted sentences do not mention any decline in quality over time.",
+        "answerable": true,
+        "located_indices": [
+          0,
+          2
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Uniforms",
+      "the past",
+      "today",
+      "made"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_107",
+    "premise": "Traditionally uniforms were and for some industries still are manufactured to protect the worker. When they were first designed, it is also likely that all uniforms made symbolic sense - those for the military, for example, were originally intended to impress and even terrify the enemy; other uniforms denoted a hierarchy - chefs wore white because they worked with flour, but the main chef wore a black hat to show he supervised. The last 30 years, however, have seen an increasing emphasis on their role in projecting the image of an organisation and in uniting the workforce into a homogeneous unit particularly in customer facing\" industries, and especially in financial services and retailing. From uniforms and workwear has emerged corporate clothing. \"The people you employ are your ambassadors, \" says Peter Griffin, managing director of a major retailer in the UK. \"What they say, how they look, and how they behave is terribly important. \" The result is a new way of looking at corporate workwear. From being a simple means of identifying who is a member of staff, the uniform is emerging as a new channel of marketing communication. Truly effective marketing through visual cues such as uniforms is a subtle art, however. Wittingly or unwittingly, how we look sends all sorts of powerful subliminal messages to other people. Dark colours give an aura of authority while lighter pastel shades suggest approachability. Certain dress style creates a sense of conservatism, others a sense of openness to new ideas. Neatness can suggest efficiency but, if it is overdone, it can spill over and indicate an obsession with power. \"If the company is selling quality, then it must have quality uniforms. If it is selling style, its uniforms must be stylish. If it wants to appear innovative, everybody cant look exactly the same. Subliminally we see all these things, \" says Lynn Elvy, a director of image consultants House of Colour. But translating corporate philosophies into the right mix of colour, style, degree of branding and uniformity can be a fraught process. And it is not always successful. According to Company Clothing magazine, there are 1000 companies supplying the workwear and corporate clothing market. Of these, 22 account for 85% of total sales - 380 million in 1994. A successful uniform needs to balance two key sets of needs. On the one hand, no uniform will work if staff feel uncomfortable or ugly. Giving the wearers a choice has become a key element in the way corporate clothing is introduced and managed. On the other, it is pointless if the look doesnt express the businesss marketing strategy. The greatest challenge in this respect is time. When it comes to human perceptions, first impressions count. Customers will size up the way staff look in just a few seconds, and that few seconds will colour their attitudes from then on. Those few seconds can beReading so important that big companies are prepared to invest years, and millions of pounds, getting them right. In addition, some uniform companies also offer rental services. \"There will be an increasing specialisation in the marketplace, \" predicts Mr Blyth, Customer Services Manager of a large UK bank. The past two or three years have seen consolidation. Increasingly, the big suppliers are becoming managing agents, which means they offer a total service to put together the whole complex operation of a companys corporate clothing package - which includes reliable sourcing, managing the inventory, budget control and distribution to either central locations or to each staff member individually. Huge investments have been made in new systems, information technology and amassing quality assurance accreditations. Corporate clothing does have potential for further growth. Some banks have yet to introduce a full corporate look; police forces are researching a complete new look for the 21st century. And many employees now welcome a company wardrobe. A recent survey of staff found that 90 per cent welcomed having clothing which reflected the corporate identity.",
+    "hypothesis": "Uniforms make employees feel part of a team.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Do uniforms contribute to a sense of unity or shared identity among employees?",
+        "answer": "Uniforms can unite the workforce into a homogeneous unit.",
+        "answerable": true,
+        "located_indices": [
+          2,
+          7
+        ]
+      },
+      {
+        "question": "Is wearing a uniform associated with feelings of belonging or camaraderie in the workplace?",
+        "answer": "Uniforms are associated with uniting the workforce into a homogeneous unit.",
+        "answerable": true,
+        "located_indices": [
+          2,
+          7
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Uniforms",
+      "employees",
+      "part",
+      "a team",
+      "make",
+      "feel"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_108",
+    "premise": "Traditionally uniforms were and for some industries still are manufactured to protect the worker. When they were first designed, it is also likely that all uniforms made symbolic sense - those for the military, for example, were originally intended to impress and even terrify the enemy; other uniforms denoted a hierarchy - chefs wore white because they worked with flour, but the main chef wore a black hat to show he supervised. The last 30 years, however, have seen an increasing emphasis on their role in projecting the image of an organisation and in uniting the workforce into a homogeneous unit particularly in customer facing\" industries, and especially in financial services and retailing. From uniforms and workwear has emerged corporate clothing. \"The people you employ are your ambassadors, \" says Peter Griffin, managing director of a major retailer in the UK. \"What they say, how they look, and how they behave is terribly important. \" The result is a new way of looking at corporate workwear. From being a simple means of identifying who is a member of staff, the uniform is emerging as a new channel of marketing communication. Truly effective marketing through visual cues such as uniforms is a subtle art, however. Wittingly or unwittingly, how we look sends all sorts of powerful subliminal messages to other people. Dark colours give an aura of authority while lighter pastel shades suggest approachability. Certain dress style creates a sense of conservatism, others a sense of openness to new ideas. Neatness can suggest efficiency but, if it is overdone, it can spill over and indicate an obsession with power. \"If the company is selling quality, then it must have quality uniforms. If it is selling style, its uniforms must be stylish. If it wants to appear innovative, everybody cant look exactly the same. Subliminally we see all these things, \" says Lynn Elvy, a director of image consultants House of Colour. But translating corporate philosophies into the right mix of colour, style, degree of branding and uniformity can be a fraught process. And it is not always successful. According to Company Clothing magazine, there are 1000 companies supplying the workwear and corporate clothing market. Of these, 22 account for 85% of total sales - 380 million in 1994. A successful uniform needs to balance two key sets of needs. On the one hand, no uniform will work if staff feel uncomfortable or ugly. Giving the wearers a choice has become a key element in the way corporate clothing is introduced and managed. On the other, it is pointless if the look doesnt express the businesss marketing strategy. The greatest challenge in this respect is time. When it comes to human perceptions, first impressions count. Customers will size up the way staff look in just a few seconds, and that few seconds will colour their attitudes from then on. Those few seconds can beReading so important that big companies are prepared to invest years, and millions of pounds, getting them right. In addition, some uniform companies also offer rental services. \"There will be an increasing specialisation in the marketplace, \" predicts Mr Blyth, Customer Services Manager of a large UK bank. The past two or three years have seen consolidation. Increasingly, the big suppliers are becoming managing agents, which means they offer a total service to put together the whole complex operation of a companys corporate clothing package - which includes reliable sourcing, managing the inventory, budget control and distribution to either central locations or to each staff member individually. Huge investments have been made in new systems, information technology and amassing quality assurance accreditations. Corporate clothing does have potential for further growth. Some banks have yet to introduce a full corporate look; police forces are researching a complete new look for the 21st century. And many employees now welcome a company wardrobe. A recent survey of staff found that 90 per cent welcomed having clothing which reflected the corporate identity.",
+    "hypothesis": "Using uniforms as a marketing tool requires great care.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Does using uniforms for promotional purposes demand caution?",
+        "answer": "Translating corporate philosophies into uniforms for promotional purposes can be a fraught process.",
+        "answerable": true,
+        "located_indices": [
+          8,
+          17
+        ]
+      },
+      {
+        "question": "Is careful consideration necessary when utilizing uniforms as a means of advertising?",
+        "answer": "Careful consideration is necessary when utilizing uniforms as a means of advertising because translating corporate philosophies into the right mix of elements can be a fraught process.",
+        "answerable": true,
+        "located_indices": [
+          7,
+          8,
+          13,
+          17,
+          24
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "uniforms",
+      "a marketing tool",
+      "great care",
+      "Using",
+      "requires"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_109",
+    "premise": "Traffic jams on most of the roads in the city have become a regular feature during monsoon.",
+    "hypothesis": "Material used for road construction cannot withstand the fury of monsoon resulting into innumerable pot holes on the roads.",
+    "gold_label": "Entailment",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Material",
+      "road construction",
+      "the fury",
+      "monsoon",
+      "innumerable pot holes",
+      "the roads",
+      "used",
+      "withstand",
+      "resulting"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  },
+  {
+    "id": "id_11",
+    "premise": "Thomas Young The Last True Know-It-All Thomas Young (1773-1829) contributed 63 articles to the Encyclopedia Britannica, including 46 biographical entries (mostly on scientists and classicists) and substantial essays on Bridge, Chromatics, Egypt, Languages and Tides. Was someone who could write authoritatively about so many subjects a polymath, a genius or a dilettante? In an ambitious new biography, Andrew Robinson argues that Young is a good contender for the epitaph the last man who knew everything. Young has competition, however: The phrase, which Robinson takes for his title, also serves as the subtitle of two other recent biographies: Leonard Warrens 1998 life of paleontologist Joseph Leidy (1823-1891) and Paula Findlens 2004 book on Athanasius Kircher (1602-1680), another polymath. Young, of course, did more than write encyclopedia entries. He presented his first paper to the Royal Society of London at the age of 20 and was elected a Fellow a week after his 21st birthday. In the paper, Young explained the process of accommodation in the human eye on how the eye focuses properly on objects at varying distances. Young hypothesised that this was achieved by changes in the shape of the lens. Young also theorised that light traveled in waves and ho believed that, to account for the ability to see in color, there must be three receptors in the eye corresponding to the three principal colors to which the retina could respond: red, green, violet. All these hypotheses Were subsequently proved to be correct. Later in his life, when he was in his forties, Young was instrumental in cracking the code that unlocked the unknown script on the Rosetta Stone, a tablet that was found in Egypt by the Napoleonic army in 1799. The stone contains text in three alphabets: Greek, something unrecognisable and Egyptian hieroglyphs. The unrecognisable script is now known as demotic and, as Young deduced, is related directly to hieroglyphic. His initial work on this appeared in his Britannica entry on Egypt. In another entry, he coined the term Indo-European to describe the family of languages spoken throughout most of Europe and northern India. These are the landmark achievements of a man who was a child prodigy and who, unlike many remarkable children, did not disappear into oblivion as an adult. Bom in 1773 in Somerset in England, Young lived from an early age with his maternal grandfather, eventually leaving to attend boarding school. He had devoured books from the age of two, and through his own initiative he excelled at Latin, Greek, mathematics and natural philosophy. After leaving school, he was greatly encouraged by his mothers uncle, Richard Brocklesby, a physician and Fellow of the Royal Society. Following Brocklesbys lead, Young decided to pursue a career in medicine. He studied in London, following the medical circuit, and then moved on to more formal education in Edinburgh, Gottingen and Cambridge. After completing his medical training at the University of Cambridge in 1808, Young set up practice as a physician in London. He soon became a Fellow of the Royal College of Physicians and a few years later was appointed physician at St. Georges Hospital. Youngs skill as a physician, however, did not equal his skill as a scholar of natural philosophy or linguistics. Earlier, in 1801, he had been appointed to a professorship of natural philosophy at the Royal Institution, where he delivered as many as 60 lectures in a year. These were published in two volumes in 1807. In 1804 Young had become secretary to the Royal Society, a post he would hold until his death. His opinions were sought on civic and national matters, such as the introduction of gas lighting to London and methods of ship construction. From 1819 he was superintendent of the Nautical Almanac and secretary to the Board of Longitude. From 1824 to 1829 he was physician to and inspector of calculations for the Palladian Insurance Company. Between 1816 and 1825 he contributed his many and various entries to the Encyclopedia Britannica, and throughout his career he authored numerous books, essays and papers. Young is a perfect subject for a biography perfect, but daunting. Few men contributed so much to so many technical fields. Robinsons aim is to introduce non-scientists to Youngs work and life. He succeeds, providing clear expositions of the technical material (especially that on optics and Egyptian hieroglyphs). Some readers of this book will, like Robinson, find Youngs accomplishments impressive; others will see him as some historians have as a dilettante. Yet despite the rich material presented in this book, readers will not end up knowing Young personally. We catch glimpses of a playful Young, doodling Greek and Latin phrases in his notes on medical lectures and translating the verses that a young lady had written on the walls of a summerhouse into Greek elegiacs. Young was introduced into elite society, attended the theatre and learned to dance and play the flute. In addition, he was an accomplished horseman. However, his personal life looks pale next to his vibrant career and studies. Young married Eliza Maxwell in 1804, and according to Robinson, their marriage was a happy one and she appreciated his work, Almost all we know about her is that she sustained her husband through some rancorous disputes about optics and that she worried about money when his medical career was slow to take off. Very little evidence survives about the complexities of Youngs relationships with his mother and father. Robinson does not credit them, or anyone else, with shaping Youngs extraordinary mind. Despite the lack of details concerning Youngs relationships, however, anyone interested in what it means to be a genius should read this book.",
+    "hypothesis": "Like others, Young wasnt so brilliant when growing up.",
+    "gold_label": "Contradiction",
+    "prediction": "Neutral",
+    "qa_pairs": [
+      {
+        "question": "Did most people view Young as unremarkable in terms of brilliance when he was growing up?",
+        "answer": "The extracted sentences do not mention how most people viewed Young's brilliance when he was growing up.",
+        "answerable": true,
+        "located_indices": [
+          16,
+          17
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "others",
+      "Young",
+      "wasnt",
+      "growing"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_110",
+    "premise": "Traffic jams on most of the roads in the city have become a regular feature during monsoon.",
+    "hypothesis": "Number of vehicles coming on the roads is much more in monsoon as compared to other seasons.",
+    "gold_label": "Neutral",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Are there more vehicles on the roads during monsoon than in other seasons?",
+        "answer": "Traffic congestion increases during monsoon, suggesting more vehicles may be on the roads.",
+        "answerable": true,
+        "located_indices": [
+          0
+        ]
+      },
+      {
+        "question": "Is the number of vehicles on the roads significantly higher during monsoon compared to other times of the year?",
+        "answer": "Traffic congestion is more frequent during monsoon.",
+        "answerable": true,
+        "located_indices": [
+          0
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Number",
+      "vehicles",
+      "the roads",
+      "monsoon",
+      "other seasons",
+      "coming",
+      "compared"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_111",
+    "premise": "Traffic levels have fallen by 15% and congestion is down by a third. In August the Mayor of London announced a plan to extend the 5 charge for driving in central London during the working week westwards to Kensington and Chelsea. This was despite a consultative process in which almost 70,000 people and the vast majority of respondents said they did not want the scheme extended. However, the problem with the proposed extension is not only political. Extending the zone to a thickly populated area of London will mean that many people will qualify for the residents discount, allowing them to drive to the city without paying any extra. Extending the scheme therefore may mean that total revenues drop from the current 90 million a year.",
+    "hypothesis": "The extended scheme may face continued public opposition.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Has there been any indication of public resistance to the extended scheme?",
+        "answer": "Almost 70,000 people participated in a consultative process, with the vast majority expressing opposition to extending the scheme.",
+        "answerable": true,
+        "located_indices": [
+          2
+        ]
+      },
+      {
+        "question": "Is the extended scheme expected to encounter ongoing disapproval from the community?",
+        "answer": "The community has previously expressed strong opposition to the extension through a consultative process.",
+        "answerable": true,
+        "located_indices": [
+          2
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "The extended scheme",
+      "continued public opposition",
+      "face"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_112",
+    "premise": "Traffic levels have fallen by 15% and congestion is down by a third. In August the Mayor of London announced a plan to extend the 5 charge for driving in central London during the working week westwards to Kensington and Chelsea. This was despite a consultative process in which almost 70,000 people and the vast majority of respondents said they did not want the scheme extended. However, the problem with the proposed extension is not only political. Extending the zone to a thickly populated area of London will mean that many people will qualify for the residents discount, allowing them to drive to the city without paying any extra. Extending the scheme therefore may mean that total revenues drop from the current 90 million a year.",
+    "hypothesis": "Kensington and Chelsea have high residential populations.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Kensington",
+      "Chelsea",
+      "high residential populations"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Entailment."
+    ]
+  },
+  {
+    "id": "id_113",
+    "premise": "Traffic levels have fallen by 15% and congestion is down by a third. In August the Mayor of London announced a plan to extend the 5 charge for driving in central London during the working week westwards to Kensington and Chelsea. This was despite a consultative process in which almost 70,000 people and the vast majority of respondents said they did not want the scheme extended. However, the problem with the proposed extension is not only political. Extending the zone to a thickly populated area of London will mean that many people will qualify for the residents discount, allowing them to drive to the city without paying any extra. Extending the scheme therefore may mean that total revenues drop from the current 90 million a year.",
+    "hypothesis": "Whilst the majority of respondents voted against the extension it is possible that they welcomed the fall in traffic levels and lower congestion.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Did most respondents vote in favor of or against the extension?",
+        "answer": "Most respondents voted against the extension.",
+        "answerable": true,
+        "located_indices": [
+          2
+        ]
+      },
+      {
+        "question": "Was there an observed decrease in traffic levels and congestion after the decision on the extension?",
+        "answer": "Yes, there was an observed decrease in traffic levels and congestion.",
+        "answerable": true,
+        "located_indices": [
+          0
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "the majority",
+      "respondents",
+      "the extension",
+      "the fall",
+      "traffic levels",
+      "lower congestion",
+      "voted",
+      "welcomed"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_114",
+    "premise": "Traffic levels have fallen by 15% and congestion is down by a third. In August the Mayor of London announced a plan to extend the 5 charge for driving in central London during the working week westwards to Kensington and Chelsea. This was despite a consultative process in which almost 70,000 people and the vast majority of respondents said they did not want the scheme extended. However, the problem with the proposed extension is not only political. Extending the zone to a thickly populated area of London will mean that many people will qualify for the residents discount, allowing them to drive to the city without paying any extra. Extending the scheme therefore may mean that total revenues drop from the current 90 million a year.",
+    "hypothesis": "People who live in Kensington currently do not have to pay 5 to drive to the city.",
+    "gold_label": "Contradiction",
+    "prediction": "Contradiction",
+    "qa_pairs": [
+      {
+        "question": "Do residents of Kensington have to pay a toll to drive to the city?",
+        "answer": "Residents of Kensington may have to pay a toll, but they can also qualify for a resident's discount.",
+        "answerable": true,
+        "located_indices": [
+          1,
+          4
+        ]
+      },
+      {
+        "question": "Is there a fee of $5 for driving from Kensington to the city?",
+        "answer": "There is a $5 charge for driving in central London during the working week from Kensington and Chelsea.",
+        "answerable": true,
+        "located_indices": [
+          1,
+          4
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "People",
+      "Kensington",
+      "the city",
+      "live",
+      "pay",
+      "drive",
+      "5"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_115",
+    "premise": "Training Facilities The International College of Hospitality Management has more than 120 professional lecturers and international-standard, training facilities. These include three public restaurants, ten commercial training kitchens, simulated front office training facilities, four computer suites, a fully operational winery, and a food science laboratory. The Learning Resource Centre collection is extensive. The student support services provide professional counselling in the areas of health, learning support, language skills, accommodation and welfare. Childcare facilities are also available on campus. International Home The International College of Hospitality Management has students enrolled from more than 20 countries, some of whom stay on campus in International House. Built in 1999, International House is accommodation comprising villa-style units. Each student has their own bedroom, sharing en suite facilities with another student. An adjoining kitchenette and lounge area is shared by the four students in the villa. All meals are served in the College dining room which is next to the student common room. Student privacy and security are priorities. A computer outlet in each bedroom enables student to connect into the College network, providing 24 hour-a-day access. The residence is a two-minute walk to the Colleges sporting and training facilities, and is on a regular bus service to the city centre 10 km away. International House is also being used to enhance on-campus training, from Monday to Friday, Year 1 students, supervised by 2nd Years, are assigned kitchen, waiting, housekeeping and receptionist duties. Simulated check-in/check-out exercises, receptionist duties and breakfast service to a limited number of rooms are also part of the program.",
+    "hypothesis": "The training facility has 10 kitchens",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "How many kitchens are there in the training facility?",
+        "answer": "There are ten commercial training kitchens in the training facility.",
+        "answerable": true,
+        "located_indices": [
+          1
+        ]
+      },
+      {
+        "question": "Does the training facility have more or less than 10 kitchens?",
+        "answer": "The training facility has exactly 10 kitchens.",
+        "answerable": true,
+        "located_indices": [
+          1
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "The training facility",
+      "10 kitchens"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_116",
+    "premise": "Training Facilities The International College of Hospitality Management has more than 120 professional lecturers and international-standard, training facilities. These include three public restaurants, ten commercial training kitchens, simulated front office training facilities, four computer suites, a fully operational winery, and a food science laboratory. The Learning Resource Centre collection is extensive. The student support services provide professional counselling in the areas of health, learning support, language skills, accommodation and welfare. Childcare facilities are also available on campus. International Home The International College of Hospitality Management has students enrolled from more than 20 countries, some of whom stay on campus in International House. Built in 1999, International House is accommodation comprising villa-style units. Each student has their own bedroom, sharing en suite facilities with another student. An adjoining kitchenette and lounge area is shared by the four students in the villa. All meals are served in the College dining room which is next to the student common room. Student privacy and security are priorities. A computer outlet in each bedroom enables student to connect into the College network, providing 24 hour-a-day access. The residence is a two-minute walk to the Colleges sporting and training facilities, and is on a regular bus service to the city centre 10 km away. International House is also being used to enhance on-campus training, from Monday to Friday, Year 1 students, supervised by 2nd Years, are assigned kitchen, waiting, housekeeping and receptionist duties. Simulated check-in/check-out exercises, receptionist duties and breakfast service to a limited number of rooms are also part of the program.",
+    "hypothesis": "All students in the program live at International House",
+    "gold_label": "Contradiction",
+    "prediction": "Contradiction",
+    "qa_pairs": [
+      {
+        "question": "Do all students enrolled in the program reside at International House?",
+        "answer": "Some students enrolled in the program reside at International House.",
+        "answerable": true,
+        "located_indices": [
+          5
+        ]
+      },
+      {
+        "question": "Are there any students in the program who do not live at International House?",
+        "answer": "The text does not provide information about students who do not live at International House.",
+        "answerable": true,
+        "located_indices": [
+          5
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "All students",
+      "the program live",
+      "International House"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_117",
+    "premise": "Training Facilities The International College of Hospitality Management has more than 120 professional lecturers and international-standard, training facilities. These include three public restaurants, ten commercial training kitchens, simulated front office training facilities, four computer suites, a fully operational winery, and a food science laboratory. The Learning Resource Centre collection is extensive. The student support services provide professional counselling in the areas of health, learning support, language skills, accommodation and welfare. Childcare facilities are also available on campus. International Home The International College of Hospitality Management has students enrolled from more than 20 countries, some of whom stay on campus in International House. Built in 1999, International House is accommodation comprising villa-style units. Each student has their own bedroom, sharing en suite facilities with another student. An adjoining kitchenette and lounge area is shared by the four students in the villa. All meals are served in the College dining room which is next to the student common room. Student privacy and security are priorities. A computer outlet in each bedroom enables student to connect into the College network, providing 24 hour-a-day access. The residence is a two-minute walk to the Colleges sporting and training facilities, and is on a regular bus service to the city centre 10 km away. International House is also being used to enhance on-campus training, from Monday to Friday, Year 1 students, supervised by 2nd Years, are assigned kitchen, waiting, housekeeping and receptionist duties. Simulated check-in/check-out exercises, receptionist duties and breakfast service to a limited number of rooms are also part of the program.",
+    "hypothesis": "Four students share a unit in the residence",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "How many students live together in one unit in the residence?",
+        "answer": "Four students live together in one unit in the residence.",
+        "answerable": true,
+        "located_indices": [
+          6,
+          7,
+          8
+        ]
+      },
+      {
+        "question": "Is there more than one student living in each unit in the residence?",
+        "answer": "Yes, there are at least two students living in each unit.",
+        "answerable": true,
+        "located_indices": [
+          6,
+          7,
+          8
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Four students share",
+      "a unit",
+      "the residence"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_118",
+    "premise": "Training Facilities The International College of Hospitality Management has more than 120 professional lecturers and international-standard, training facilities. These include three public restaurants, ten commercial training kitchens, simulated front office training facilities, four computer suites, a fully operational winery, and a food science laboratory. The Learning Resource Centre collection is extensive. The student support services provide professional counselling in the areas of health, learning support, language skills, accommodation and welfare. Childcare facilities are also available on campus. International Home The International College of Hospitality Management has students enrolled from more than 20 countries, some of whom stay on campus in International House. Built in 1999, International House is accommodation comprising villa-style units. Each student has their own bedroom, sharing en suite facilities with another student. An adjoining kitchenette and lounge area is shared by the four students in the villa. All meals are served in the College dining room which is next to the student common room. Student privacy and security are priorities. A computer outlet in each bedroom enables student to connect into the College network, providing 24 hour-a-day access. The residence is a two-minute walk to the Colleges sporting and training facilities, and is on a regular bus service to the city centre 10 km away. International House is also being used to enhance on-campus training, from Monday to Friday, Year 1 students, supervised by 2nd Years, are assigned kitchen, waiting, housekeeping and receptionist duties. Simulated check-in/check-out exercises, receptionist duties and breakfast service to a limited number of rooms are also part of the program.",
+    "hypothesis": "The residence is used as part of the training program",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Is the residence utilized in any way for the purposes of the training program?",
+        "answer": "Yes, the residence is utilized for on-campus training purposes.",
+        "answerable": true,
+        "located_indices": [
+          13
+        ]
+      },
+      {
+        "question": "Does the training program involve activities or sessions held at the residence?",
+        "answer": "The training program involves activities held at International House.",
+        "answerable": true,
+        "located_indices": [
+          13
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "The residence",
+      "part",
+      "the training program",
+      "used"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_119",
+    "premise": "Training Facilities The International College of Hospitality Management has more than 120 professional lecturers and international-standard, training facilities. These include three public restaurants, ten commercial training kitchens, simulated front office training facilities, four computer suites, a fully operational winery, and a food science laboratory. The Learning Resource Centre collection is extensive. The student support services provide professional counselling in the areas of health, learning support, language skills, accommodation and welfare. Childcare facilities are also available on campus. International Home The International College of Hospitality Management has students enrolled from more than 20 countries, some of whom stay on campus in International House. Built in 1999, International House is accommodation comprising villa-style units. Each student has their own bedroom, sharing en suite facilities with another student. An adjoining kitchenette and lounge area is shared by the four students in the villa. All meals are served in the College dining room which is next to the student common room. Student privacy and security are priorities. A computer outlet in each bedroom enables student to connect into the College network, providing 24 hour-a-day access. The residence is a two-minute walk to the Colleges sporting and training facilities, and is on a regular bus service to the city centre 10 km away. International House is also being used to enhance on-campus training, from Monday to Friday, Year 1 students, supervised by 2nd Years, are assigned kitchen, waiting, housekeeping and receptionist duties. Simulated check-in/check-out exercises, receptionist duties and breakfast service to a limited number of rooms are also part of the program.",
+    "hypothesis": "All meals in the residence are prepared by the students",
+    "gold_label": "Neutral",
+    "prediction": "Contradiction",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "All meals",
+      "the residence",
+      "the students",
+      "prepared"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Contradiction."
+    ]
+  },
+  {
+    "id": "id_12",
+    "premise": "Though no heavy rain has been received in the city and water is receding from most areas in Chennai and massive relief operations are underway, the city is staring at an outbreak of epidemics with tones of stinking garbage littering the streets as bright sunshine further eased the situation.",
+    "hypothesis": "Garbage in the city is the major concern of epidemics.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Is garbage accumulation in urban areas identified as a primary factor contributing to the spread of diseases?",
+        "answer": "Garbage accumulation in urban areas is identified as a factor contributing to the potential outbreak of epidemics.",
+        "answerable": true,
+        "located_indices": [
+          0
+        ]
+      },
+      {
+        "question": "Are health experts in the city primarily worried about the impact of waste management on public health during outbreaks?",
+        "answer": "Health experts' primary concerns during outbreaks are not explicitly stated, but the city is facing a risk of epidemic due to unmanaged waste.",
+        "answerable": true,
+        "located_indices": [
+          0
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Garbage",
+      "the city",
+      "the major concern",
+      "epidemics"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_120",
+    "premise": "Trans Fatty Acids A recent editorial in the British Medical Journal (BMJ), written by researchers from the University of Oxford, has called for food labels to list trans fats as well as cholesterol and saturated fat. Trans fats (or trans fatty acids) are a type of unsaturated fatty acid. They occur naturally in small amounts in foods produced from ruminant animals e. g. milk, beef and lamb. However, most of the trans fatty acids in the diet are produced during the process of partial hydrogenation (hardening) of vegetable oils into semi-solid fats. They are therefore found in hard margarines, partially hydrogenated cooking oils, and in some bakery products, fried foods, and other processed foods that are made using these. Trans fatty acids have an adverse effect on certain chemicals, known as lipids, which are found in the blood and have been shown to increase the risk of heart disease. They also increase LDL-cholesterol (the bad cholesterol) and decrease HDL-cholesterol (the good cholesterol). They may also have adverse effects on cardiovascular disease risk that are independent of an effect on blood lipids (Mozaffarian et al. 2006). In a recent review of prospective studies investigating the effects of trans fatty acids, a 2% increase in energy intake from trans fatty acids was associated with a 23% increase in the incidence of heart disease. The authors also reported that the adverse effects of trans fatty acids were observed even at very low intakes (3% of total daily energy intake, or about 2-7g per day) (Mozaffarian et al. 2006). However, in this recent review it is only trans fatty acids produced during the hardening of vegetable oils that are found to be harmful to health. The public health implications of consuming trans fatty acids from ruminant products are considered to be relatively limited. Over the last decade, population intakes of trans fatty acids in the UK fell and are now, on average, well below the recommended 2% of total energy set by the Department of Health in 1991, at 1.2% of energy (Henderson et al. 2003). This is not to say that intakes of trans fatty acids are not still a problem, and dietary advice states that those individuals who are in the top end of the distribution of intake should still make efforts to reduce their intakes. Currently, trans fatty acids in foods are labelled in the USA, but not in the UK and Europe. The UK Food Standards Agency (FSA) is in favour of the revision of the European directive that governs the content and format of food labels so that trans fatty acids are labelled. This should enable consumers to make better food choices with regard to heart health (Clarke & Lewington 2006). Recognising the adverse health effects of trans fatty acids, many food manufacturers and retailers have been systematically removing them from their products in recent years. For example, they have been absent for some time from major brands of margarine and other fat spreads, which are now manufactured using a different technique. Also, many companies now have guidelines in place that are resulting in reformulation and reduction or elimination of trans fatty acids in products where they have in the past been found, such as snack products, fried products and baked goods. Consequently, the vast majority of savoury biscuits and crisps produced in the UK do not contain partially hydrogenated oils. Similarly, changes are being made to the way bakery products are manufactured. For example, a leading European manufacturer of major brands of biscuits, cakes and snacks has recently announced that these are now made without partially hydrogenated vegetable oils, a transition that began in 2004. Alongside these changes, the manufacturer has also reported a cut in the amount of saturates. It is clear that a major technical challenge in achieving such changes is to avoid simply exchanging trans fatty acids for saturated fatty acids, which also have damaging health effects. Foods that are labelled as containing partially-hydrogenated oils or fats are a source of trans fatty acids (sometimes partially-hydrogenated fats are just labelled as hydrogenated fats). These foods include hard margarines, some fried products and some manufactured bakery products e. g. biscuits, pastries and cakes. It is important to note that intake may have changed in the light of reformulation of foods that has taken place over the past six years in the UK, as referred to earlier. Furthermore, the average intake of trans fatty acids is lower in the UK than in the USA (where legislation has now been introduced). However, this does not mean there is room for complacency, as the intake in some sectors of the population is known to be higher than recommended.",
+    "hypothesis": "The amount of saturated fats in processed meats is being reduced by some major producers.",
+    "gold_label": "Neutral",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Are some major producers of processed meats decreasing the level of saturated fats in their products?",
+        "answer": "Some major producers of processed meats are not explicitly mentioned to be decreasing saturated fats, but some companies are reformulating products to reduce or eliminate trans fatty acids.",
+        "answerable": true,
+        "located_indices": [
+          22
+        ]
+      },
+      {
+        "question": "Is there a reduction in the amount of saturated fats found in processed meats from certain large manufacturers?",
+        "answer": "There is a reduction in the amount of saturated fats found in products from at least one large manufacturer.",
+        "answerable": true,
+        "located_indices": [
+          26
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "The amount",
+      "saturated fats",
+      "processed meats",
+      "some major producers",
+      "reduced"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_121",
+    "premise": "Trans Fatty Acids A recent editorial in the British Medical Journal (BMJ), written by researchers from the University of Oxford, has called for food labels to list trans fats as well as cholesterol and saturated fat. Trans fats (or trans fatty acids) are a type of unsaturated fatty acid. They occur naturally in small amounts in foods produced from ruminant animals e. g. milk, beef and lamb. However, most of the trans fatty acids in the diet are produced during the process of partial hydrogenation (hardening) of vegetable oils into semi-solid fats. They are therefore found in hard margarines, partially hydrogenated cooking oils, and in some bakery products, fried foods, and other processed foods that are made using these. Trans fatty acids have an adverse effect on certain chemicals, known as lipids, which are found in the blood and have been shown to increase the risk of heart disease. They also increase LDL-cholesterol (the bad cholesterol) and decrease HDL-cholesterol (the good cholesterol). They may also have adverse effects on cardiovascular disease risk that are independent of an effect on blood lipids (Mozaffarian et al. 2006). In a recent review of prospective studies investigating the effects of trans fatty acids, a 2% increase in energy intake from trans fatty acids was associated with a 23% increase in the incidence of heart disease. The authors also reported that the adverse effects of trans fatty acids were observed even at very low intakes (3% of total daily energy intake, or about 2-7g per day) (Mozaffarian et al. 2006). However, in this recent review it is only trans fatty acids produced during the hardening of vegetable oils that are found to be harmful to health. The public health implications of consuming trans fatty acids from ruminant products are considered to be relatively limited. Over the last decade, population intakes of trans fatty acids in the UK fell and are now, on average, well below the recommended 2% of total energy set by the Department of Health in 1991, at 1.2% of energy (Henderson et al. 2003). This is not to say that intakes of trans fatty acids are not still a problem, and dietary advice states that those individuals who are in the top end of the distribution of intake should still make efforts to reduce their intakes. Currently, trans fatty acids in foods are labelled in the USA, but not in the UK and Europe. The UK Food Standards Agency (FSA) is in favour of the revision of the European directive that governs the content and format of food labels so that trans fatty acids are labelled. This should enable consumers to make better food choices with regard to heart health (Clarke & Lewington 2006). Recognising the adverse health effects of trans fatty acids, many food manufacturers and retailers have been systematically removing them from their products in recent years. For example, they have been absent for some time from major brands of margarine and other fat spreads, which are now manufactured using a different technique. Also, many companies now have guidelines in place that are resulting in reformulation and reduction or elimination of trans fatty acids in products where they have in the past been found, such as snack products, fried products and baked goods. Consequently, the vast majority of savoury biscuits and crisps produced in the UK do not contain partially hydrogenated oils. Similarly, changes are being made to the way bakery products are manufactured. For example, a leading European manufacturer of major brands of biscuits, cakes and snacks has recently announced that these are now made without partially hydrogenated vegetable oils, a transition that began in 2004. Alongside these changes, the manufacturer has also reported a cut in the amount of saturates. It is clear that a major technical challenge in achieving such changes is to avoid simply exchanging trans fatty acids for saturated fatty acids, which also have damaging health effects. Foods that are labelled as containing partially-hydrogenated oils or fats are a source of trans fatty acids (sometimes partially-hydrogenated fats are just labelled as hydrogenated fats). These foods include hard margarines, some fried products and some manufactured bakery products e. g. biscuits, pastries and cakes. It is important to note that intake may have changed in the light of reformulation of foods that has taken place over the past six years in the UK, as referred to earlier. Furthermore, the average intake of trans fatty acids is lower in the UK than in the USA (where legislation has now been introduced). However, this does not mean there is room for complacency, as the intake in some sectors of the population is known to be higher than recommended.",
+    "hypothesis": "In Britain, the intake of trans fatty acids is continuing to decline.",
+    "gold_label": "Neutral",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Is there a downward trend in the consumption of trans fatty acids in Britain?",
+        "answer": "Population intakes of trans fatty acids in the UK fell over the last decade and are now below the recommended 2% of total energy.",
+        "answerable": true,
+        "located_indices": [
+          14,
+          16,
+          30
+        ]
+      },
+      {
+        "question": "Has the amount of trans fatty acids consumed in Britain decreased over time?",
+        "answer": "The average population intake of trans fatty acids in the UK fell over the last decade and is now below 2% of total energy.",
+        "answerable": true,
+        "located_indices": [
+          14,
+          16,
+          30
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Britain",
+      "the intake",
+      "trans",
+      "fatty acids",
+      "continuing",
+      "decline"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_122",
+    "premise": "Trans Fatty Acids A recent editorial in the British Medical Journal (BMJ), written by researchers from the University of Oxford, has called for food labels to list trans fats as well as cholesterol and saturated fat. Trans fats (or trans fatty acids) are a type of unsaturated fatty acid. They occur naturally in small amounts in foods produced from ruminant animals e. g. milk, beef and lamb. However, most of the trans fatty acids in the diet are produced during the process of partial hydrogenation (hardening) of vegetable oils into semi-solid fats. They are therefore found in hard margarines, partially hydrogenated cooking oils, and in some bakery products, fried foods, and other processed foods that are made using these. Trans fatty acids have an adverse effect on certain chemicals, known as lipids, which are found in the blood and have been shown to increase the risk of heart disease. They also increase LDL-cholesterol (the bad cholesterol) and decrease HDL-cholesterol (the good cholesterol). They may also have adverse effects on cardiovascular disease risk that are independent of an effect on blood lipids (Mozaffarian et al. 2006). In a recent review of prospective studies investigating the effects of trans fatty acids, a 2% increase in energy intake from trans fatty acids was associated with a 23% increase in the incidence of heart disease. The authors also reported that the adverse effects of trans fatty acids were observed even at very low intakes (3% of total daily energy intake, or about 2-7g per day) (Mozaffarian et al. 2006). However, in this recent review it is only trans fatty acids produced during the hardening of vegetable oils that are found to be harmful to health. The public health implications of consuming trans fatty acids from ruminant products are considered to be relatively limited. Over the last decade, population intakes of trans fatty acids in the UK fell and are now, on average, well below the recommended 2% of total energy set by the Department of Health in 1991, at 1.2% of energy (Henderson et al. 2003). This is not to say that intakes of trans fatty acids are not still a problem, and dietary advice states that those individuals who are in the top end of the distribution of intake should still make efforts to reduce their intakes. Currently, trans fatty acids in foods are labelled in the USA, but not in the UK and Europe. The UK Food Standards Agency (FSA) is in favour of the revision of the European directive that governs the content and format of food labels so that trans fatty acids are labelled. This should enable consumers to make better food choices with regard to heart health (Clarke & Lewington 2006). Recognising the adverse health effects of trans fatty acids, many food manufacturers and retailers have been systematically removing them from their products in recent years. For example, they have been absent for some time from major brands of margarine and other fat spreads, which are now manufactured using a different technique. Also, many companies now have guidelines in place that are resulting in reformulation and reduction or elimination of trans fatty acids in products where they have in the past been found, such as snack products, fried products and baked goods. Consequently, the vast majority of savoury biscuits and crisps produced in the UK do not contain partially hydrogenated oils. Similarly, changes are being made to the way bakery products are manufactured. For example, a leading European manufacturer of major brands of biscuits, cakes and snacks has recently announced that these are now made without partially hydrogenated vegetable oils, a transition that began in 2004. Alongside these changes, the manufacturer has also reported a cut in the amount of saturates. It is clear that a major technical challenge in achieving such changes is to avoid simply exchanging trans fatty acids for saturated fatty acids, which also have damaging health effects. Foods that are labelled as containing partially-hydrogenated oils or fats are a source of trans fatty acids (sometimes partially-hydrogenated fats are just labelled as hydrogenated fats). These foods include hard margarines, some fried products and some manufactured bakery products e. g. biscuits, pastries and cakes. It is important to note that intake may have changed in the light of reformulation of foods that has taken place over the past six years in the UK, as referred to earlier. Furthermore, the average intake of trans fatty acids is lower in the UK than in the USA (where legislation has now been introduced). However, this does not mean there is room for complacency, as the intake in some sectors of the population is known to be higher than recommended.",
+    "hypothesis": "It is proving difficult to find a safe substitute for trans fatty acids.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Is it challenging to identify an alternative to trans fatty acids that does not pose health risks?",
+        "answer": "Identifying an alternative to trans fatty acids without health risks is challenging because alternatives like saturated fatty acids also have damaging health effects.",
+        "answerable": true,
+        "located_indices": [
+          27
+        ]
+      },
+      {
+        "question": "Have researchers been unable to discover a suitable replacement for trans fatty acids?",
+        "answer": "Researchers face a technical challenge in finding an alternative to trans fatty acids without increasing saturated fatty acids.",
+        "answerable": true,
+        "located_indices": [
+          27
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "a safe substitute",
+      "trans",
+      "fatty acids",
+      "proving",
+      "find"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_123",
+    "premise": "Trans Fatty Acids A recent editorial in the British Medical Journal (BMJ), written by researchers from the University of Oxford, has called for food labels to list trans fats as well as cholesterol and saturated fat. Trans fats (or trans fatty acids) are a type of unsaturated fatty acid. They occur naturally in small amounts in foods produced from ruminant animals e. g. milk, beef and lamb. However, most of the trans fatty acids in the diet are produced during the process of partial hydrogenation (hardening) of vegetable oils into semi-solid fats. They are therefore found in hard margarines, partially hydrogenated cooking oils, and in some bakery products, fried foods, and other processed foods that are made using these. Trans fatty acids have an adverse effect on certain chemicals, known as lipids, which are found in the blood and have been shown to increase the risk of heart disease. They also increase LDL-cholesterol (the bad cholesterol) and decrease HDL-cholesterol (the good cholesterol). They may also have adverse effects on cardiovascular disease risk that are independent of an effect on blood lipids (Mozaffarian et al. 2006). In a recent review of prospective studies investigating the effects of trans fatty acids, a 2% increase in energy intake from trans fatty acids was associated with a 23% increase in the incidence of heart disease. The authors also reported that the adverse effects of trans fatty acids were observed even at very low intakes (3% of total daily energy intake, or about 2-7g per day) (Mozaffarian et al. 2006). However, in this recent review it is only trans fatty acids produced during the hardening of vegetable oils that are found to be harmful to health. The public health implications of consuming trans fatty acids from ruminant products are considered to be relatively limited. Over the last decade, population intakes of trans fatty acids in the UK fell and are now, on average, well below the recommended 2% of total energy set by the Department of Health in 1991, at 1.2% of energy (Henderson et al. 2003). This is not to say that intakes of trans fatty acids are not still a problem, and dietary advice states that those individuals who are in the top end of the distribution of intake should still make efforts to reduce their intakes. Currently, trans fatty acids in foods are labelled in the USA, but not in the UK and Europe. The UK Food Standards Agency (FSA) is in favour of the revision of the European directive that governs the content and format of food labels so that trans fatty acids are labelled. This should enable consumers to make better food choices with regard to heart health (Clarke & Lewington 2006). Recognising the adverse health effects of trans fatty acids, many food manufacturers and retailers have been systematically removing them from their products in recent years. For example, they have been absent for some time from major brands of margarine and other fat spreads, which are now manufactured using a different technique. Also, many companies now have guidelines in place that are resulting in reformulation and reduction or elimination of trans fatty acids in products where they have in the past been found, such as snack products, fried products and baked goods. Consequently, the vast majority of savoury biscuits and crisps produced in the UK do not contain partially hydrogenated oils. Similarly, changes are being made to the way bakery products are manufactured. For example, a leading European manufacturer of major brands of biscuits, cakes and snacks has recently announced that these are now made without partially hydrogenated vegetable oils, a transition that began in 2004. Alongside these changes, the manufacturer has also reported a cut in the amount of saturates. It is clear that a major technical challenge in achieving such changes is to avoid simply exchanging trans fatty acids for saturated fatty acids, which also have damaging health effects. Foods that are labelled as containing partially-hydrogenated oils or fats are a source of trans fatty acids (sometimes partially-hydrogenated fats are just labelled as hydrogenated fats). These foods include hard margarines, some fried products and some manufactured bakery products e. g. biscuits, pastries and cakes. It is important to note that intake may have changed in the light of reformulation of foods that has taken place over the past six years in the UK, as referred to earlier. Furthermore, the average intake of trans fatty acids is lower in the UK than in the USA (where legislation has now been introduced). However, this does not mean there is room for complacency, as the intake in some sectors of the population is known to be higher than recommended.",
+    "hypothesis": "Trans fatty acids are found in all types of meat.",
+    "gold_label": "Contradiction",
+    "prediction": "Contradiction",
+    "qa_pairs": [
+      {
+        "question": "Are trans fatty acids present in every type of meat?",
+        "answer": "Trans fatty acids are not mentioned as being present in every type of meat.",
+        "answerable": true,
+        "located_indices": [
+          2
+        ]
+      },
+      {
+        "question": "Can any type of meat be completely free of trans fatty acids?",
+        "answer": "Meat from non-ruminant animals may be free of trans fatty acids.",
+        "answerable": true,
+        "located_indices": [
+          2
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Trans",
+      "fatty acids",
+      "all types",
+      "meat",
+      "found"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_124",
+    "premise": "Trans Fatty Acids A recent editorial in the British Medical Journal (BMJ), written by researchers from the University of Oxford, has called for food labels to list trans fats as well as cholesterol and saturated fat. Trans fats (or trans fatty acids) are a type of unsaturated fatty acid. They occur naturally in small amounts in foods produced from ruminant animals e. g. milk, beef and lamb. However, most of the trans fatty acids in the diet are produced during the process of partial hydrogenation (hardening) of vegetable oils into semi-solid fats. They are therefore found in hard margarines, partially hydrogenated cooking oils, and in some bakery products, fried foods, and other processed foods that are made using these. Trans fatty acids have an adverse effect on certain chemicals, known as lipids, which are found in the blood and have been shown to increase the risk of heart disease. They also increase LDL-cholesterol (the bad cholesterol) and decrease HDL-cholesterol (the good cholesterol). They may also have adverse effects on cardiovascular disease risk that are independent of an effect on blood lipids (Mozaffarian et al. 2006). In a recent review of prospective studies investigating the effects of trans fatty acids, a 2% increase in energy intake from trans fatty acids was associated with a 23% increase in the incidence of heart disease. The authors also reported that the adverse effects of trans fatty acids were observed even at very low intakes (3% of total daily energy intake, or about 2-7g per day) (Mozaffarian et al. 2006). However, in this recent review it is only trans fatty acids produced during the hardening of vegetable oils that are found to be harmful to health. The public health implications of consuming trans fatty acids from ruminant products are considered to be relatively limited. Over the last decade, population intakes of trans fatty acids in the UK fell and are now, on average, well below the recommended 2% of total energy set by the Department of Health in 1991, at 1.2% of energy (Henderson et al. 2003). This is not to say that intakes of trans fatty acids are not still a problem, and dietary advice states that those individuals who are in the top end of the distribution of intake should still make efforts to reduce their intakes. Currently, trans fatty acids in foods are labelled in the USA, but not in the UK and Europe. The UK Food Standards Agency (FSA) is in favour of the revision of the European directive that governs the content and format of food labels so that trans fatty acids are labelled. This should enable consumers to make better food choices with regard to heart health (Clarke & Lewington 2006). Recognising the adverse health effects of trans fatty acids, many food manufacturers and retailers have been systematically removing them from their products in recent years. For example, they have been absent for some time from major brands of margarine and other fat spreads, which are now manufactured using a different technique. Also, many companies now have guidelines in place that are resulting in reformulation and reduction or elimination of trans fatty acids in products where they have in the past been found, such as snack products, fried products and baked goods. Consequently, the vast majority of savoury biscuits and crisps produced in the UK do not contain partially hydrogenated oils. Similarly, changes are being made to the way bakery products are manufactured. For example, a leading European manufacturer of major brands of biscuits, cakes and snacks has recently announced that these are now made without partially hydrogenated vegetable oils, a transition that began in 2004. Alongside these changes, the manufacturer has also reported a cut in the amount of saturates. It is clear that a major technical challenge in achieving such changes is to avoid simply exchanging trans fatty acids for saturated fatty acids, which also have damaging health effects. Foods that are labelled as containing partially-hydrogenated oils or fats are a source of trans fatty acids (sometimes partially-hydrogenated fats are just labelled as hydrogenated fats). These foods include hard margarines, some fried products and some manufactured bakery products e. g. biscuits, pastries and cakes. It is important to note that intake may have changed in the light of reformulation of foods that has taken place over the past six years in the UK, as referred to earlier. Furthermore, the average intake of trans fatty acids is lower in the UK than in the USA (where legislation has now been introduced). However, this does not mean there is room for complacency, as the intake in some sectors of the population is known to be higher than recommended.",
+    "hypothesis": "Some people are still consuming larger quantities of trans fatty acids than the experts consider safe.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Are there individuals who consume more trans fatty acids than recommended by health experts?",
+        "answer": "Yes, individuals who are in the top end of the distribution of trans fatty acid intake consume more than recommended.",
+        "answerable": true,
+        "located_indices": [
+          14,
+          16,
+          32
+        ]
+      },
+      {
+        "question": "Do some people's diets contain higher amounts of trans fatty acids than what is deemed safe by experts?",
+        "answer": "Yes, some people's diets contain higher amounts of trans fatty acids than what is deemed safe by experts.",
+        "answerable": true,
+        "located_indices": [
+          9,
+          10,
+          16,
+          32
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Some people",
+      "larger quantities",
+      "trans",
+      "fatty acids",
+      "the experts",
+      "consuming",
+      "consider"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_125",
+    "premise": "Trans Fatty Acids A recent editorial in the British Medical Journal (BMJ), written by researchers from the University of Oxford, has called for food labels to list trans fats as well as cholesterol and saturated fat. Trans fats (or trans fatty acids) are a type of unsaturated fatty acid. They occur naturally in small amounts in foods produced from ruminant animals e. g. milk, beef and lamb. However, most of the trans fatty acids in the diet are produced during the process of partial hydrogenation (hardening) of vegetable oils into semi-solid fats. They are therefore found in hard margarines, partially hydrogenated cooking oils, and in some bakery products, fried foods, and other processed foods that are made using these. Trans fatty acids have an adverse effect on certain chemicals, known as lipids, which are found in the blood and have been shown to increase the risk of heart disease. They also increase LDL-cholesterol (the bad cholesterol) and decrease HDL-cholesterol (the good cholesterol). They may also have adverse effects on cardiovascular disease risk that are independent of an effect on blood lipids (Mozaffarian et al. 2006). In a recent review of prospective studies investigating the effects of trans fatty acids, a 2% increase in energy intake from trans fatty acids was associated with a 23% increase in the incidence of heart disease. The authors also reported that the adverse effects of trans fatty acids were observed even at very low intakes (3% of total daily energy intake, or about 2-7g per day) (Mozaffarian et al. 2006). However, in this recent review it is only trans fatty acids produced during the hardening of vegetable oils that are found to be harmful to health. The public health implications of consuming trans fatty acids from ruminant products are considered to be relatively limited. Over the last decade, population intakes of trans fatty acids in the UK fell and are now, on average, well below the recommended 2% of total energy set by the Department of Health in 1991, at 1.2% of energy (Henderson et al. 2003). This is not to say that intakes of trans fatty acids are not still a problem, and dietary advice states that those individuals who are in the top end of the distribution of intake should still make efforts to reduce their intakes. Currently, trans fatty acids in foods are labelled in the USA, but not in the UK and Europe. The UK Food Standards Agency (FSA) is in favour of the revision of the European directive that governs the content and format of food labels so that trans fatty acids are labelled. This should enable consumers to make better food choices with regard to heart health (Clarke & Lewington 2006). Recognising the adverse health effects of trans fatty acids, many food manufacturers and retailers have been systematically removing them from their products in recent years. For example, they have been absent for some time from major brands of margarine and other fat spreads, which are now manufactured using a different technique. Also, many companies now have guidelines in place that are resulting in reformulation and reduction or elimination of trans fatty acids in products where they have in the past been found, such as snack products, fried products and baked goods. Consequently, the vast majority of savoury biscuits and crisps produced in the UK do not contain partially hydrogenated oils. Similarly, changes are being made to the way bakery products are manufactured. For example, a leading European manufacturer of major brands of biscuits, cakes and snacks has recently announced that these are now made without partially hydrogenated vegetable oils, a transition that began in 2004. Alongside these changes, the manufacturer has also reported a cut in the amount of saturates. It is clear that a major technical challenge in achieving such changes is to avoid simply exchanging trans fatty acids for saturated fatty acids, which also have damaging health effects. Foods that are labelled as containing partially-hydrogenated oils or fats are a source of trans fatty acids (sometimes partially-hydrogenated fats are just labelled as hydrogenated fats). These foods include hard margarines, some fried products and some manufactured bakery products e. g. biscuits, pastries and cakes. It is important to note that intake may have changed in the light of reformulation of foods that has taken place over the past six years in the UK, as referred to earlier. Furthermore, the average intake of trans fatty acids is lower in the UK than in the USA (where legislation has now been introduced). However, this does not mean there is room for complacency, as the intake in some sectors of the population is known to be higher than recommended.",
+    "hypothesis": "Experts consider that the trans fatty acids contained in animal products are unlikely to be a serious health risk.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Do experts believe that trans fatty acids in animal products pose a significant threat to human health?",
+        "answer": "Experts do not believe that trans fatty acids in animal products pose a significant threat to human health.",
+        "answerable": true,
+        "located_indices": [
+          2,
+          12,
+          13
+        ]
+      },
+      {
+        "question": "Are the trans fatty acids found in animal products considered by experts to be a minor health concern?",
+        "answer": "The public health implications of consuming trans fatty acids from animal products are considered to be relatively limited.",
+        "answerable": true,
+        "located_indices": [
+          2,
+          12,
+          13
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Experts",
+      "the trans",
+      "fatty acids",
+      "animal products",
+      "a serious health risk",
+      "consider",
+      "contained"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_126",
+    "premise": "Trans Fatty Acids A recent editorial in the British Medical Journal (BMJ), written by researchers from the University of Oxford, has called for food labels to list trans fats as well as cholesterol and saturated fat. Trans fats (or trans fatty acids) are a type of unsaturated fatty acid. They occur naturally in small amounts in foods produced from ruminant animals e. g. milk, beef and lamb. However, most of the trans fatty acids in the diet are produced during the process of partial hydrogenation (hardening) of vegetable oils into semi-solid fats. They are therefore found in hard margarines, partially hydrogenated cooking oils, and in some bakery products, fried foods, and other processed foods that are made using these. Trans fatty acids have an adverse effect on certain chemicals, known as lipids, which are found in the blood and have been shown to increase the risk of heart disease. They also increase LDL-cholesterol (the bad cholesterol) and decrease HDL-cholesterol (the good cholesterol). They may also have adverse effects on cardiovascular disease risk that are independent of an effect on blood lipids (Mozaffarian et al. 2006). In a recent review of prospective studies investigating the effects of trans fatty acids, a 2% increase in energy intake from trans fatty acids was associated with a 23% increase in the incidence of heart disease. The authors also reported that the adverse effects of trans fatty acids were observed even at very low intakes (3% of total daily energy intake, or about 2-7g per day) (Mozaffarian et al. 2006). However, in this recent review it is only trans fatty acids produced during the hardening of vegetable oils that are found to be harmful to health. The public health implications of consuming trans fatty acids from ruminant products are considered to be relatively limited. Over the last decade, population intakes of trans fatty acids in the UK fell and are now, on average, well below the recommended 2% of total energy set by the Department of Health in 1991, at 1.2% of energy (Henderson et al. 2003). This is not to say that intakes of trans fatty acids are not still a problem, and dietary advice states that those individuals who are in the top end of the distribution of intake should still make efforts to reduce their intakes. Currently, trans fatty acids in foods are labelled in the USA, but not in the UK and Europe. The UK Food Standards Agency (FSA) is in favour of the revision of the European directive that governs the content and format of food labels so that trans fatty acids are labelled. This should enable consumers to make better food choices with regard to heart health (Clarke & Lewington 2006). Recognising the adverse health effects of trans fatty acids, many food manufacturers and retailers have been systematically removing them from their products in recent years. For example, they have been absent for some time from major brands of margarine and other fat spreads, which are now manufactured using a different technique. Also, many companies now have guidelines in place that are resulting in reformulation and reduction or elimination of trans fatty acids in products where they have in the past been found, such as snack products, fried products and baked goods. Consequently, the vast majority of savoury biscuits and crisps produced in the UK do not contain partially hydrogenated oils. Similarly, changes are being made to the way bakery products are manufactured. For example, a leading European manufacturer of major brands of biscuits, cakes and snacks has recently announced that these are now made without partially hydrogenated vegetable oils, a transition that began in 2004. Alongside these changes, the manufacturer has also reported a cut in the amount of saturates. It is clear that a major technical challenge in achieving such changes is to avoid simply exchanging trans fatty acids for saturated fatty acids, which also have damaging health effects. Foods that are labelled as containing partially-hydrogenated oils or fats are a source of trans fatty acids (sometimes partially-hydrogenated fats are just labelled as hydrogenated fats). These foods include hard margarines, some fried products and some manufactured bakery products e. g. biscuits, pastries and cakes. It is important to note that intake may have changed in the light of reformulation of foods that has taken place over the past six years in the UK, as referred to earlier. Furthermore, the average intake of trans fatty acids is lower in the UK than in the USA (where legislation has now been introduced). However, this does not mean there is room for complacency, as the intake in some sectors of the population is known to be higher than recommended.",
+    "hypothesis": "Health problems can be caused by the consumption of small amounts of trans fatty acids.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Are health problems associated with consuming even small quantities of certain types of fat?",
+        "answer": "Yes, certain types of fat, specifically trans fatty acids, have been associated with increased risk of heart disease even at low intakes.",
+        "answerable": true,
+        "located_indices": [
+          5,
+          6,
+          9,
+          10,
+          12
+        ]
+      },
+      {
+        "question": "Can trans fatty acids be harmful to one's health in any amount?",
+        "answer": "Yes, even very low intakes of industrially-produced trans fatty acids can have adverse effects on heart disease risk.",
+        "answerable": true,
+        "located_indices": [
+          5,
+          6,
+          9,
+          10,
+          12
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Health problems",
+      "the consumption",
+      "small amounts",
+      "trans",
+      "fatty acids",
+      "caused"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_127",
+    "premise": "Transgenic Plants Genes from virtually any organism, from viruses to humans, can now be inserted into plants, creating what are known as transgenic plants. Now used in agriculture, there are approximately 109 million acres of transgenic crops grown worldwide, 68 percent of which are in the United States. The most common transgenic crops are soybeans, corn, cotton, and canola. Most often, these plants either contain a gene making them resistant to the herbicide glyphosate or they contain an insect-resistant gene that produces a protein called Bt toxin. On the positive side, proponents of transgenic crops argue that these crops are environmentally friendly because they allow farmers to use fewer and less noxious chemicals for crop production. For example, a 21 percent reduction in the use of insecticide has been reported on Bt cotton (transgenic cotton that produces Bt toxin). In addition, when glyphosate is used to control weeds, other, more persistent herbicides do not need to be applied. On the negative side, opponents of transgenic crops suggest that there are many questions that need to be answered before transgenic crops are grown on a large scale. One question deals with the effects that Bt plants have on nontarget organisms such as beneficial insects, worms, and birds that consume the genetically engineered crop. For example, monarch caterpillars feeding on milkweed plants near Bt cornfields will eat some corn pollen that has fallen on the milkweed leaves. Laboratory studies indicate that caterpillars can die from eating Bt pollen. However, field tests indicate that Bt corn is not likely to harm monarchs. Furthermore, the application of pesticides (the alternative to growing Bt plants) has been demonstrated to cause widespread harm to nontarget insects. Another unanswered question is whether herbicide-resistant genes will move into the populations of weeds. Crop plants are sometimes grown in areas where weedy relatives also live. If the crop plants hybridize and reproduce with weedy relatives, then this herbicide-resistant gene will be perpetuated in the offspring. In this way, the resistant gene can make its way into the weed population. If this happens, a farmer can no longer use glyphosate, for example, to kill those weeds. This scenario is not likely to occur in many instances because there are no weedy relatives growing near the crop plant. However, in some cases, it may become a serious problem. For example, canola readily hybridizes with mustard weed species and could transfer its herbicide-resistant genes to those weeds. We know that evolution will occur when transgenic plants are grown on a large scale over a period of time. Of special concern is the development of insect populations resistant to the Bt toxin. This pesticide has been applied to plants for decades without the development of insect-resistant populations. However, transgenic Bt plants express the toxin in all tissues throughout the growing season. Therefore, all insects carrying genes that make them susceptible to the toxin will die. That leaves only the genetically resistant insects alive to perpetuate the population. When these resistant insects mate, they will produce a high proportion of offspring capable of surviving in the presence of the Bt toxin. Farmers are attempting to slow the development of insect resistance in Bt crops by, for example, planting nontransgenic border rows to provide a refuge for susceptible insects. These insects may allow Bt susceptibility to remain in the population. Perhaps the most serious concern about the transgenic crop plants currently in use is that they encourage farmers to move farther away from sustainable agricultural farming practices, meaning ones that allow natural resources to continually regenerate over the long run. Transgenics, at least superficially, simplify farming by reducing the choices made by the manager. Planting a glyphosate-resistant crop commits a farmer to using that herbicide for the season, probably to the exclusion of all other herbicides and other weed-control practices. Farmers who use Bt transgenics may not feel that they need to follow through with integrated pest-management practices that use beneficial insects and timely applications of pesticides to control insect pests. A more sustainable approach would be to plant nontransgenic corn, monitor the fields throughout the growing season, and then apply a pesticide only if and when needed.",
+    "hypothesis": "Planting nontransgenic plants alongside Bt plants may help Bt-susceptible insects to remain part of the population.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Do nontransgenic plants provide a refuge for Bt-susceptible insects when planted alongside Bt plants?",
+        "answer": "Yes, nontransgenic plants can provide a refuge for Bt-susceptible insects when planted alongside Bt plants.",
+        "answerable": true,
+        "located_indices": [
+          28
+        ]
+      },
+      {
+        "question": "Can planting nontransgenic plants near Bt plants maintain the presence of Bt-susceptible insects in the overall insect population?",
+        "answer": "Planting nontransgenic plants near Bt plants can help maintain Bt-susceptible insects in the overall insect population.",
+        "answerable": true,
+        "located_indices": [
+          25,
+          26,
+          27,
+          28,
+          29
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "nontransgenic plants",
+      "Bt plants",
+      "Bt-susceptible insects",
+      "part",
+      "the population",
+      "Planting",
+      "help",
+      "remain"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_128",
+    "premise": "Transgenic Plants Genes from virtually any organism, from viruses to humans, can now be inserted into plants, creating what are known as transgenic plants. Now used in agriculture, there are approximately 109 million acres of transgenic crops grown worldwide, 68 percent of which are in the United States. The most common transgenic crops are soybeans, corn, cotton, and canola. Most often, these plants either contain a gene making them resistant to the herbicide glyphosate or they contain an insect-resistant gene that produces a protein called Bt toxin. On the positive side, proponents of transgenic crops argue that these crops are environmentally friendly because they allow farmers to use fewer and less noxious chemicals for crop production. For example, a 21 percent reduction in the use of insecticide has been reported on Bt cotton (transgenic cotton that produces Bt toxin). In addition, when glyphosate is used to control weeds, other, more persistent herbicides do not need to be applied. On the negative side, opponents of transgenic crops suggest that there are many questions that need to be answered before transgenic crops are grown on a large scale. One question deals with the effects that Bt plants have on nontarget organisms such as beneficial insects, worms, and birds that consume the genetically engineered crop. For example, monarch caterpillars feeding on milkweed plants near Bt cornfields will eat some corn pollen that has fallen on the milkweed leaves. Laboratory studies indicate that caterpillars can die from eating Bt pollen. However, field tests indicate that Bt corn is not likely to harm monarchs. Furthermore, the application of pesticides (the alternative to growing Bt plants) has been demonstrated to cause widespread harm to nontarget insects. Another unanswered question is whether herbicide-resistant genes will move into the populations of weeds. Crop plants are sometimes grown in areas where weedy relatives also live. If the crop plants hybridize and reproduce with weedy relatives, then this herbicide-resistant gene will be perpetuated in the offspring. In this way, the resistant gene can make its way into the weed population. If this happens, a farmer can no longer use glyphosate, for example, to kill those weeds. This scenario is not likely to occur in many instances because there are no weedy relatives growing near the crop plant. However, in some cases, it may become a serious problem. For example, canola readily hybridizes with mustard weed species and could transfer its herbicide-resistant genes to those weeds. We know that evolution will occur when transgenic plants are grown on a large scale over a period of time. Of special concern is the development of insect populations resistant to the Bt toxin. This pesticide has been applied to plants for decades without the development of insect-resistant populations. However, transgenic Bt plants express the toxin in all tissues throughout the growing season. Therefore, all insects carrying genes that make them susceptible to the toxin will die. That leaves only the genetically resistant insects alive to perpetuate the population. When these resistant insects mate, they will produce a high proportion of offspring capable of surviving in the presence of the Bt toxin. Farmers are attempting to slow the development of insect resistance in Bt crops by, for example, planting nontransgenic border rows to provide a refuge for susceptible insects. These insects may allow Bt susceptibility to remain in the population. Perhaps the most serious concern about the transgenic crop plants currently in use is that they encourage farmers to move farther away from sustainable agricultural farming practices, meaning ones that allow natural resources to continually regenerate over the long run. Transgenics, at least superficially, simplify farming by reducing the choices made by the manager. Planting a glyphosate-resistant crop commits a farmer to using that herbicide for the season, probably to the exclusion of all other herbicides and other weed-control practices. Farmers who use Bt transgenics may not feel that they need to follow through with integrated pest-management practices that use beneficial insects and timely applications of pesticides to control insect pests. A more sustainable approach would be to plant nontransgenic corn, monitor the fields throughout the growing season, and then apply a pesticide only if and when needed.",
+    "hypothesis": "Because Bt plants are toxic at all times and in all tissues, they allow only Bt-resistant insects to survive and reproduce.",
+    "gold_label": "Entailment",
+    "prediction": "Contradiction",
+    "qa_pairs": [
+      {
+        "question": "Are Bt plants toxic in every part of the plant and at every stage of growth?",
+        "answer": "The extracted sentences do not provide information about toxicity in every part of the plant and at every stage of growth.",
+        "answerable": true,
+        "located_indices": [
+          3,
+          25
+        ]
+      },
+      {
+        "question": "Do only Bt-resistant insects survive and reproduce when exposed to Bt plants?",
+        "answer": "Yes, only Bt-resistant insects survive and reproduce when exposed to Bt plants.",
+        "answerable": true,
+        "located_indices": [
+          25,
+          26,
+          27
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Bt plants",
+      "all times",
+      "all tissues",
+      "Bt-resistant insects",
+      "toxic",
+      "allow",
+      "survive",
+      "reproduce"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_129",
+    "premise": "Transgenic Plants Genes from virtually any organism, from viruses to humans, can now be inserted into plants, creating what are known as transgenic plants. Now used in agriculture, there are approximately 109 million acres of transgenic crops grown worldwide, 68 percent of which are in the United States. The most common transgenic crops are soybeans, corn, cotton, and canola. Most often, these plants either contain a gene making them resistant to the herbicide glyphosate or they contain an insect-resistant gene that produces a protein called Bt toxin. On the positive side, proponents of transgenic crops argue that these crops are environmentally friendly because they allow farmers to use fewer and less noxious chemicals for crop production. For example, a 21 percent reduction in the use of insecticide has been reported on Bt cotton (transgenic cotton that produces Bt toxin). In addition, when glyphosate is used to control weeds, other, more persistent herbicides do not need to be applied. On the negative side, opponents of transgenic crops suggest that there are many questions that need to be answered before transgenic crops are grown on a large scale. One question deals with the effects that Bt plants have on nontarget organisms such as beneficial insects, worms, and birds that consume the genetically engineered crop. For example, monarch caterpillars feeding on milkweed plants near Bt cornfields will eat some corn pollen that has fallen on the milkweed leaves. Laboratory studies indicate that caterpillars can die from eating Bt pollen. However, field tests indicate that Bt corn is not likely to harm monarchs. Furthermore, the application of pesticides (the alternative to growing Bt plants) has been demonstrated to cause widespread harm to nontarget insects. Another unanswered question is whether herbicide-resistant genes will move into the populations of weeds. Crop plants are sometimes grown in areas where weedy relatives also live. If the crop plants hybridize and reproduce with weedy relatives, then this herbicide-resistant gene will be perpetuated in the offspring. In this way, the resistant gene can make its way into the weed population. If this happens, a farmer can no longer use glyphosate, for example, to kill those weeds. This scenario is not likely to occur in many instances because there are no weedy relatives growing near the crop plant. However, in some cases, it may become a serious problem. For example, canola readily hybridizes with mustard weed species and could transfer its herbicide-resistant genes to those weeds. We know that evolution will occur when transgenic plants are grown on a large scale over a period of time. Of special concern is the development of insect populations resistant to the Bt toxin. This pesticide has been applied to plants for decades without the development of insect-resistant populations. However, transgenic Bt plants express the toxin in all tissues throughout the growing season. Therefore, all insects carrying genes that make them susceptible to the toxin will die. That leaves only the genetically resistant insects alive to perpetuate the population. When these resistant insects mate, they will produce a high proportion of offspring capable of surviving in the presence of the Bt toxin. Farmers are attempting to slow the development of insect resistance in Bt crops by, for example, planting nontransgenic border rows to provide a refuge for susceptible insects. These insects may allow Bt susceptibility to remain in the population. Perhaps the most serious concern about the transgenic crop plants currently in use is that they encourage farmers to move farther away from sustainable agricultural farming practices, meaning ones that allow natural resources to continually regenerate over the long run. Transgenics, at least superficially, simplify farming by reducing the choices made by the manager. Planting a glyphosate-resistant crop commits a farmer to using that herbicide for the season, probably to the exclusion of all other herbicides and other weed-control practices. Farmers who use Bt transgenics may not feel that they need to follow through with integrated pest-management practices that use beneficial insects and timely applications of pesticides to control insect pests. A more sustainable approach would be to plant nontransgenic corn, monitor the fields throughout the growing season, and then apply a pesticide only if and when needed.",
+    "hypothesis": "Regular use of Bt pesticides has not created resistant insect populations, so the use of Bt plants is probably safe as well.",
+    "gold_label": "Contradiction",
+    "prediction": "Contradiction",
+    "qa_pairs": [
+      {
+        "question": "Have studies shown that regular use of Bt pesticides has led to the development of resistant insect populations?",
+        "answer": "Studies have not shown this for Bt pesticides applied to plants for decades, but they suggest it could happen with transgenic Bt plants.",
+        "answerable": true,
+        "located_indices": [
+          22,
+          23,
+          24,
+          25,
+          26
+        ]
+      },
+      {
+        "question": "Is there evidence that Bt plants are more likely to create resistant insect populations than traditional Bt pesticides?",
+        "answer": "The development of insect-resistant populations is a concern with Bt plants because they express the toxin in all tissues throughout the growing season, which could lead to susceptible insects dying and leaving only resistant ones to survive.",
+        "answerable": true,
+        "located_indices": [
+          22,
+          23,
+          24,
+          25,
+          26
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Regular use",
+      "Bt pesticides",
+      "resistant insect populations",
+      "the use",
+      "Bt plants",
+      "created"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_13",
+    "premise": "Though no heavy rain has been received in the city and water is receding from most areas in Chennai and massive relief operations are underway, the city is staring at an outbreak of epidemics with tones of stinking garbage littering the streets as bright sunshine further eased the situation.",
+    "hypothesis": "Chennai needs proper planning to overcome heavy rains in the city.",
+    "gold_label": "Contradiction",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Does Chennai experience difficulties due to heavy rainfall?",
+        "answer": "The text does not mention difficulties due to heavy rainfall, but it implies that Chennai has experienced flooding.",
+        "answerable": true,
+        "located_indices": [
+          0
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Chennai",
+      "proper planning",
+      "heavy rains",
+      "the city",
+      "needs",
+      "overcome"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_130",
+    "premise": "Transgenic Plants Genes from virtually any organism, from viruses to humans, can now be inserted into plants, creating what are known as transgenic plants. Now used in agriculture, there are approximately 109 million acres of transgenic crops grown worldwide, 68 percent of which are in the United States. The most common transgenic crops are soybeans, corn, cotton, and canola. Most often, these plants either contain a gene making them resistant to the herbicide glyphosate or they contain an insect-resistant gene that produces a protein called Bt toxin. On the positive side, proponents of transgenic crops argue that these crops are environmentally friendly because they allow farmers to use fewer and less noxious chemicals for crop production. For example, a 21 percent reduction in the use of insecticide has been reported on Bt cotton (transgenic cotton that produces Bt toxin). In addition, when glyphosate is used to control weeds, other, more persistent herbicides do not need to be applied. On the negative side, opponents of transgenic crops suggest that there are many questions that need to be answered before transgenic crops are grown on a large scale. One question deals with the effects that Bt plants have on nontarget organisms such as beneficial insects, worms, and birds that consume the genetically engineered crop. For example, monarch caterpillars feeding on milkweed plants near Bt cornfields will eat some corn pollen that has fallen on the milkweed leaves. Laboratory studies indicate that caterpillars can die from eating Bt pollen. However, field tests indicate that Bt corn is not likely to harm monarchs. Furthermore, the application of pesticides (the alternative to growing Bt plants) has been demonstrated to cause widespread harm to nontarget insects. Another unanswered question is whether herbicide-resistant genes will move into the populations of weeds. Crop plants are sometimes grown in areas where weedy relatives also live. If the crop plants hybridize and reproduce with weedy relatives, then this herbicide-resistant gene will be perpetuated in the offspring. In this way, the resistant gene can make its way into the weed population. If this happens, a farmer can no longer use glyphosate, for example, to kill those weeds. This scenario is not likely to occur in many instances because there are no weedy relatives growing near the crop plant. However, in some cases, it may become a serious problem. For example, canola readily hybridizes with mustard weed species and could transfer its herbicide-resistant genes to those weeds. We know that evolution will occur when transgenic plants are grown on a large scale over a period of time. Of special concern is the development of insect populations resistant to the Bt toxin. This pesticide has been applied to plants for decades without the development of insect-resistant populations. However, transgenic Bt plants express the toxin in all tissues throughout the growing season. Therefore, all insects carrying genes that make them susceptible to the toxin will die. That leaves only the genetically resistant insects alive to perpetuate the population. When these resistant insects mate, they will produce a high proportion of offspring capable of surviving in the presence of the Bt toxin. Farmers are attempting to slow the development of insect resistance in Bt crops by, for example, planting nontransgenic border rows to provide a refuge for susceptible insects. These insects may allow Bt susceptibility to remain in the population. Perhaps the most serious concern about the transgenic crop plants currently in use is that they encourage farmers to move farther away from sustainable agricultural farming practices, meaning ones that allow natural resources to continually regenerate over the long run. Transgenics, at least superficially, simplify farming by reducing the choices made by the manager. Planting a glyphosate-resistant crop commits a farmer to using that herbicide for the season, probably to the exclusion of all other herbicides and other weed-control practices. Farmers who use Bt transgenics may not feel that they need to follow through with integrated pest-management practices that use beneficial insects and timely applications of pesticides to control insect pests. A more sustainable approach would be to plant nontransgenic corn, monitor the fields throughout the growing season, and then apply a pesticide only if and when needed.",
+    "hypothesis": "The evolution of Bt-resistant insect populations will happen eventually if use of transgenic plants becomes widespread.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Will widespread adoption of transgenic plants lead to an increase in Bt-resistant insects over time?",
+        "answer": "Widespread adoption of transgenic plants is expected to lead to an increase in Bt-resistant insects over time due to the selective pressure exerted by the constant expression of the Bt toxin.",
+        "answerable": true,
+        "located_indices": [
+          21,
+          22,
+          23,
+          24,
+          25
+        ]
+      },
+      {
+        "question": "Is the development of Bt resistance in insect populations a likely consequence of extensive use of transgenic plants?",
+        "answer": "The development of Bt resistance in insect populations is a concern due to the extensive expression of the toxin in transgenic plants.",
+        "answerable": true,
+        "located_indices": [
+          22,
+          23,
+          24,
+          25,
+          26
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "The evolution",
+      "Bt-resistant",
+      "insect populations",
+      "use",
+      "transgenic plants",
+      "happen",
+      "becomes"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_131",
+    "premise": "Translated novels written by female writers are a small subset. Translations make up a tiny fraction of the books published in the UK and US, and roughly a quarter of them are written by women. Various recent counts have found that about 26% of English translations are female-authored books (although the gender balance among the translators of this subgroup is roughly equal). That means that fewer than 100 foreign-language books authored by women make their way to the UK every year. But things may be changing. Two new publishing houses have been founded in the UK, whose mission is to publish only translations of books authored by women. There is still plenty of non-English writing waiting to be published.",
+    "hypothesis": "Many more books written by women will be translated in the future.",
+    "gold_label": "Neutral",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Will there be an increase in the number of books written by women being translated?",
+        "answer": "Two new publishing houses have been founded with a mission to publish only translations of books authored by women.",
+        "answerable": true,
+        "located_indices": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "question": "Is it expected that the proportion of translated books written by women will rise in the coming years?",
+        "answer": "There are indications that things may change, with two new publishing houses being founded to publish only translations of books authored by women.",
+        "answerable": true,
+        "located_indices": [
+          1,
+          2,
+          4,
+          5
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Many more books",
+      "women",
+      "the future",
+      "written",
+      "translated"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_132",
+    "premise": "Translated novels written by female writers are a small subset. Translations make up a tiny fraction of the books published in the UK and US, and roughly a quarter of them are written by women. Various recent counts have found that about 26% of English translations are female-authored books (although the gender balance among the translators of this subgroup is roughly equal). That means that fewer than 100 foreign-language books authored by women make their way to the UK every year. But things may be changing. Two new publishing houses have been founded in the UK, whose mission is to publish only translations of books authored by women. There is still plenty of non-English writing waiting to be published.",
+    "hypothesis": "Each year, at most 400 English-translated books are published in the UK",
+    "gold_label": "Entailment",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Each year",
+      "most 400 English-translated books",
+      "the UK",
+      "published"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  },
+  {
+    "id": "id_133",
+    "premise": "Translated novels written by female writers are a small subset. Translations make up a tiny fraction of the books published in the UK and US, and roughly a quarter of them are written by women. Various recent counts have found that about 26% of English translations are female-authored books (although the gender balance among the translators of this subgroup is roughly equal). That means that fewer than 100 foreign-language books authored by women make their way to the UK every year. But things may be changing. Two new publishing houses have been founded in the UK, whose mission is to publish only translations of books authored by women. There is still plenty of non-English writing waiting to be published.",
+    "hypothesis": "About half of translators in the UK are women.",
+    "gold_label": "Neutral",
+    "prediction": "Neutral",
+    "qa_pairs": [
+      {
+        "question": "What percentage of translators in the UK are women?",
+        "answer": "The extracted sentence does not provide information on the percentage of translators in the UK who are women, but it mentions that the gender balance among translators of female-authored English books is roughly equal.",
+        "answerable": true,
+        "located_indices": [
+          2
+        ]
+      },
+      {
+        "question": "Is the number of female translators in the UK roughly equal to the number of male translators?",
+        "answer": "The gender balance among translators of female-authored books is roughly equal.",
+        "answerable": true,
+        "located_indices": [
+          2
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "half",
+      "translators",
+      "the UK",
+      "women"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_134",
+    "premise": "Trends in the Indian fashion and textile industries During the 1950s, the Indian fashion scene was exciting, stylish and very graceful. There were no celebrity designers or models, nor were there any labels that were widely recognised. The value of a garment was judged by its style and fabric rather than by who made it. It was regarded as perfectly acceptable, even for high-society women, to approach an unknown tailor who could make a garment for a few rupees, providing the perfect fit, finish and style. They were proud of getting a bargain, and of giving their own name to the end result. The 1960s was an era full of mischievousness and celebration in the arts, music and cinema. The period was characterised by freedom from restrictions and, in the fashion world, an acceptance of innovative types of material such as plastic and coated polyester. Tight-fitting kurtas and churidars and high coiffures were a trend among women. The following decade witnessed an increase in the export of traditional materials, and the arrival in India of international fashion. Synthetics became trendy, and the disco culture affected the fashion scene. It was in the early 80s when the first fashion store Ravissant opened in Mumbai. At that time garments were retailed for a four-figure price tag. American designers like Calvin Klein became popular. In India too, contours became more masculine, and even the salwar kameez was designed with shoulder pads. With the evolution of designer stores came the culture of designer fashion, along with its hefty price tags. Whatever a garment was like, consumers were convinced that a higher price tag signified elegant designer fashion, so garments were sold at unbelievable prices. Meanwhile, designers decided to get themselves noticed by making showy outfits and associating with the right celebrities. Soon, fashion shows became competitive, each designer attempting to out-do the other in theme, guest list and media coverage. In the last decade of the millennium, the market shrank and ethnic wear made a comeback. During the recession, there was a push to sell at any cost. With fierce competition the inevitable occurred: the once hefty price tags began their downward journey, and the fashion-show industry followed suit. However, the liveliness of the Indian fashion scene had not ended it had merely reached a stable level. At the beginning of the 21st century, with new designers and models, and more sensible designs, the fashion industry accelerated once again. As far as the global fashion industry is concerned, Indian ethnic designs and materials are currently in demand from fashion houses and garment manufacturers. India is the third largest producer of cotton, the second largest producer of silk, and the fifth largest producer of man-made fibres in the world. The Indian garment and fabric industries have many fundamental advantages, in terms of a cheaper, skilled work force, cost-effective production, raw materials, flexibility, and a wide range of designs with sequins, beadwork, and embroidery. In addition, that India provides garments to international fashion houses at competitive prices, with a shorter lead time, and an effective monopoly on certain designs, is accepted the whole world over. India has always been regarded as the default source in the embroidered garments segment, but changes in the rate of exchange between the rupee and the dollar has further depressed prices, thereby attracting more buyers. So the international fashion houses walk away with customised goods, and craftwork is sold at very low rates. As far as the fabric market is concerned, the range available in India can attract as well as confuse the buyer. Much of the production takes place in the small town of Chapa in the eastern state of Bihar, a name one might never have heard of. Here fabric-making is a family industry; the range and quality of raw silks churned out here belie the crude production methods and equipment. Surat in Gujarat, is the supplier of an amazing set of jacquards, moss crepes and georgette sheers all fabrics in high demand. Another Indian fabric design that has been adopted by the fashion industry is the Madras check, originally utilised for the universal lungi, a simple lower-body wrap worn in southern India. This design has now found its way on to bandannas, blouses, home furnishings and almost anything one can think of. Ethnic Indian designs with batik and hand-embroidered motifs have also become popular across the world. Decorative bead work is another product in demand in the international market. Beads are used to prepare accessory items like belts and bags, and beadwork is now available for haute couture evening wear too.",
+    "hypothesis": "At the start of the 21st century, key elements in the Indian fashion industry changed.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Did significant changes occur in the Indian fashion industry at the beginning of the 21st century?",
+        "answer": "The Indian fashion industry accelerated at the beginning of the 21st century.",
+        "answerable": true,
+        "located_indices": [
+          22
+        ]
+      },
+      {
+        "question": "Were there notable developments or shifts in the Indian fashion industry around the year 2000?",
+        "answer": "The Indian fashion industry accelerated once again at the beginning of the 21st century with new designers, models, and designs.",
+        "answerable": true,
+        "located_indices": [
+          21,
+          22
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "the start",
+      "the 21st century",
+      "key elements",
+      "the Indian fashion industry",
+      "changed"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_135",
+    "premise": "Trends in the Indian fashion and textile industries During the 1950s, the Indian fashion scene was exciting, stylish and very graceful. There were no celebrity designers or models, nor were there any labels that were widely recognised. The value of a garment was judged by its style and fabric rather than by who made it. It was regarded as perfectly acceptable, even for high-society women, to approach an unknown tailor who could make a garment for a few rupees, providing the perfect fit, finish and style. They were proud of getting a bargain, and of giving their own name to the end result. The 1960s was an era full of mischievousness and celebration in the arts, music and cinema. The period was characterised by freedom from restrictions and, in the fashion world, an acceptance of innovative types of material such as plastic and coated polyester. Tight-fitting kurtas and churidars and high coiffures were a trend among women. The following decade witnessed an increase in the export of traditional materials, and the arrival in India of international fashion. Synthetics became trendy, and the disco culture affected the fashion scene. It was in the early 80s when the first fashion store Ravissant opened in Mumbai. At that time garments were retailed for a four-figure price tag. American designers like Calvin Klein became popular. In India too, contours became more masculine, and even the salwar kameez was designed with shoulder pads. With the evolution of designer stores came the culture of designer fashion, along with its hefty price tags. Whatever a garment was like, consumers were convinced that a higher price tag signified elegant designer fashion, so garments were sold at unbelievable prices. Meanwhile, designers decided to get themselves noticed by making showy outfits and associating with the right celebrities. Soon, fashion shows became competitive, each designer attempting to out-do the other in theme, guest list and media coverage. In the last decade of the millennium, the market shrank and ethnic wear made a comeback. During the recession, there was a push to sell at any cost. With fierce competition the inevitable occurred: the once hefty price tags began their downward journey, and the fashion-show industry followed suit. However, the liveliness of the Indian fashion scene had not ended it had merely reached a stable level. At the beginning of the 21st century, with new designers and models, and more sensible designs, the fashion industry accelerated once again. As far as the global fashion industry is concerned, Indian ethnic designs and materials are currently in demand from fashion houses and garment manufacturers. India is the third largest producer of cotton, the second largest producer of silk, and the fifth largest producer of man-made fibres in the world. The Indian garment and fabric industries have many fundamental advantages, in terms of a cheaper, skilled work force, cost-effective production, raw materials, flexibility, and a wide range of designs with sequins, beadwork, and embroidery. In addition, that India provides garments to international fashion houses at competitive prices, with a shorter lead time, and an effective monopoly on certain designs, is accepted the whole world over. India has always been regarded as the default source in the embroidered garments segment, but changes in the rate of exchange between the rupee and the dollar has further depressed prices, thereby attracting more buyers. So the international fashion houses walk away with customised goods, and craftwork is sold at very low rates. As far as the fabric market is concerned, the range available in India can attract as well as confuse the buyer. Much of the production takes place in the small town of Chapa in the eastern state of Bihar, a name one might never have heard of. Here fabric-making is a family industry; the range and quality of raw silks churned out here belie the crude production methods and equipment. Surat in Gujarat, is the supplier of an amazing set of jacquards, moss crepes and georgette sheers all fabrics in high demand. Another Indian fabric design that has been adopted by the fashion industry is the Madras check, originally utilised for the universal lungi, a simple lower-body wrap worn in southern India. This design has now found its way on to bandannas, blouses, home furnishings and almost anything one can think of. Ethnic Indian designs with batik and hand-embroidered motifs have also become popular across the world. Decorative bead work is another product in demand in the international market. Beads are used to prepare accessory items like belts and bags, and beadwork is now available for haute couture evening wear too.",
+    "hypothesis": "India now exports more than half of the cotton it produces.",
+    "gold_label": "Neutral",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "India",
+      "exports",
+      "half",
+      "the cotton",
+      "produces"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  },
+  {
+    "id": "id_136",
+    "premise": "Trends in the Indian fashion and textile industries During the 1950s, the Indian fashion scene was exciting, stylish and very graceful. There were no celebrity designers or models, nor were there any labels that were widely recognised. The value of a garment was judged by its style and fabric rather than by who made it. It was regarded as perfectly acceptable, even for high-society women, to approach an unknown tailor who could make a garment for a few rupees, providing the perfect fit, finish and style. They were proud of getting a bargain, and of giving their own name to the end result. The 1960s was an era full of mischievousness and celebration in the arts, music and cinema. The period was characterised by freedom from restrictions and, in the fashion world, an acceptance of innovative types of material such as plastic and coated polyester. Tight-fitting kurtas and churidars and high coiffures were a trend among women. The following decade witnessed an increase in the export of traditional materials, and the arrival in India of international fashion. Synthetics became trendy, and the disco culture affected the fashion scene. It was in the early 80s when the first fashion store Ravissant opened in Mumbai. At that time garments were retailed for a four-figure price tag. American designers like Calvin Klein became popular. In India too, contours became more masculine, and even the salwar kameez was designed with shoulder pads. With the evolution of designer stores came the culture of designer fashion, along with its hefty price tags. Whatever a garment was like, consumers were convinced that a higher price tag signified elegant designer fashion, so garments were sold at unbelievable prices. Meanwhile, designers decided to get themselves noticed by making showy outfits and associating with the right celebrities. Soon, fashion shows became competitive, each designer attempting to out-do the other in theme, guest list and media coverage. In the last decade of the millennium, the market shrank and ethnic wear made a comeback. During the recession, there was a push to sell at any cost. With fierce competition the inevitable occurred: the once hefty price tags began their downward journey, and the fashion-show industry followed suit. However, the liveliness of the Indian fashion scene had not ended it had merely reached a stable level. At the beginning of the 21st century, with new designers and models, and more sensible designs, the fashion industry accelerated once again. As far as the global fashion industry is concerned, Indian ethnic designs and materials are currently in demand from fashion houses and garment manufacturers. India is the third largest producer of cotton, the second largest producer of silk, and the fifth largest producer of man-made fibres in the world. The Indian garment and fabric industries have many fundamental advantages, in terms of a cheaper, skilled work force, cost-effective production, raw materials, flexibility, and a wide range of designs with sequins, beadwork, and embroidery. In addition, that India provides garments to international fashion houses at competitive prices, with a shorter lead time, and an effective monopoly on certain designs, is accepted the whole world over. India has always been regarded as the default source in the embroidered garments segment, but changes in the rate of exchange between the rupee and the dollar has further depressed prices, thereby attracting more buyers. So the international fashion houses walk away with customised goods, and craftwork is sold at very low rates. As far as the fabric market is concerned, the range available in India can attract as well as confuse the buyer. Much of the production takes place in the small town of Chapa in the eastern state of Bihar, a name one might never have heard of. Here fabric-making is a family industry; the range and quality of raw silks churned out here belie the crude production methods and equipment. Surat in Gujarat, is the supplier of an amazing set of jacquards, moss crepes and georgette sheers all fabrics in high demand. Another Indian fabric design that has been adopted by the fashion industry is the Madras check, originally utilised for the universal lungi, a simple lower-body wrap worn in southern India. This design has now found its way on to bandannas, blouses, home furnishings and almost anything one can think of. Ethnic Indian designs with batik and hand-embroidered motifs have also become popular across the world. Decorative bead work is another product in demand in the international market. Beads are used to prepare accessory items like belts and bags, and beadwork is now available for haute couture evening wear too.",
+    "hypothesis": "Modern machinery accounts for the high quality of Chapas silk.",
+    "gold_label": "Contradiction",
+    "prediction": "Contradiction",
+    "qa_pairs": [
+      {
+        "question": "Is modern machinery used in the production of Chapas silk?",
+        "answer": "No modern machinery is used in the production of Chapas silk.",
+        "answerable": true,
+        "located_indices": [
+          30,
+          31
+        ]
+      },
+      {
+        "question": "Does the use of modern machinery contribute to the high quality of Chapas silk?",
+        "answer": "The use of modern machinery does not appear to be a factor in the high quality of Chapas silk, as the production methods and equipment are described as crude.",
+        "answerable": true,
+        "located_indices": [
+          30,
+          31
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Modern machinery accounts",
+      "the high quality",
+      "Chapas silk"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_137",
+    "premise": "Trends in the Indian fashion and textile industries During the 1950s, the Indian fashion scene was exciting, stylish and very graceful. There were no celebrity designers or models, nor were there any labels that were widely recognised. The value of a garment was judged by its style and fabric rather than by who made it. It was regarded as perfectly acceptable, even for high-society women, to approach an unknown tailor who could make a garment for a few rupees, providing the perfect fit, finish and style. They were proud of getting a bargain, and of giving their own name to the end result. The 1960s was an era full of mischievousness and celebration in the arts, music and cinema. The period was characterised by freedom from restrictions and, in the fashion world, an acceptance of innovative types of material such as plastic and coated polyester. Tight-fitting kurtas and churidars and high coiffures were a trend among women. The following decade witnessed an increase in the export of traditional materials, and the arrival in India of international fashion. Synthetics became trendy, and the disco culture affected the fashion scene. It was in the early 80s when the first fashion store Ravissant opened in Mumbai. At that time garments were retailed for a four-figure price tag. American designers like Calvin Klein became popular. In India too, contours became more masculine, and even the salwar kameez was designed with shoulder pads. With the evolution of designer stores came the culture of designer fashion, along with its hefty price tags. Whatever a garment was like, consumers were convinced that a higher price tag signified elegant designer fashion, so garments were sold at unbelievable prices. Meanwhile, designers decided to get themselves noticed by making showy outfits and associating with the right celebrities. Soon, fashion shows became competitive, each designer attempting to out-do the other in theme, guest list and media coverage. In the last decade of the millennium, the market shrank and ethnic wear made a comeback. During the recession, there was a push to sell at any cost. With fierce competition the inevitable occurred: the once hefty price tags began their downward journey, and the fashion-show industry followed suit. However, the liveliness of the Indian fashion scene had not ended it had merely reached a stable level. At the beginning of the 21st century, with new designers and models, and more sensible designs, the fashion industry accelerated once again. As far as the global fashion industry is concerned, Indian ethnic designs and materials are currently in demand from fashion houses and garment manufacturers. India is the third largest producer of cotton, the second largest producer of silk, and the fifth largest producer of man-made fibres in the world. The Indian garment and fabric industries have many fundamental advantages, in terms of a cheaper, skilled work force, cost-effective production, raw materials, flexibility, and a wide range of designs with sequins, beadwork, and embroidery. In addition, that India provides garments to international fashion houses at competitive prices, with a shorter lead time, and an effective monopoly on certain designs, is accepted the whole world over. India has always been regarded as the default source in the embroidered garments segment, but changes in the rate of exchange between the rupee and the dollar has further depressed prices, thereby attracting more buyers. So the international fashion houses walk away with customised goods, and craftwork is sold at very low rates. As far as the fabric market is concerned, the range available in India can attract as well as confuse the buyer. Much of the production takes place in the small town of Chapa in the eastern state of Bihar, a name one might never have heard of. Here fabric-making is a family industry; the range and quality of raw silks churned out here belie the crude production methods and equipment. Surat in Gujarat, is the supplier of an amazing set of jacquards, moss crepes and georgette sheers all fabrics in high demand. Another Indian fabric design that has been adopted by the fashion industry is the Madras check, originally utilised for the universal lungi, a simple lower-body wrap worn in southern India. This design has now found its way on to bandannas, blouses, home furnishings and almost anything one can think of. Ethnic Indian designs with batik and hand-embroidered motifs have also become popular across the world. Decorative bead work is another product in demand in the international market. Beads are used to prepare accessory items like belts and bags, and beadwork is now available for haute couture evening wear too.",
+    "hypothesis": "Some types of Indian craftwork which are internationally popular had humble origins.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Did certain forms of Indian craftwork originate from simple or lowly beginnings?",
+        "answer": "Some Indian craftwork, such as fabric-making in Chapa, Bihar, originated from simple or lowly beginnings with crude production methods and equipment.",
+        "answerable": true,
+        "located_indices": [
+          30,
+          31
+        ]
+      },
+      {
+        "question": "Are there examples of well-known Indian crafts that started as basic or unassuming practices?",
+        "answer": "Yes, examples include fabric-making in Chapa and the Madras check design that originated from the simple lungi.",
+        "answerable": true,
+        "located_indices": [
+          30,
+          31,
+          33
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Some types",
+      "Indian craftwork",
+      "humble origins"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_138",
+    "premise": "Trends in the Indian fashion and textile industries During the 1950s, the Indian fashion scene was exciting, stylish and very graceful. There were no celebrity designers or models, nor were there any labels that were widely recognised. The value of a garment was judged by its style and fabric rather than by who made it. It was regarded as perfectly acceptable, even for high-society women, to approach an unknown tailor who could make a garment for a few rupees, providing the perfect fit, finish and style. They were proud of getting a bargain, and of giving their own name to the end result. The 1960s was an era full of mischievousness and celebration in the arts, music and cinema. The period was characterised by freedom from restrictions and, in the fashion world, an acceptance of innovative types of material such as plastic and coated polyester. Tight-fitting kurtas and churidars and high coiffures were a trend among women. The following decade witnessed an increase in the export of traditional materials, and the arrival in India of international fashion. Synthetics became trendy, and the disco culture affected the fashion scene. It was in the early 80s when the first fashion store Ravissant opened in Mumbai. At that time garments were retailed for a four-figure price tag. American designers like Calvin Klein became popular. In India too, contours became more masculine, and even the salwar kameez was designed with shoulder pads. With the evolution of designer stores came the culture of designer fashion, along with its hefty price tags. Whatever a garment was like, consumers were convinced that a higher price tag signified elegant designer fashion, so garments were sold at unbelievable prices. Meanwhile, designers decided to get themselves noticed by making showy outfits and associating with the right celebrities. Soon, fashion shows became competitive, each designer attempting to out-do the other in theme, guest list and media coverage. In the last decade of the millennium, the market shrank and ethnic wear made a comeback. During the recession, there was a push to sell at any cost. With fierce competition the inevitable occurred: the once hefty price tags began their downward journey, and the fashion-show industry followed suit. However, the liveliness of the Indian fashion scene had not ended it had merely reached a stable level. At the beginning of the 21st century, with new designers and models, and more sensible designs, the fashion industry accelerated once again. As far as the global fashion industry is concerned, Indian ethnic designs and materials are currently in demand from fashion houses and garment manufacturers. India is the third largest producer of cotton, the second largest producer of silk, and the fifth largest producer of man-made fibres in the world. The Indian garment and fabric industries have many fundamental advantages, in terms of a cheaper, skilled work force, cost-effective production, raw materials, flexibility, and a wide range of designs with sequins, beadwork, and embroidery. In addition, that India provides garments to international fashion houses at competitive prices, with a shorter lead time, and an effective monopoly on certain designs, is accepted the whole world over. India has always been regarded as the default source in the embroidered garments segment, but changes in the rate of exchange between the rupee and the dollar has further depressed prices, thereby attracting more buyers. So the international fashion houses walk away with customised goods, and craftwork is sold at very low rates. As far as the fabric market is concerned, the range available in India can attract as well as confuse the buyer. Much of the production takes place in the small town of Chapa in the eastern state of Bihar, a name one might never have heard of. Here fabric-making is a family industry; the range and quality of raw silks churned out here belie the crude production methods and equipment. Surat in Gujarat, is the supplier of an amazing set of jacquards, moss crepes and georgette sheers all fabrics in high demand. Another Indian fabric design that has been adopted by the fashion industry is the Madras check, originally utilised for the universal lungi, a simple lower-body wrap worn in southern India. This design has now found its way on to bandannas, blouses, home furnishings and almost anything one can think of. Ethnic Indian designs with batik and hand-embroidered motifs have also become popular across the world. Decorative bead work is another product in demand in the international market. Beads are used to prepare accessory items like belts and bags, and beadwork is now available for haute couture evening wear too.",
+    "hypothesis": "Conditions in India are generally well suited to the manufacture of clothing.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [
+      {
+        "question": "Are there any factors in India's environment or infrastructure that hinder the production of clothing?",
+        "answer": "The extracted sentences do not mention any factors hindering clothing production in India's environment or infrastructure.",
+        "answerable": true,
+        "located_indices": [
+          24,
+          25
+        ]
+      },
+      {
+        "question": "Does India have an abundance of resources necessary for textile manufacturing?",
+        "answer": "India has an abundance of cotton, silk, man-made fibres, and other necessary resources for textile manufacturing.",
+        "answerable": true,
+        "located_indices": [
+          24,
+          25
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Conditions",
+      "India",
+      "the manufacture",
+      "clothing",
+      "suited"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_139",
+    "premise": "Trends in the Indian fashion and textile industries During the 1950s, the Indian fashion scene was exciting, stylish and very graceful. There were no celebrity designers or models, nor were there any labels that were widely recognised. The value of a garment was judged by its style and fabric rather than by who made it. It was regarded as perfectly acceptable, even for high-society women, to approach an unknown tailor who could make a garment for a few rupees, providing the perfect fit, finish and style. They were proud of getting a bargain, and of giving their own name to the end result. The 1960s was an era full of mischievousness and celebration in the arts, music and cinema. The period was characterised by freedom from restrictions and, in the fashion world, an acceptance of innovative types of material such as plastic and coated polyester. Tight-fitting kurtas and churidars and high coiffures were a trend among women. The following decade witnessed an increase in the export of traditional materials, and the arrival in India of international fashion. Synthetics became trendy, and the disco culture affected the fashion scene. It was in the early 80s when the first fashion store Ravissant opened in Mumbai. At that time garments were retailed for a four-figure price tag. American designers like Calvin Klein became popular. In India too, contours became more masculine, and even the salwar kameez was designed with shoulder pads. With the evolution of designer stores came the culture of designer fashion, along with its hefty price tags. Whatever a garment was like, consumers were convinced that a higher price tag signified elegant designer fashion, so garments were sold at unbelievable prices. Meanwhile, designers decided to get themselves noticed by making showy outfits and associating with the right celebrities. Soon, fashion shows became competitive, each designer attempting to out-do the other in theme, guest list and media coverage. In the last decade of the millennium, the market shrank and ethnic wear made a comeback. During the recession, there was a push to sell at any cost. With fierce competition the inevitable occurred: the once hefty price tags began their downward journey, and the fashion-show industry followed suit. However, the liveliness of the Indian fashion scene had not ended it had merely reached a stable level. At the beginning of the 21st century, with new designers and models, and more sensible designs, the fashion industry accelerated once again. As far as the global fashion industry is concerned, Indian ethnic designs and materials are currently in demand from fashion houses and garment manufacturers. India is the third largest producer of cotton, the second largest producer of silk, and the fifth largest producer of man-made fibres in the world. The Indian garment and fabric industries have many fundamental advantages, in terms of a cheaper, skilled work force, cost-effective production, raw materials, flexibility, and a wide range of designs with sequins, beadwork, and embroidery. In addition, that India provides garments to international fashion houses at competitive prices, with a shorter lead time, and an effective monopoly on certain designs, is accepted the whole world over. India has always been regarded as the default source in the embroidered garments segment, but changes in the rate of exchange between the rupee and the dollar has further depressed prices, thereby attracting more buyers. So the international fashion houses walk away with customised goods, and craftwork is sold at very low rates. As far as the fabric market is concerned, the range available in India can attract as well as confuse the buyer. Much of the production takes place in the small town of Chapa in the eastern state of Bihar, a name one might never have heard of. Here fabric-making is a family industry; the range and quality of raw silks churned out here belie the crude production methods and equipment. Surat in Gujarat, is the supplier of an amazing set of jacquards, moss crepes and georgette sheers all fabrics in high demand. Another Indian fabric design that has been adopted by the fashion industry is the Madras check, originally utilised for the universal lungi, a simple lower-body wrap worn in southern India. This design has now found its way on to bandannas, blouses, home furnishings and almost anything one can think of. Ethnic Indian designs with batik and hand-embroidered motifs have also become popular across the world. Decorative bead work is another product in demand in the international market. Beads are used to prepare accessory items like belts and bags, and beadwork is now available for haute couture evening wear too.",
+    "hypothesis": "Indian clothing exports have suffered from changes in the value of its currency.",
+    "gold_label": "Contradiction",
+    "prediction": "Contradiction",
+    "qa_pairs": [
+      {
+        "question": "Have fluctuations in India's currency value affected the country's clothing export industry?",
+        "answer": "Fluctuations in India's currency value have attracted more buyers to its clothing export industry.",
+        "answerable": true,
+        "located_indices": [
+          27
+        ]
+      },
+      {
+        "question": "Did the change in currency value have a negative impact on Indian clothing exports?",
+        "answer": "The change in currency value attracted more buyers to Indian clothing exports.",
+        "answerable": true,
+        "located_indices": [
+          27
+        ]
+      }
+    ],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Indian clothing exports",
+      "changes",
+      "the value",
+      "currency",
+      "suffered"
+    ],
+    "warnings": []
+  },
+  {
+    "id": "id_14",
+    "premise": "Though no heavy rain has been received in the city and water is receding from most areas in Chennai and massive relief operations are underway, the city is staring at an outbreak of epidemics with tones of stinking garbage littering the streets as bright sunshine further eased the situation.",
+    "hypothesis": "Improper drainage system in Chennai is the major cause of flood in the city.",
+    "gold_label": "Contradiction",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Improper drainage system",
+      "Chennai",
+      "the major cause",
+      "flood",
+      "the city"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  },
+  {
+    "id": "id_140",
+    "premise": "Trespassing occurs when a person enters a building without permission from the owner and (1) posted signs or verbal warnings prohibit the presence of unauthorized persons, or (2) the owner or other authorized person asks that person to leave.",
+    "hypothesis": "Frank is looking at new cars at a dealership after hours when a security guard tells him to leave, which he does immediately. This is the best example of Trespassing.",
+    "gold_label": "Contradiction",
+    "prediction": "Contradiction",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Frank",
+      "new cars",
+      "a dealership",
+      "hours",
+      "a security guard",
+      "the best example",
+      "Trespassing",
+      "looking",
+      "tells",
+      "leave"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Contradiction."
+    ]
+  },
+  {
+    "id": "id_141",
+    "premise": "Trespassing occurs when a person enters a building without permission from the owner and (1) posted signs or verbal warnings prohibit the presence of unauthorized persons, or (2) the owner or other authorized person asks that person to leave.",
+    "hypothesis": "A transient is sleeping in a vacant office building. Posted on the wall is a sign that reads No Trespassing. Private Property.",
+    "gold_label": "Entailment",
+    "prediction": "Entailment",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "A transient",
+      "a vacant office building",
+      "the wall",
+      "a sign",
+      "No Trespassing",
+      "Private Property",
+      "sleeping",
+      "Posted",
+      "reads"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Entailment."
+    ]
+  },
+  {
+    "id": "id_142",
+    "premise": "Trespassing occurs when a person enters a building without permission from the owner and (1) posted signs or verbal warnings prohibit the presence of unauthorized persons, or (2) the owner or other authorized person asks that person to leave.",
+    "hypothesis": "Alonzo is hosting a party with his roommate, Manny, who gets angry and tells Alonzo to leave or he'll have him arrested for trespassing. This is the best example of Trespassing.",
+    "gold_label": "Contradiction",
+    "prediction": "Neutral",
+    "qa_pairs": [],
+    "method": "h_question",
+    "seeder": "pos",
+    "aggregation": "aggregated",
+    "seeds": [
+      "Alonzo",
+      "a party",
+      "roommate",
+      "Manny",
+      "the best example",
+      "Trespassing",
+      "hosting",
+      "gets",
+      "tells",
+      "leave",
+      "arrested"
+    ],
+    "warnings": [
+      "All questions unanswerable; falling back to zero-shot.",
+      "Pipeline produced no evidence; zero-shot fallback predicted Neutral."
+    ]
+  }
+]

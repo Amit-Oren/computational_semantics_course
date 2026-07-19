@@ -1,0 +1,302 @@
+[
+  {
+    "id": "id_0",
+    "prediction": "Entailment",
+    "explanation": "The premise suggests that government subsidies can make renewable energy more universally achievable by reducing its price, which directly supports the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_1",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that renewable energy sources tend to be more expensive than their fossil-fuel counterparts.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_10",
+    "prediction": "Contradiction",
+    "explanation": "The premise states that Young's skill as a physician did not equal his skill as a scholar of natural philosophy or linguistics, indicating that his medical abilities were not his strongest talents.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_100",
+    "prediction": "Neutral",
+    "explanation": "The premise highlights the evolution of medicine, acknowledging both ancient practices and modern advancements, without solely attributing its success to modern treatments.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_101",
+    "prediction": "Neutral",
+    "explanation": "The premise states that modern medicine is as much concerned with prevention as cure, which suggests a broader scope than just curing illness.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_102",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses the evolution of uniforms and workwear, particularly in customer-facing industries, but does not provide any information about clothing companies offering financial services.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_103",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses the evolution and importance of uniforms in projecting a company's image, but does not provide enough information to conclude that marketing consultants are the best selectors of uniforms.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_104",
+    "prediction": "Neutral",
+    "explanation": "The premise provides information about the market and trends in corporate clothing, but does not provide enough data to make a general statement about the success of most businesses that supply company clothing.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_105",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses the importance of uniforms in projecting an organization's image and uniting the workforce, but it does not provide enough information to determine whether being too smart would have a negative impact on customers.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_106",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses the evolution and changing purposes of uniforms, but does not provide information about the quality or care with which uniforms were made in the past compared to today.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_107",
+    "prediction": "Entailment",
+    "explanation": "The premise states that uniforms are used to unite the workforce into a homogeneous unit, implying that they create a sense of teamwork and unity among employees.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_108",
+    "prediction": "Entailment",
+    "explanation": "The premise highlights the importance of carefully balancing various elements, such as colour, style, and branding, to effectively use uniforms as a marketing tool, suggesting that it requires great care.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_109",
+    "prediction": "Neutral",
+    "explanation": "The premise mentions traffic jams, but does not provide information about the condition or material of the roads.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_11",
+    "prediction": "Contradiction",
+    "explanation": "The premise states that Thomas Young was a child prodigy who devoured books from the age of two and excelled at Latin, Greek, mathematics, and natural philosophy through his own initiative.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_110",
+    "prediction": "Neutral",
+    "explanation": "The premise mentions traffic jams, but does not provide information about the number of vehicles on the road.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_111",
+    "prediction": "Entailment",
+    "explanation": "The premise mentions that almost 70,000 people and the vast majority of respondents opposed the extension during the consultative process, indicating likely continued public opposition.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_112",
+    "prediction": "Entailment",
+    "explanation": "The premise states that extending the zone to Kensington and Chelsea will result in many people qualifying for the residents discount, implying that this area has a thickly populated residential population.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_113",
+    "prediction": "Neutral",
+    "explanation": "The premise does not provide enough information to determine how respondents felt about the decrease in traffic levels and congestion.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_114",
+    "prediction": "Entailment",
+    "explanation": "The premise states that the congestion charge zone is being extended westwards to Kensington and Chelsea, implying that people living in Kensington are not currently subject to the charge.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_115",
+    "prediction": "Entailment",
+    "explanation": "According to the premise, the International College of Hospitality Management has ten commercial training kitchens.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_116",
+    "prediction": "Contradiction",
+    "explanation": "The premise states that some students stay on campus in International House, implying not all students live there.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_117",
+    "prediction": "Entailment",
+    "explanation": "The premise states that each villa-style unit is shared by four students.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_118",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that International House is being used to enhance on-campus training, with students assigned various duties and participating in simulated exercises.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_119",
+    "prediction": "Contradiction",
+    "explanation": "The premise states that all meals are served in the College dining room, implying that meals are not prepared by the students in the residence.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_12",
+    "prediction": "Entailment",
+    "explanation": "The premise states that the city is at risk of an outbreak of epidemics due to tons of stinking garbage littering the streets, directly supporting the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_120",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses trans fatty acids and their reduction in various food products, but does not provide information about the amount of saturated fats in processed meats.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_121",
+    "prediction": "Entailment",
+    "explanation": "The premise states that over the last decade, population intakes of trans fatty acids in the UK fell and are now well below the recommended 2% of total energy, and many food manufacturers have been systematically removing them from their products, which supports the hypothesis that intake is continuing to decline.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_122",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses the adverse health effects of trans fatty acids and efforts to reduce their presence in foods, but does not provide information on the difficulty of finding a safe substitute.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_123",
+    "prediction": "Contradiction",
+    "explanation": "The premise states that trans fats occur naturally in small amounts in foods produced from ruminant animals, such as milk, beef, and lamb, but not in all types of meat.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_124",
+    "prediction": "Entailment",
+    "explanation": "The premise states that despite a decrease in average intake, some individuals' intakes are still above the recommended level, which supports the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_125",
+    "prediction": "Entailment",
+    "explanation": "The premise states that the public health implications of consuming trans fatty acids from ruminant products are considered to be relatively limited, which supports the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_126",
+    "prediction": "Entailment",
+    "explanation": "The premise states that even low intakes of trans fatty acids, such as 2-7g per day, have been associated with a significant increase in heart disease risk.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_127",
+    "prediction": "Entailment",
+    "explanation": "The premise states that farmers are attempting to slow the development of insect resistance in Bt crops by planting nontransgenic border rows to provide a refuge for susceptible insects, which supports the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_128",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that transgenic Bt plants express the toxin in all tissues throughout the growing season, leading to the survival and reproduction of only genetically resistant insects.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_129",
+    "prediction": "Neutral",
+    "explanation": "The premise states that while regular use of Bt pesticides has not led to resistant insect populations, transgenic Bt plants express the toxin in all tissues throughout the growing season, which could lead to a different outcome.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_13",
+    "prediction": "Neutral",
+    "explanation": "The premise describes the current situation and consequences of the flood, but does not provide information about the need for planning to overcome heavy rains.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_130",
+    "prediction": "Entailment",
+    "explanation": "According to the premise, the development of insect populations resistant to the Bt toxin is a concern when transgenic Bt plants are grown on a large scale over time.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_131",
+    "prediction": "Entailment",
+    "explanation": "The premise mentions two new publishing houses dedicated to translating books authored by women, indicating a potential increase in translations of female-authored books.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_132",
+    "prediction": "Neutral",
+    "explanation": "The premise provides information about the number of translated novels written by female writers, but does not provide enough information to determine the total number of English-translated books published in the UK each year.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_133",
+    "prediction": "Neutral",
+    "explanation": "The premise provides information about the gender balance among authors, but does not provide enough information to determine the proportion of female translators in the UK.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_134",
+    "prediction": "Entailment",
+    "explanation": "The premise states that at the beginning of the 21st century, with new designers and models, and more sensible designs, the fashion industry accelerated once again.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_135",
+    "prediction": "Neutral",
+    "explanation": "The premise mentions that India is the third largest producer of cotton but does not provide information about its export volume.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_136",
+    "prediction": "Contradiction",
+    "explanation": "The premise states that fabric-making in Chapa is a family industry with crude production methods and equipment, contradicting the hypothesis that modern machinery accounts for the high quality of Chapa's silk.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_137",
+    "prediction": "Entailment",
+    "explanation": "The premise mentions that the Madras check design originated from a simple lower-body wrap worn in southern India, and decorative bead work is used to prepare accessory items like belts and bags, indicating that some types of Indian craftwork had humble origins.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_138",
+    "prediction": "Entailment",
+    "explanation": "The premise highlights India's advantages in terms of a cheaper skilled workforce, cost-effective production, raw materials, flexibility, and a wide range of designs, making it an ideal location for garment and fabric manufacturing.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_139",
+    "prediction": "Neutral",
+    "explanation": "The premise mentions that changes in the rate of exchange between the rupee and the dollar has further depressed prices, attracting more buyers, but it does not explicitly state that Indian clothing exports have suffered as a result.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_14",
+    "prediction": "Neutral",
+    "explanation": "The premise mentions water receding and relief operations, but does not provide information about the cause of the flood.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_140",
+    "prediction": "Contradiction",
+    "explanation": "The scenario described in the hypothesis does not meet the definition of trespassing since Frank left immediately upon being asked by an authorized person.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_141",
+    "prediction": "Entailment",
+    "explanation": "The premise states that trespassing occurs when posted signs prohibit unauthorized presence, and the hypothesis describes a situation where a person is in a building with a clear 'No Trespassing' sign.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_142",
+    "prediction": "Neutral",
+    "explanation": "The premise defines trespassing as entering without permission, but in the hypothesis, Alonzo is already inside his own home with his roommate.",
+    "gold_label": "Contradiction"
+  }
+]

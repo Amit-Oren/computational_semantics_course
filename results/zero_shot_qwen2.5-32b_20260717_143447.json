@@ -1,0 +1,11 @@
+{
+  "metadata": {
+    "experiment": "zero_shot",
+    "model": "qwen2.5-32b",
+    "temperature": 0.0,
+    "max_tokens": 2048,
+    "seed": null,
+    "timestamp": "2026-07-17T14:34:47.075366"
+  },
+  "samples": []
+}

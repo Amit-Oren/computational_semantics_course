@@ -1,0 +1,612 @@
+{
+  "metadata": {
+    "experiment": "p_question",
+    "model": "qwen2.5-32b",
+    "temperature": 0.0,
+    "max_tokens": 2048,
+    "seed": null,
+    "timestamp": "2026-07-17T14:34:51.930212"
+  },
+  "samples": [
+    {
+      "id": "id_0",
+      "premise": "100 Years of the Western Workplace Conditions in the working environment of Western countries changed significantly over the 20th century. Though not without some associated problems, these changes may be viewed generally as positive: child labour all but ceased, wages rose, the number of working hours in a week decreased, pension policies became standard, fringe benefits multiplied and concerns over health and safety issues were enforced. The collection of data relating to work conditions also became a far more exact science. In particular, there were important developments in methodology and data gathering. Additionally, there was a major expansion of the data collection effort more people became involved in learning about the workplace; and, for the first time, results started to be published. This being the case, at the end of the century, not only were most workers better off than their early 20th century predecessors had been, but they were also in a position to understand how and why this was the case. By carefully analyzing the statistical data made available, specific changes in the workplace not least regarding the concept of what work should involve became clearly discernible. The most obvious changes to the workplace involved the size and composition of the countries workforces. Registering only 24 million in 1900 (and including labourers of age ten and up) and 139 million (aged 16 and older), the size of Americas workforce, for instance, increased by almost six-fold in line with its overall population growth. At the same time, the composition of the workforce shifted from industries dominated by primary production occupations, such as farmers and foresters, to those dominated by professional, technical and, in particular, service workers. At the beginning of the 20th century, 38% of all American workers were employed on farms, by the end of the same century, that figure had fallen to less than 3 %. In Europe, much the same process occurred. In the 1930s, in every European country, bar Britain and Belgium, more than 20 per cent of the population worked in agriculture. By the 1980s, however, the farming populations of all developed countries, excluding Eastern Europe, had dropped to ten per cent and often even lower. At the same time, capital intensive farming using highly mechanized techniques dramatically reduced the numbers needed to farm there. And therein lay the problem. While the workplace became a safer and more productive environment, a world away from the harsh working conditions of our forefathers, the switch from an agricultural to a modern working environment also created massive unemployment in many countries. Fundamental to this problem was the widespread move from the countryside to the city. Having lost their livelihoods, the worlds peasant populations amassed in ever larger numbers in already crowded communities, where rates of job growth failed to keep up with internal migration. As a result, thousands were left squatting in shanty towns on the periphery of cities, waiting for jobs that might never arrive. While this was (and is) particularly true of Third World countries, the same phenomenon could also be witnessed in several American, French, English and German cities in the late 20th century. From a different and more positive perspective, in the 20th century, women became visible and active members of all sectors of the Western workplace. In 1900, only 19% of European women of working age participated in the labour force; by 1999, this figure had risen to 60%. In 1900, only 1% of the countrys lawyers and 6% of its physicians were female; by contrast, the figures were 29% and 24% in 1999. A recent survey of French teenagers, both male and female, revealed that over 50% of those polled thought that, in any job (bar those involving military service), women make better employees, as they are less likely to become riled under stress and less overtly competitive than men. The last and perhaps most significant change to the 20th-century workplace involved the introduction of technology. The list of technological improvements in the workplace is endless: communication and measuring devices, computers of all shapes and sizes, x-ray, lasers, neon lights, stainless steel, and so on and on. Such improvements led to a more productive, safer work environment. Moreover, the fact that medicine improved so dramatically led to an increase in the average lifespan among Western populations. In turn, workers of very different ages were able to work shoulder to shoulder, and continue in their jobs far longer. By the end of 20th century, the Western workplace had undergone remarkable changes. In general, both men and women worked fewer hours per day for more years under better conditions. Yet, the power of agriculture had waned as farmers and foresters moved to cities to earn greater salaries as annalists and accountants. For those who could not make this transition, however, life at the dawn of the new century seemed less appealing.",
+      "hypothesis": "Improvements in medicine led to workers earning more over a longer period.",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_1",
+      "premise": "100 Years of the Western Workplace Conditions in the working environment of Western countries changed significantly over the 20th century. Though not without some associated problems, these changes may be viewed generally as positive: child labour all but ceased, wages rose, the number of working hours in a week decreased, pension policies became standard, fringe benefits multiplied and concerns over health and safety issues were enforced. The collection of data relating to work conditions also became a far more exact science. In particular, there were important developments in methodology and data gathering. Additionally, there was a major expansion of the data collection effort more people became involved in learning about the workplace; and, for the first time, results started to be published. This being the case, at the end of the century, not only were most workers better off than their early 20th century predecessors had been, but they were also in a position to understand how and why this was the case. By carefully analyzing the statistical data made available, specific changes in the workplace not least regarding the concept of what work should involve became clearly discernible. The most obvious changes to the workplace involved the size and composition of the countries workforces. Registering only 24 million in 1900 (and including labourers of age ten and up) and 139 million (aged 16 and older), the size of Americas workforce, for instance, increased by almost six-fold in line with its overall population growth. At the same time, the composition of the workforce shifted from industries dominated by primary production occupations, such as farmers and foresters, to those dominated by professional, technical and, in particular, service workers. At the beginning of the 20th century, 38% of all American workers were employed on farms, by the end of the same century, that figure had fallen to less than 3 %. In Europe, much the same process occurred. In the 1930s, in every European country, bar Britain and Belgium, more than 20 per cent of the population worked in agriculture. By the 1980s, however, the farming populations of all developed countries, excluding Eastern Europe, had dropped to ten per cent and often even lower. At the same time, capital intensive farming using highly mechanized techniques dramatically reduced the numbers needed to farm there. And therein lay the problem. While the workplace became a safer and more productive environment, a world away from the harsh working conditions of our forefathers, the switch from an agricultural to a modern working environment also created massive unemployment in many countries. Fundamental to this problem was the widespread move from the countryside to the city. Having lost their livelihoods, the worlds peasant populations amassed in ever larger numbers in already crowded communities, where rates of job growth failed to keep up with internal migration. As a result, thousands were left squatting in shanty towns on the periphery of cities, waiting for jobs that might never arrive. While this was (and is) particularly true of Third World countries, the same phenomenon could also be witnessed in several American, French, English and German cities in the late 20th century. From a different and more positive perspective, in the 20th century, women became visible and active members of all sectors of the Western workplace. In 1900, only 19% of European women of working age participated in the labour force; by 1999, this figure had risen to 60%. In 1900, only 1% of the countrys lawyers and 6% of its physicians were female; by contrast, the figures were 29% and 24% in 1999. A recent survey of French teenagers, both male and female, revealed that over 50% of those polled thought that, in any job (bar those involving military service), women make better employees, as they are less likely to become riled under stress and less overtly competitive than men. The last and perhaps most significant change to the 20th-century workplace involved the introduction of technology. The list of technological improvements in the workplace is endless: communication and measuring devices, computers of all shapes and sizes, x-ray, lasers, neon lights, stainless steel, and so on and on. Such improvements led to a more productive, safer work environment. Moreover, the fact that medicine improved so dramatically led to an increase in the average lifespan among Western populations. In turn, workers of very different ages were able to work shoulder to shoulder, and continue in their jobs far longer. By the end of 20th century, the Western workplace had undergone remarkable changes. In general, both men and women worked fewer hours per day for more years under better conditions. Yet, the power of agriculture had waned as farmers and foresters moved to cities to earn greater salaries as annalists and accountants. For those who could not make this transition, however, life at the dawn of the new century seemed less appealing.",
+      "hypothesis": "In 1900, 19% of North American women of working age participated in the workforce.",
+      "gold_label": "Contradiction",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_2",
+      "premise": "100 Years of the Western Workplace Conditions in the working environment of Western countries changed significantly over the 20th century. Though not without some associated problems, these changes may be viewed generally as positive: child labour all but ceased, wages rose, the number of working hours in a week decreased, pension policies became standard, fringe benefits multiplied and concerns over health and safety issues were enforced. The collection of data relating to work conditions also became a far more exact science. In particular, there were important developments in methodology and data gathering. Additionally, there was a major expansion of the data collection effort more people became involved in learning about the workplace; and, for the first time, results started to be published. This being the case, at the end of the century, not only were most workers better off than their early 20th century predecessors had been, but they were also in a position to understand how and why this was the case. By carefully analyzing the statistical data made available, specific changes in the workplace not least regarding the concept of what work should involve became clearly discernible. The most obvious changes to the workplace involved the size and composition of the countries workforces. Registering only 24 million in 1900 (and including labourers of age ten and up) and 139 million (aged 16 and older), the size of Americas workforce, for instance, increased by almost six-fold in line with its overall population growth. At the same time, the composition of the workforce shifted from industries dominated by primary production occupations, such as farmers and foresters, to those dominated by professional, technical and, in particular, service workers. At the beginning of the 20th century, 38% of all American workers were employed on farms, by the end of the same century, that figure had fallen to less than 3 %. In Europe, much the same process occurred. In the 1930s, in every European country, bar Britain and Belgium, more than 20 per cent of the population worked in agriculture. By the 1980s, however, the farming populations of all developed countries, excluding Eastern Europe, had dropped to ten per cent and often even lower. At the same time, capital intensive farming using highly mechanized techniques dramatically reduced the numbers needed to farm there. And therein lay the problem. While the workplace became a safer and more productive environment, a world away from the harsh working conditions of our forefathers, the switch from an agricultural to a modern working environment also created massive unemployment in many countries. Fundamental to this problem was the widespread move from the countryside to the city. Having lost their livelihoods, the worlds peasant populations amassed in ever larger numbers in already crowded communities, where rates of job growth failed to keep up with internal migration. As a result, thousands were left squatting in shanty towns on the periphery of cities, waiting for jobs that might never arrive. While this was (and is) particularly true of Third World countries, the same phenomenon could also be witnessed in several American, French, English and German cities in the late 20th century. From a different and more positive perspective, in the 20th century, women became visible and active members of all sectors of the Western workplace. In 1900, only 19% of European women of working age participated in the labour force; by 1999, this figure had risen to 60%. In 1900, only 1% of the countrys lawyers and 6% of its physicians were female; by contrast, the figures were 29% and 24% in 1999. A recent survey of French teenagers, both male and female, revealed that over 50% of those polled thought that, in any job (bar those involving military service), women make better employees, as they are less likely to become riled under stress and less overtly competitive than men. The last and perhaps most significant change to the 20th-century workplace involved the introduction of technology. The list of technological improvements in the workplace is endless: communication and measuring devices, computers of all shapes and sizes, x-ray, lasers, neon lights, stainless steel, and so on and on. Such improvements led to a more productive, safer work environment. Moreover, the fact that medicine improved so dramatically led to an increase in the average lifespan among Western populations. In turn, workers of very different ages were able to work shoulder to shoulder, and continue in their jobs far longer. By the end of 20th century, the Western workplace had undergone remarkable changes. In general, both men and women worked fewer hours per day for more years under better conditions. Yet, the power of agriculture had waned as farmers and foresters moved to cities to earn greater salaries as annalists and accountants. For those who could not make this transition, however, life at the dawn of the new century seemed less appealing.",
+      "hypothesis": "The appearance of shanty towns after farmers move into city areas occurred primarily in the Third World.",
+      "gold_label": "Entailment",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_3",
+      "premise": "100 Years of the Western Workplace Conditions in the working environment of Western countries changed significantly over the 20th century. Though not without some associated problems, these changes may be viewed generally as positive: child labour all but ceased, wages rose, the number of working hours in a week decreased, pension policies became standard, fringe benefits multiplied and concerns over health and safety issues were enforced. The collection of data relating to work conditions also became a far more exact science. In particular, there were important developments in methodology and data gathering. Additionally, there was a major expansion of the data collection effort more people became involved in learning about the workplace; and, for the first time, results started to be published. This being the case, at the end of the century, not only were most workers better off than their early 20th century predecessors had been, but they were also in a position to understand how and why this was the case. By carefully analyzing the statistical data made available, specific changes in the workplace not least regarding the concept of what work should involve became clearly discernible. The most obvious changes to the workplace involved the size and composition of the countries workforces. Registering only 24 million in 1900 (and including labourers of age ten and up) and 139 million (aged 16 and older), the size of Americas workforce, for instance, increased by almost six-fold in line with its overall population growth. At the same time, the composition of the workforce shifted from industries dominated by primary production occupations, such as farmers and foresters, to those dominated by professional, technical and, in particular, service workers. At the beginning of the 20th century, 38% of all American workers were employed on farms, by the end of the same century, that figure had fallen to less than 3 %. In Europe, much the same process occurred. In the 1930s, in every European country, bar Britain and Belgium, more than 20 per cent of the population worked in agriculture. By the 1980s, however, the farming populations of all developed countries, excluding Eastern Europe, had dropped to ten per cent and often even lower. At the same time, capital intensive farming using highly mechanized techniques dramatically reduced the numbers needed to farm there. And therein lay the problem. While the workplace became a safer and more productive environment, a world away from the harsh working conditions of our forefathers, the switch from an agricultural to a modern working environment also created massive unemployment in many countries. Fundamental to this problem was the widespread move from the countryside to the city. Having lost their livelihoods, the worlds peasant populations amassed in ever larger numbers in already crowded communities, where rates of job growth failed to keep up with internal migration. As a result, thousands were left squatting in shanty towns on the periphery of cities, waiting for jobs that might never arrive. While this was (and is) particularly true of Third World countries, the same phenomenon could also be witnessed in several American, French, English and German cities in the late 20th century. From a different and more positive perspective, in the 20th century, women became visible and active members of all sectors of the Western workplace. In 1900, only 19% of European women of working age participated in the labour force; by 1999, this figure had risen to 60%. In 1900, only 1% of the countrys lawyers and 6% of its physicians were female; by contrast, the figures were 29% and 24% in 1999. A recent survey of French teenagers, both male and female, revealed that over 50% of those polled thought that, in any job (bar those involving military service), women make better employees, as they are less likely to become riled under stress and less overtly competitive than men. The last and perhaps most significant change to the 20th-century workplace involved the introduction of technology. The list of technological improvements in the workplace is endless: communication and measuring devices, computers of all shapes and sizes, x-ray, lasers, neon lights, stainless steel, and so on and on. Such improvements led to a more productive, safer work environment. Moreover, the fact that medicine improved so dramatically led to an increase in the average lifespan among Western populations. In turn, workers of very different ages were able to work shoulder to shoulder, and continue in their jobs far longer. By the end of 20th century, the Western workplace had undergone remarkable changes. In general, both men and women worked fewer hours per day for more years under better conditions. Yet, the power of agriculture had waned as farmers and foresters moved to cities to earn greater salaries as annalists and accountants. For those who could not make this transition, however, life at the dawn of the new century seemed less appealing.",
+      "hypothesis": "America and Europe shared the same overall trends in terms of the development of the workplace over the last century.",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_4",
+      "premise": "100 Years of the Western Workplace Conditions in the working environment of Western countries changed significantly over the 20th century. Though not without some associated problems, these changes may be viewed generally as positive: child labour all but ceased, wages rose, the number of working hours in a week decreased, pension policies became standard, fringe benefits multiplied and concerns over health and safety issues were enforced. The collection of data relating to work conditions also became a far more exact science. In particular, there were important developments in methodology and data gathering. Additionally, there was a major expansion of the data collection effort more people became involved in learning about the workplace; and, for the first time, results started to be published. This being the case, at the end of the century, not only were most workers better off than their early 20th century predecessors had been, but they were also in a position to understand how and why this was the case. By carefully analyzing the statistical data made available, specific changes in the workplace not least regarding the concept of what work should involve became clearly discernible. The most obvious changes to the workplace involved the size and composition of the countries workforces. Registering only 24 million in 1900 (and including labourers of age ten and up) and 139 million (aged 16 and older), the size of Americas workforce, for instance, increased by almost six-fold in line with its overall population growth. At the same time, the composition of the workforce shifted from industries dominated by primary production occupations, such as farmers and foresters, to those dominated by professional, technical and, in particular, service workers. At the beginning of the 20th century, 38% of all American workers were employed on farms, by the end of the same century, that figure had fallen to less than 3 %. In Europe, much the same process occurred. In the 1930s, in every European country, bar Britain and Belgium, more than 20 per cent of the population worked in agriculture. By the 1980s, however, the farming populations of all developed countries, excluding Eastern Europe, had dropped to ten per cent and often even lower. At the same time, capital intensive farming using highly mechanized techniques dramatically reduced the numbers needed to farm there. And therein lay the problem. While the workplace became a safer and more productive environment, a world away from the harsh working conditions of our forefathers, the switch from an agricultural to a modern working environment also created massive unemployment in many countries. Fundamental to this problem was the widespread move from the countryside to the city. Having lost their livelihoods, the worlds peasant populations amassed in ever larger numbers in already crowded communities, where rates of job growth failed to keep up with internal migration. As a result, thousands were left squatting in shanty towns on the periphery of cities, waiting for jobs that might never arrive. While this was (and is) particularly true of Third World countries, the same phenomenon could also be witnessed in several American, French, English and German cities in the late 20th century. From a different and more positive perspective, in the 20th century, women became visible and active members of all sectors of the Western workplace. In 1900, only 19% of European women of working age participated in the labour force; by 1999, this figure had risen to 60%. In 1900, only 1% of the countrys lawyers and 6% of its physicians were female; by contrast, the figures were 29% and 24% in 1999. A recent survey of French teenagers, both male and female, revealed that over 50% of those polled thought that, in any job (bar those involving military service), women make better employees, as they are less likely to become riled under stress and less overtly competitive than men. The last and perhaps most significant change to the 20th-century workplace involved the introduction of technology. The list of technological improvements in the workplace is endless: communication and measuring devices, computers of all shapes and sizes, x-ray, lasers, neon lights, stainless steel, and so on and on. Such improvements led to a more productive, safer work environment. Moreover, the fact that medicine improved so dramatically led to an increase in the average lifespan among Western populations. In turn, workers of very different ages were able to work shoulder to shoulder, and continue in their jobs far longer. By the end of 20th century, the Western workplace had undergone remarkable changes. In general, both men and women worked fewer hours per day for more years under better conditions. Yet, the power of agriculture had waned as farmers and foresters moved to cities to earn greater salaries as annalists and accountants. For those who could not make this transition, however, life at the dawn of the new century seemed less appealing.",
+      "hypothesis": "No significant drawbacks accompanied changes in the work environment during the 20th century.",
+      "gold_label": "Contradiction",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_5",
+      "premise": "A 13-year-old boy, Gareth Jones, was taken to Downston Police Station on Saturday 11 June under the suspicion of shoplifting in a local superstore. Gareth Jones denies all of the charges made against him. It is also known that: Gareth is an orphan. The store security officer has a grudge against Gareth because he is the best friend of his son. Gareth is not shown on video recordings captured by the stores surveillance cameras. Two years ago Gareth was caught stealing police road traffic bollards. The store was extremely busy on Saturday 11 June. Gareth had not been given a receipt for the goods he had bought. Gareth was stopped after he had left the store.",
+      "hypothesis": "The stores security officer had a motive for accusing Gareth of shoplifting.",
+      "gold_label": "Entailment",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_6",
+      "premise": "A 13-year-old boy, Gareth Jones, was taken to Downston Police Station on Saturday 11 June under the suspicion of shoplifting in a local superstore. Gareth Jones denies all of the charges made against him. It is also known that: Gareth is an orphan. The store security officer has a grudge against Gareth because he is the best friend of his son. Gareth is not shown on video recordings captured by the stores surveillance cameras. Two years ago Gareth was caught stealing police road traffic bollards. The store was extremely busy on Saturday 11 June. Gareth had not been given a receipt for the goods he had bought. Gareth was stopped after he had left the store.",
+      "hypothesis": "Gareth ran away on leaving the store. Verbal logical reasoning test",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_7",
+      "premise": "A 13-year-old boy, Gareth Jones, was taken to Downston Police Station on Saturday 11 June under the suspicion of shoplifting in a local superstore. Gareth Jones denies all of the charges made against him. It is also known that: Gareth is an orphan. The store security officer has a grudge against Gareth because he is the best friend of his son. Gareth is not shown on video recordings captured by the stores surveillance cameras. Two years ago Gareth was caught stealing police road traffic bollards. The store was extremely busy on Saturday 11 June. Gareth had not been given a receipt for the goods he had bought. Gareth was stopped after he had left the store.",
+      "hypothesis": "Gareth had bought some goods at the store.",
+      "gold_label": "Entailment",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_8",
+      "premise": "A 13-year-old boy, Gareth Jones, was taken to Downston Police Station on Saturday 11 June under the suspicion of shoplifting in a local superstore. Gareth Jones denies all of the charges made against him. It is also known that: Gareth is an orphan. The store security officer has a grudge against Gareth because he is the best friend of his son. Gareth is not shown on video recordings captured by the stores surveillance cameras. Two years ago Gareth was caught stealing police road traffic bollards. The store was extremely busy on Saturday 11 June. Gareth had not been given a receipt for the goods he had bought. Gareth was stopped after he had left the store.",
+      "hypothesis": "This was Gareths first offence.",
+      "gold_label": "Contradiction",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_9",
+      "premise": "A 13-year-old boy, Gareth Jones, was taken to Downston Police Station on Saturday 11 June under the suspicion of shoplifting in a local superstore. Gareth Jones denies all of the charges made against him. It is also known that: Gareth is an orphan. The store security officer has a grudge against Gareth because he is the best friend of his son. Gareth is not shown on video recordings captured by the stores surveillance cameras. Two years ago Gareth was caught stealing police road traffic bollards. The store was extremely busy on Saturday 11 June. Gareth had not been given a receipt for the goods he had bought. Gareth was stopped after he had left the store.",
+      "hypothesis": "The police rang Gareths mother to tell her where her son was.",
+      "gold_label": "Contradiction",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_10",
+      "premise": "A 19-year-old male was found unconscious in his flat on 28 December at 23.00. He was taken immediately to hospital where his stomach was pumped. Although he regained consciousness he died shortly afterwards. Neighbours recall seeing various young people going into the flat at all hours of the day and night. Other facts known at this stage are: Peter Graick was a heroin addict. Empty bottles of spirits and paracetamol were found in the flat. Jo Hager supplied Peter with hard drugs. Peter used to frequent the local nightclub. Jo was the father of a two-month-old child. Jos child was in care and had been tested HIV positive. The victim was a compulsive gambler. The victim had bruises on his head.",
+      "hypothesis": "The neighbours took the victim to hospital.",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_11",
+      "premise": "A 19-year-old male was found unconscious in his flat on 28 December at 23.00. He was taken immediately to hospital where his stomach was pumped. Although he regained consciousness he died shortly afterwards. Neighbours recall seeing various young people going into the flat at all hours of the day and night. Other facts known at this stage are: Peter Graick was a heroin addict. Empty bottles of spirits and paracetamol were found in the flat. Jo Hager supplied Peter with hard drugs. Peter used to frequent the local nightclub. Jo was the father of a two-month-old child. Jos child was in care and had been tested HIV positive. The victim was a compulsive gambler. The victim had bruises on his head.",
+      "hypothesis": "The victims child was in care.",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_12",
+      "premise": "A 19-year-old male was found unconscious in his flat on 28 December at 23.00. He was taken immediately to hospital where his stomach was pumped. Although he regained consciousness he died shortly afterwards. Neighbours recall seeing various young people going into the flat at all hours of the day and night. Other facts known at this stage are: Peter Graick was a heroin addict. Empty bottles of spirits and paracetamol were found in the flat. Jo Hager supplied Peter with hard drugs. Peter used to frequent the local nightclub. Jo was the father of a two-month-old child. Jos child was in care and had been tested HIV positive. The victim was a compulsive gambler. The victim had bruises on his head.",
+      "hypothesis": "Peter died of an overdose of drugs.",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_13",
+      "premise": "A 19-year-old male was found unconscious in his flat on 28 December at 23.00. He was taken immediately to hospital where his stomach was pumped. Although he regained consciousness he died shortly afterwards. Neighbours recall seeing various young people going into the flat at all hours of the day and night. Other facts known at this stage are: Peter Graick was a heroin addict. Empty bottles of spirits and paracetamol were found in the flat. Jo Hager supplied Peter with hard drugs. Peter used to frequent the local nightclub. Jo was the father of a two-month-old child. Jos child was in care and had been tested HIV positive. The victim was a compulsive gambler. The victim had bruises on his head.",
+      "hypothesis": "Neighbours may have seen Jo Hager enter the flat where the victim was found.",
+      "gold_label": "Entailment",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_14",
+      "premise": "A 19-year-old male was found unconscious in his flat on 28 December at 23.00. He was taken immediately to hospital where his stomach was pumped. Although he regained consciousness he died shortly afterwards. Neighbours recall seeing various young people going into the flat at all hours of the day and night. Other facts known at this stage are: Peter Graick was a heroin addict. Empty bottles of spirits and paracetamol were found in the flat. Jo Hager supplied Peter with hard drugs. Peter used to frequent the local nightclub. Jo was the father of a two-month-old child. Jos child was in care and had been tested HIV positive. The victim was a compulsive gambler. The victim had bruises on his head.",
+      "hypothesis": "The victim was homeless.",
+      "gold_label": "Contradiction",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_15",
+      "premise": "A 19-year-old male was found unconscious in his flat on 28 December at 23.00. He was taken immediately to hospital where his stomach was pumped. Although he regained consciousness he died shortly afterwards. Neighbours recall seeing various young people going into the flat at all hours of the day and night. The following facts are known: Jake Pratt was a heroin addict. Empty bottles of spirits and paracetamol were found in the flat. Joe Horrocks supplied Jake with hard drugs. Jake used to frequent the local nightclub. Joe was the father of a two-month-old child. Joes child was in care and had tested HIV positive. The victim was a compulsive gambler. The victim had bruises on his head.",
+      "hypothesis": "Jake died of an overdose of drugs.",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_16",
+      "premise": "A 19-year-old male was found unconscious in his flat on 28 December at 23.00. He was taken immediately to hospital where his stomach was pumped. Although he regained consciousness he died shortly afterwards. Neighbours recall seeing various young people going into the flat at all hours of the day and night. The following facts are known: Jake Pratt was a heroin addict. Empty bottles of spirits and paracetamol were found in the flat. Joe Horrocks supplied Jake with hard drugs. Jake used to frequent the local nightclub. Joe was the father of a two-month-old child. Joes child was in care and had tested HIV positive. The victim was a compulsive gambler. The victim had bruises on his head.",
+      "hypothesis": "The victims child was in care.",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_17",
+      "premise": "A 19-year-old male was found unconscious in his flat on 28 December at 23.00. He was taken immediately to hospital where his stomach was pumped. Although he regained consciousness he died shortly afterwards. Neighbours recall seeing various young people going into the flat at all hours of the day and night. The following facts are known: Jake Pratt was a heroin addict. Empty bottles of spirits and paracetamol were found in the flat. Joe Horrocks supplied Jake with hard drugs. Jake used to frequent the local nightclub. Joe was the father of a two-month-old child. Joes child was in care and had tested HIV positive. The victim was a compulsive gambler. The victim had bruises on his head.",
+      "hypothesis": "Neighbours may have seen Joe enter the flat where the victim was found.",
+      "gold_label": "Entailment",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_18",
+      "premise": "A 19-year-old male was found unconscious in his flat on 28 December at 23.00. He was taken immediately to hospital where his stomach was pumped. Although he regained consciousness he died shortly afterwards. Neighbours recall seeing various young people going into the flat at all hours of the day and night. The following facts are known: Jake Pratt was a heroin addict. Empty bottles of spirits and paracetamol were found in the flat. Joe Horrocks supplied Jake with hard drugs. Jake used to frequent the local nightclub. Joe was the father of a two-month-old child. Joes child was in care and had tested HIV positive. The victim was a compulsive gambler. The victim had bruises on his head.",
+      "hypothesis": "The neighbours took the victim to hospital.",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_19",
+      "premise": "A 19-year-old male was found unconscious in his flat on 28 December at 23.00. He was taken immediately to hospital where his stomach was pumped. Although he regained consciousness he died shortly afterwards. Neighbours recall seeing various young people going into the flat at all hours of the day and night. The following facts are known: Jake Pratt was a heroin addict. Empty bottles of spirits and paracetamol were found in the flat. Joe Horrocks supplied Jake with hard drugs. Jake used to frequent the local nightclub. Joe was the father of a two-month-old child. Joes child was in care and had tested HIV positive. The victim was a compulsive gambler. The victim had bruises on his head.",
+      "hypothesis": "The victim was homeless.",
+      "gold_label": "Contradiction",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_20",
+      "premise": "A 37-year-old woman was hit and badly injured when a sports car suddenly swerved off the road in the small village of Paddly. She was rushed immediately to Crownsby hospital at 12.45 on Wednesday 3 October, where she is now in a stable condition. A reliable witness said there seemed to be no obvious reason for the car to have swerved so suddenly. The car did not stop and raced out of the village before the police could follow. It is also known that: The victim was Jane Scolled. Jane worked for a firm of accountants called Sayerston. The manager, Mr Sayerston, collected old sports cars. Jane had the day off work on Wednesday 3 October. Jane had found copies of letters in the office, which indicated fraudulent behaviour by someone in the firm. Mr Sayerston plays golf every Wednesday afternoon. Janes father is a renowned barrister in Crownsby. At 13.05 a young cyclist was admitted to Crownsby hospital with severe head injuries after being knocked off his bicycle.",
+      "hypothesis": "Jane Scolled was an accountant.",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_21",
+      "premise": "A 37-year-old woman was hit and badly injured when a sports car suddenly swerved off the road in the small village of Paddly. She was rushed immediately to Crownsby hospital at 12.45 on Wednesday 3 October, where she is now in a stable condition. A reliable witness said there seemed to be no obvious reason for the car to have swerved so suddenly. The car did not stop and raced out of the village before the police could follow. It is also known that: The victim was Jane Scolled. Jane worked for a firm of accountants called Sayerston. The manager, Mr Sayerston, collected old sports cars. Jane had the day off work on Wednesday 3 October. Jane had found copies of letters in the office, which indicated fraudulent behaviour by someone in the firm. Mr Sayerston plays golf every Wednesday afternoon. Janes father is a renowned barrister in Crownsby. At 13.05 a young cyclist was admitted to Crownsby hospital with severe head injuries after being knocked off his bicycle.",
+      "hypothesis": "While on her lunch break from work Jane Scolled was hit by a car.",
+      "gold_label": "Contradiction",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_22",
+      "premise": "A 37-year-old woman was hit and badly injured when a sports car suddenly swerved off the road in the small village of Paddly. She was rushed immediately to Crownsby hospital at 12.45 on Wednesday 3 October, where she is now in a stable condition. A reliable witness said there seemed to be no obvious reason for the car to have swerved so suddenly. The car did not stop and raced out of the village before the police could follow. It is also known that: The victim was Jane Scolled. Jane worked for a firm of accountants called Sayerston. The manager, Mr Sayerston, collected old sports cars. Jane had the day off work on Wednesday 3 October. Jane had found copies of letters in the office, which indicated fraudulent behaviour by someone in the firm. Mr Sayerston plays golf every Wednesday afternoon. Janes father is a renowned barrister in Crownsby. At 13.05 a young cyclist was admitted to Crownsby hospital with severe head injuries after being knocked off his bicycle.",
+      "hypothesis": "Just after Janes accident a car had knocked a young cyclist off his bicycle.",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_23",
+      "premise": "A 37-year-old woman was hit and badly injured when a sports car suddenly swerved off the road in the small village of Paddly. She was rushed immediately to Crownsby hospital at 12.45 on Wednesday 3 October, where she is now in a stable condition. A reliable witness said there seemed to be no obvious reason for the car to have swerved so suddenly. The car did not stop and raced out of the village before the police could follow. It is also known that: The victim was Jane Scolled. Jane worked for a firm of accountants called Sayerston. The manager, Mr Sayerston, collected old sports cars. Jane had the day off work on Wednesday 3 October. Jane had found copies of letters in the office, which indicated fraudulent behaviour by someone in the firm. Mr Sayerston plays golf every Wednesday afternoon. Janes father is a renowned barrister in Crownsby. At 13.05 a young cyclist was admitted to Crownsby hospital with severe head injuries after being knocked off his bicycle.",
+      "hypothesis": "Mr Sayerston was afraid of Janes father.",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_24",
+      "premise": "A 37-year-old woman was hit and badly injured when a sports car suddenly swerved off the road in the small village of Paddly. She was rushed immediately to Crownsby hospital at 12.45 on Wednesday 3 October, where she is now in a stable condition. A reliable witness said there seemed to be no obvious reason for the car to have swerved so suddenly. The car did not stop and raced out of the village before the police could follow. It is also known that: The victim was Jane Scolled. Jane worked for a firm of accountants called Sayerston. The manager, Mr Sayerston, collected old sports cars. Jane had the day off work on Wednesday 3 October. Jane had found copies of letters in the office, which indicated fraudulent behaviour by someone in the firm. Mr Sayerston plays golf every Wednesday afternoon. Janes father is a renowned barrister in Crownsby. At 13.05 a young cyclist was admitted to Crownsby hospital with severe head injuries after being knocked off his bicycle.",
+      "hypothesis": "Crownsby hospital dealt with at least two road accident victims on Wednesday 3 October.",
+      "gold_label": "Entailment",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_25",
+      "premise": "A 72-year-old widow was said to be comfortable but in a state of shock by a hospital spokesperson this morning. Mrs Susan Marsh suffered a head injury during the night when she disturbed an intruder who had broken into her ground floor flat on the Eastfield estate. This was the second time her home had been broken into in a month. In the first raid, the burglar broke a window and climbed in while Mrs Marsh was out for the evening visiting friends. The police believe that on this occasion the thief was disturbed when a neighbour returned home after walking his dog. It is also known that: Following the first break-in, workmen from the Housing Association boarded up the window to Mrs Marshs flat. Mrs Marsh disturbed a man in her living room. When she returned home on the occasion of the first break-in Mrs Marsh found that nothing had been stolen. On the night Mrs Marsh suffered her head injuries the thief escaped with some valuable items of silverware and a small amount of ready cash.",
+      "hypothesis": "Although the burglar escaped with a small amount of cash and some silverware he failed to detect the money she had hidden in her bedroom.",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_26",
+      "premise": "A 72-year-old widow was said to be comfortable but in a state of shock by a hospital spokesperson this morning. Mrs Susan Marsh suffered a head injury during the night when she disturbed an intruder who had broken into her ground floor flat on the Eastfield estate. This was the second time her home had been broken into in a month. In the first raid, the burglar broke a window and climbed in while Mrs Marsh was out for the evening visiting friends. The police believe that on this occasion the thief was disturbed when a neighbour returned home after walking his dog. It is also known that: Following the first break-in, workmen from the Housing Association boarded up the window to Mrs Marshs flat. Mrs Marsh disturbed a man in her living room. When she returned home on the occasion of the first break-in Mrs Marsh found that nothing had been stolen. On the night Mrs Marsh suffered her head injuries the thief escaped with some valuable items of silverware and a small amount of ready cash.",
+      "hypothesis": "The first break-in occurred when Mrs Marsh was out playing bingo and her neighbour was walking his dog.",
+      "gold_label": "Contradiction",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_27",
+      "premise": "A 72-year-old widow was said to be comfortable but in a state of shock by a hospital spokesperson this morning. Mrs Susan Marsh suffered a head injury during the night when she disturbed an intruder who had broken into her ground floor flat on the Eastfield estate. This was the second time her home had been broken into in a month. In the first raid, the burglar broke a window and climbed in while Mrs Marsh was out for the evening visiting friends. The police believe that on this occasion the thief was disturbed when a neighbour returned home after walking his dog. It is also known that: Following the first break-in, workmen from the Housing Association boarded up the window to Mrs Marshs flat. Mrs Marsh disturbed a man in her living room. When she returned home on the occasion of the first break-in Mrs Marsh found that nothing had been stolen. On the night Mrs Marsh suffered her head injuries the thief escaped with some valuable items of silverware and a small amount of ready cash.",
+      "hypothesis": "The intruder entered the flat by the same means on both occasions.",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_28",
+      "premise": "A 72-year-old widow was said to be comfortable but in a state of shock by a hospital spokesperson this morning. Mrs Susan Marsh suffered a head injury during the night when she disturbed an intruder who had broken into her ground floor flat on the Eastfield estate. This was the second time her home had been broken into in a month. In the first raid, the burglar broke a window and climbed in while Mrs Marsh was out for the evening visiting friends. The police believe that on this occasion the thief was disturbed when a neighbour returned home after walking his dog. It is also known that: Following the first break-in, workmen from the Housing Association boarded up the window to Mrs Marshs flat. Mrs Marsh disturbed a man in her living room. When she returned home on the occasion of the first break-in Mrs Marsh found that nothing had been stolen. On the night Mrs Marsh suffered her head injuries the thief escaped with some valuable items of silverware and a small amount of ready cash.",
+      "hypothesis": "After being unsuccessful at the first attempt to rob Mrs Marshs flat, the burglar broke in a second time.",
+      "gold_label": "Neutral",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    },
+    {
+      "id": "id_29",
+      "premise": "A 72-year-old widow was said to be comfortable but in a state of shock by a hospital spokesperson this morning. Mrs Susan Marsh suffered a head injury during the night when she disturbed an intruder who had broken into her ground floor flat on the Eastfield estate. This was the second time her home had been broken into in a month. In the first raid, the burglar broke a window and climbed in while Mrs Marsh was out for the evening visiting friends. The police believe that on this occasion the thief was disturbed when a neighbour returned home after walking his dog. It is also known that: Following the first break-in, workmen from the Housing Association boarded up the window to Mrs Marshs flat. Mrs Marsh disturbed a man in her living room. When she returned home on the occasion of the first break-in Mrs Marsh found that nothing had been stolen. On the night Mrs Marsh suffered her head injuries the thief escaped with some valuable items of silverware and a small amount of ready cash.",
+      "hypothesis": "On being wakened during the night Mrs Marsh went downstairs to investigate what had caused the noise.",
+      "gold_label": "Contradiction",
+      "prediction": "Neutral",
+      "qa_pairs": [],
+      "method": "p_question",
+      "generation": "decomposition",
+      "selector": "rouge_l",
+      "selection": "topk",
+      "mmr_lambda": 0.7,
+      "all_questions": [],
+      "n_fact": 0,
+      "n_relation": 0,
+      "selected": [],
+      "warnings": [
+        "Stage 1a returned no questions; defaulting to Neutral."
+      ]
+    }
+  ]
+}

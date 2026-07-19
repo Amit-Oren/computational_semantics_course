@@ -3,7 +3,6 @@ data/ConTRoL-dataset/
 .env
 __pycache__/
 logs/
-results/
 .DS_Store
 .claude/
 *.log
