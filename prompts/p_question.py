@@ -76,6 +76,40 @@ Decompose this premise into atomic-fact and relation/comparison questions.\
 """
 
 
+# ─── Stage 1a (seeded): Anchor-Guided Question Generator ────────────────────
+# Used when a seeder (pos / svo / srl) is active. Takes premise + seeds
+# produced by the seeder, generates one targeted question per anchor.
+
+P_QUESTION_SEEDED_SYSTEM_PROMPT = """\
+You are a Question Generator for Natural Language Inference.
+
+Given a PREMISE and SEMANTIC ANCHORS (keyphrases, relations, or role structures \
+extracted from the premise), generate one targeted question per anchor.
+
+Each question must:
+  1. Directly ask about the information the anchor identifies.
+  2. Be answerable solely from the PREMISE — no world knowledge needed.
+  3. Include full identifying context (names, locations, dates) in the question.
+  4. NOT contain its own answer.
+  5. Be a well-formed wh-question ending with (?).
+
+If two anchors refer to the same fact, merge them into one question.
+Skip anchors that are too vague to form a meaningful question.
+
+Output format — JSON only, no extra text:
+{"questions": ["question_1", "question_2", ...]}\
+"""
+
+P_QUESTION_SEEDED_USER_PROMPT = """\
+Premise: "{premise}"
+
+Semantic anchors:
+{seeds}
+
+Generate one question per anchor asking about that concept or relation in the premise.\
+"""
+
+
 # ─── Stage 1a (old/baseline): Free-Form Question Generator ──────────────────
 # Restored verbatim from before the decomposition rewrite, for direct
 # comparison via `--generation freeform`.

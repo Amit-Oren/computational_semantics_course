@@ -1,4 +1,5 @@
 import os
+import re
 import logging
 from typing import Literal
 from dotenv import load_dotenv
@@ -7,7 +8,7 @@ from pydantic import BaseModel, Field, ConfigDict, field_validator, model_valida
 load_dotenv(override=True)
 
 LAB_API_KEY = os.getenv("LAB_LLM_TOKEN", "")
-LAB_API_URL = "http://lab-server.tailbdc662.ts.net:8000/v1"
+LAB_API_URL = os.getenv("LAB_API_URL", "http://100.110.96.82:8000/v1")
 
 HF_API_KEY = os.getenv("HF_API_KEY", "")
 HF_API_URL = "https://router.huggingface.co/featherless-ai/v1"
@@ -64,6 +65,15 @@ DATA_PATH   = "data/ConTRoL-dataset"
 class NLIOutput(BaseModel):
     label:       Literal["Entailment", "Contradiction", "Neutral"]
     explanation: str
+
+    @field_validator("label", mode="before")
+    @classmethod
+    def normalize_label(cls, v):
+        if isinstance(v, str):
+            title = v.strip().rstrip(".,;:!?").strip().title()
+            if title in {"Entailment", "Contradiction", "Neutral"}:
+                return title
+        return v
 
 
 class QuestionListOutput(BaseModel):
@@ -349,7 +359,7 @@ class ClassifyOutput(BaseModel):
     @classmethod
     def normalize_label(cls, v):
         if isinstance(v, str):
-            title = v.strip().title()
+            title = v.strip().rstrip(".,;:!?").strip().title()
             if title in {"Entailment", "Contradiction", "Neutral"}:
                 return title
         return v
@@ -380,10 +390,34 @@ def setup_logger(experiment: str, model: str) -> logging.Logger:
 logger = logging.getLogger("control")
 
 
+_JSON_FENCE_RE = re.compile(r'```(?:json)?\s*\n?(.*?)\n?\s*```', re.DOTALL)
+
+
+class _StructuredOutput:
+    """LLM wrapper for open_source models: passes response_format=json_object
+    to guide vLLM toward JSON output, then strips any residual markdown fences
+    before Pydantic validation. json_mode alone doesn't reliably prevent fences;
+    fence stripping alone loses the JSON-mode guidance that helps the locator."""
+
+    def __init__(self, llm, schema):
+        self._llm = llm.bind(response_format={"type": "json_object"})
+        self._schema = schema
+
+    def invoke(self, messages):
+        response = self._llm.invoke(messages)
+        content = getattr(response, "content", str(response)).strip()
+        m = _JSON_FENCE_RE.search(content)
+        if m:
+            content = m.group(1).strip()
+        return self._schema.model_validate_json(content)
+
+
 def get_structured_llm(model: str, schema, params: dict = DEFAULT_PARAMS):
     llm = get_llm(model, params)
     if MODELS.get(model) == "groq":
         return llm.with_structured_output(schema, method="json_mode")
+    if MODELS.get(model) == "open_source":
+        return _StructuredOutput(llm, schema)
     return llm.with_structured_output(schema)
 
 

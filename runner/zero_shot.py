@@ -1,11 +1,12 @@
 from langchain_core.messages import SystemMessage, HumanMessage
-from config.config import DEFAULT_PARAMS, get_llm, NLIOutput, logger
+from config.config import DEFAULT_PARAMS, get_structured_llm, NLIOutput, logger
+from utils.retry import call_with_retry
 from prompts.zero_shot import SYSTEM_PROMPT, USER_PROMPT
 
 
 def call(system: str, user: str, model: str, params: dict) -> NLIOutput:
     messages = [SystemMessage(content=system), HumanMessage(content=user)]
-    return get_llm(model, params).with_structured_output(NLIOutput).invoke(messages)
+    return call_with_retry(get_structured_llm(model, NLIOutput, params).invoke, messages)
 
 
 def run(samples: list[dict], model: str, params: dict = DEFAULT_PARAMS) -> list[dict]:

@@ -52,6 +52,7 @@ from config.config import (
     P_QUESTION_MAX_QUESTIONS,
     PQuestionListOutput,
     PQuestionFreeformOutput,
+    NLIOutput,
     get_structured_llm,
     logger,
 )
@@ -60,16 +61,22 @@ from prompts.p_question import (
     P_QUESTION_USER_PROMPT,
     P_QUESTION_FREEFORM_SYSTEM_PROMPT,
     P_QUESTION_FREEFORM_USER_PROMPT,
+    P_QUESTION_SEEDED_SYSTEM_PROMPT,
+    P_QUESTION_SEEDED_USER_PROMPT,
 )
+from prompts.zero_shot import SYSTEM_PROMPT as ZS_SYSTEM, USER_PROMPT as ZS_USER
 from prompts.shared_classifier import classify_evidence
+from utils.aggregation import aggregate, AGGREGATION_MODES
 from utils.locator_extractor import locate_and_answer
 from utils.premise_indexer import number_sentences
 from utils.question_selectors import score_questions
 from utils.retry import call_with_retry
+from utils.seeding import get_seeder, SEEDERS
 
 METHOD = "p_question"
 FALLBACK_LABEL = "Neutral"
-GENERATION_MODES = ("decomposition", "freeform")
+GENERATION_MODES = ("decomposition", "freeform", "seeded")
+DEFAULT_AGGREGATION = "aggregated"
 
 _SPACY_NLP = None  # loaded once on first use
 
@@ -87,9 +94,15 @@ class PQuestionPipeline:
         top_k: int = P_QUESTION_TOP_K,
         mmr_lambda: float = P_QUESTION_MMR_LAMBDA,
         max_questions: int = P_QUESTION_MAX_QUESTIONS,
+        seeder_name: str = "pos",
+        aggregation: str = DEFAULT_AGGREGATION,
     ):
         if generation not in GENERATION_MODES:
             raise ValueError(f"Unknown generation mode '{generation}'; choose from {GENERATION_MODES}")
+        if aggregation not in AGGREGATION_MODES:
+            raise ValueError(f"Unknown aggregation '{aggregation}'; choose from {AGGREGATION_MODES}")
+        if generation == "seeded" and seeder_name not in SEEDERS:
+            raise ValueError(f"Unknown seeder '{seeder_name}'; choose from {sorted(SEEDERS)}")
         self.model         = model
         self.params        = params
         self.generation    = generation
@@ -98,6 +111,9 @@ class PQuestionPipeline:
         self.selection     = selection
         self.mmr_lambda    = mmr_lambda
         self.max_questions = max_questions
+        self.seeder_name   = seeder_name
+        self.aggregation   = aggregation
+        self.seeder        = get_seeder(seeder_name, model=model, params=params) if generation == "seeded" else None
 
     # ── NER coverage (additive, purely metric-based) ──────────────────────────
 
@@ -147,11 +163,12 @@ class PQuestionPipeline:
     # ── Stage 1a ─────────────────────────────────────────────────────────────
 
     def stage1a_generate_questions(self, premise: str) -> list[dict]:
-        """Ask the LLM to generate Stage 1a questions using the active
-        generation method. Returns a list of {"q", "type"} dicts uniformly —
-        freeform questions are all tagged type="fact" (no relation
-        distinction in that mode), so downstream code (capping,
-        n_fact/n_relation) works unchanged for both methods."""
+        """Ask the LLM to generate Stage 1a questions using the active generation method.
+
+        Returns a list of {"q", "type"} dicts uniformly — freeform and seeded
+        questions are tagged type="fact", decomposition questions preserve
+        the fact/relation distinction.
+        """
         if self.generation == "freeform":
             messages = [
                 SystemMessage(content=P_QUESTION_FREEFORM_SYSTEM_PROMPT),
@@ -163,6 +180,34 @@ class PQuestionPipeline:
                 return []
             return [{"q": q, "type": "fact"} for q in out.questions]
 
+        if self.generation == "seeded":
+            seeds = self.seeder.seed(premise)
+            if not seeds:
+                logger.warning("Seeder returned no seeds; falling back to freeform.")
+                messages = [
+                    SystemMessage(content=P_QUESTION_FREEFORM_SYSTEM_PROMPT),
+                    HumanMessage(content=P_QUESTION_FREEFORM_USER_PROMPT.format(premise=premise)),
+                ]
+                llm = get_structured_llm(self.model, PQuestionFreeformOutput, self.params)
+                out = call_with_retry(llm.invoke, messages)
+                if out is None:
+                    return []
+                return [{"q": q, "type": "fact"} for q in out.questions]
+
+            seeds_str = "\n".join(f"- {s}" for s in seeds)
+            messages = [
+                SystemMessage(content=P_QUESTION_SEEDED_SYSTEM_PROMPT),
+                HumanMessage(content=P_QUESTION_SEEDED_USER_PROMPT.format(
+                    premise=premise, seeds=seeds_str,
+                )),
+            ]
+            llm = get_structured_llm(self.model, PQuestionFreeformOutput, self.params)
+            out = call_with_retry(llm.invoke, messages)
+            if out is None:
+                return []
+            return [{"q": q, "type": "fact"} for q in out.questions]
+
+        # decomposition (default)
         messages = [
             SystemMessage(content=P_QUESTION_SYSTEM_PROMPT),
             HumanMessage(content=P_QUESTION_USER_PROMPT.format(premise=premise)),
@@ -186,6 +231,26 @@ class PQuestionPipeline:
         if remaining > 0:
             kept += facts[:remaining]
         return kept
+
+    # ── Zero-shot fallback ────────────────────────────────────────────────────
+
+    def _zero_shot_fallback(self, sample: dict, warnings: list[str]) -> str:
+        """Direct zero-shot NLI on P+H when pipeline stages produce no evidence."""
+        try:
+            messages = [
+                SystemMessage(content=ZS_SYSTEM),
+                HumanMessage(content=ZS_USER.format(
+                    premise=sample["premise"], hypothesis=sample["hypothesis"],
+                )),
+            ]
+            output = call_with_retry(get_structured_llm(self.model, NLIOutput, self.params).invoke, messages)
+            if output is not None:
+                warnings.append(f"Pipeline produced no evidence; zero-shot fallback predicted {output.label}.")
+                return output.label
+        except Exception as exc:
+            logger.warning(f"Zero-shot fallback failed: {exc}")
+        warnings.append("Zero-shot fallback also failed; using Neutral.")
+        return FALLBACK_LABEL
 
     # ── Stage 1b ─────────────────────────────────────────────────────────────
 
@@ -219,8 +284,9 @@ class PQuestionPipeline:
             logger.warning(f"Stage 1a failed: {exc}")
 
         if not decomposed:
-            warnings.append("Stage 1a returned no questions; defaulting to Neutral.")
-            return self._make_result(sample, [], [], [], FALLBACK_LABEL, warnings, 0, 0)
+            warnings.append("Stage 1a returned no questions; falling back to zero-shot.")
+            prediction = self._zero_shot_fallback(sample, warnings)
+            return self._make_result(sample, [], [], [], prediction, warnings, 0, 0)
 
         ner_questions = self._ner_coverage_questions(premise, [d["q"] for d in decomposed])
         if ner_questions:
@@ -258,12 +324,12 @@ class PQuestionPipeline:
             if result["answerable"]:
                 qa_pairs.append(result)
 
-        # Stage 2 — shared classifier
+        # Stage 2 — aggregate over surviving Q/A pairs
         if not qa_pairs:
-            warnings.append("All questions unanswerable; defaulting to Neutral.")
-            prediction = FALLBACK_LABEL
+            warnings.append("All questions unanswerable; falling back to zero-shot.")
+            prediction = self._zero_shot_fallback(sample, warnings)
         else:
-            prediction = classify_evidence(self.model, self.params, qa_pairs, hypothesis)
+            prediction = aggregate(self.aggregation, self.model, self.params, qa_pairs, hypothesis)
 
         return self._make_result(
             sample, decomposed, selected, qa_pairs, prediction, warnings, n_fact, n_relation,
@@ -289,6 +355,8 @@ class PQuestionPipeline:
             "qa_pairs":      qa_pairs,
             "method":        METHOD,
             "generation":    self.generation,
+            "seeder":        self.seeder_name,
+            "aggregation":   self.aggregation,
             "selector":      self.selector,
             "selection":     self.selection,
             "mmr_lambda":    self.mmr_lambda,
@@ -312,10 +380,13 @@ def run(
     top_k: int = P_QUESTION_TOP_K,
     mmr_lambda: float = P_QUESTION_MMR_LAMBDA,
     max_questions: int = P_QUESTION_MAX_QUESTIONS,
+    seeder_name: str = "pos",
+    aggregation: str = DEFAULT_AGGREGATION,
 ) -> list[dict]:
     pipeline = PQuestionPipeline(
         model, params, generation=generation, selector=selector, selection=selection,
         top_k=top_k, mmr_lambda=mmr_lambda, max_questions=max_questions,
+        seeder_name=seeder_name, aggregation=aggregation,
     )
 
     logger.info("=" * 60)
@@ -324,6 +395,9 @@ def run(
     logger.info(f"Temperature       : {params.get('temperature')}")
     logger.info(f"Max tokens        : {params.get('max_tokens')}")
     logger.info(f"Generation        : {pipeline.generation}")
+    if pipeline.generation == "seeded":
+        logger.info(f"Seeder            : {pipeline.seeder_name}")
+    logger.info(f"Aggregation       : {pipeline.aggregation}")
     logger.info(f"Selector          : {pipeline.selector}")
     logger.info(f"Selection         : {pipeline.selection}")
     if pipeline.selection == "mmr":

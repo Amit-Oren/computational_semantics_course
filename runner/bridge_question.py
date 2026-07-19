@@ -25,6 +25,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from config.config import (
     DEFAULT_PARAMS,
     BridgeQuestionOutput,
+    NLIOutput,
     get_structured_llm,
     logger,
 )
@@ -33,21 +34,46 @@ from prompts.bridge_question import (
     BRIDGE_QUESTION_GEN_USER_PROMPT,
     BRIDGE_QUESTION_RETRY_USER_PROMPT,
 )
-from prompts.shared_classifier import classify_evidence
+from prompts.zero_shot import SYSTEM_PROMPT as ZS_SYSTEM, USER_PROMPT as ZS_USER
+from utils.aggregation import aggregate, AGGREGATION_MODES
 from utils.locator_extractor import locate_and_answer
 from utils.premise_indexer import number_sentences
 from utils.retry import call_with_retry
 
 METHOD = "bridge_question"
 FALLBACK_LABEL = "Neutral"
+DEFAULT_AGGREGATION = "aggregated"
 
 
 class BridgeQuestionPipeline:
     """Both-texts bridging NLI pipeline."""
 
-    def __init__(self, model: str, params: dict):
-        self.model  = model
-        self.params = params
+    def __init__(self, model: str, params: dict, aggregation: str = DEFAULT_AGGREGATION):
+        if aggregation not in AGGREGATION_MODES:
+            raise ValueError(f"Unknown aggregation '{aggregation}'; choose from {AGGREGATION_MODES}")
+        self.model       = model
+        self.params      = params
+        self.aggregation = aggregation
+
+    # ── Zero-shot fallback ────────────────────────────────────────────────────
+
+    def _zero_shot_fallback(self, sample: dict, warnings: list[str]) -> str:
+        """Direct zero-shot NLI on P+H when pipeline stages produce no evidence."""
+        try:
+            messages = [
+                SystemMessage(content=ZS_SYSTEM),
+                HumanMessage(content=ZS_USER.format(
+                    premise=sample["premise"], hypothesis=sample["hypothesis"],
+                )),
+            ]
+            output = call_with_retry(get_structured_llm(self.model, NLIOutput, self.params).invoke, messages)
+            if output is not None:
+                warnings.append(f"Pipeline produced no evidence; zero-shot fallback predicted {output.label}.")
+                return output.label
+        except Exception as exc:
+            logger.warning(f"Zero-shot fallback failed: {exc}")
+        warnings.append("Zero-shot fallback also failed; using Neutral.")
+        return FALLBACK_LABEL
 
     # ── Stage 1 ───────────────────────────────────────────────────────────────
 
@@ -90,8 +116,9 @@ class BridgeQuestionPipeline:
             logger.warning(f"Stage 1 failed: {exc}")
 
         if q_output is None or not q_output.questions:
-            warnings.append("Stage 1 returned no questions; defaulting to Neutral.")
-            return self._make_result(sample, [], FALLBACK_LABEL, warnings, no_bridge_generated=True)
+            warnings.append("Stage 1 returned no questions; falling back to zero-shot.")
+            prediction = self._zero_shot_fallback(sample, warnings)
+            return self._make_result(sample, [], prediction, warnings, no_bridge_generated=True)
 
         no_bridge_generated = False
         if not q_output.bridge_indices:
@@ -128,14 +155,15 @@ class BridgeQuestionPipeline:
 
         # Stage 4 — shared classifier
         if not qa_pairs:
-            warnings.append("All questions unanswerable; defaulting to Neutral.")
-            return self._make_result(sample, [], FALLBACK_LABEL, warnings, no_bridge_generated)
+            warnings.append("All questions unanswerable; falling back to zero-shot.")
+            prediction = self._zero_shot_fallback(sample, warnings)
+            return self._make_result(sample, [], prediction, warnings, no_bridge_generated)
 
-        prediction = classify_evidence(self.model, self.params, qa_pairs, hypothesis)
+        prediction = aggregate(self.aggregation, self.model, self.params, qa_pairs, hypothesis)
         return self._make_result(sample, qa_pairs, prediction, warnings, no_bridge_generated)
 
-    @staticmethod
     def _make_result(
+        self,
         sample:               dict,
         qa_pairs:             list[dict],
         prediction:           str,
@@ -149,6 +177,7 @@ class BridgeQuestionPipeline:
             "gold_label":           sample["label"],
             "prediction":           prediction,
             "method":               METHOD,
+            "aggregation":          self.aggregation,
             "qa_pairs":             qa_pairs,
             "no_bridge_generated":  no_bridge_generated,
             "warnings":             warnings,
@@ -157,15 +186,21 @@ class BridgeQuestionPipeline:
 
 # ── Public entry point (matches runner contract used by main.py) ──────────────
 
-def run(samples: list[dict], model: str, params: dict = DEFAULT_PARAMS) -> list[dict]:
-    pipeline = BridgeQuestionPipeline(model, params)
+def run(
+    samples: list[dict],
+    model: str,
+    params: dict = DEFAULT_PARAMS,
+    aggregation: str = DEFAULT_AGGREGATION,
+) -> list[dict]:
+    pipeline = BridgeQuestionPipeline(model, params, aggregation=aggregation)
 
     logger.info("=" * 60)
-    logger.info("Experiment : bridge_question")
-    logger.info(f"Model      : {model}")
-    logger.info(f"Temperature: {params.get('temperature')}")
-    logger.info(f"Max tokens : {params.get('max_tokens')}")
-    logger.info(f"Samples    : {len(samples)}")
+    logger.info("Experiment  : bridge_question")
+    logger.info(f"Model       : {model}")
+    logger.info(f"Temperature : {params.get('temperature')}")
+    logger.info(f"Max tokens  : {params.get('max_tokens')}")
+    logger.info(f"Aggregation : {aggregation}")
+    logger.info(f"Samples     : {len(samples)}")
     logger.info("=" * 60)
 
     results = []

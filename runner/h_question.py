@@ -24,29 +24,67 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from config.config import (
     DEFAULT_PARAMS,
     HQuestionsOutput,
+    NLIOutput,
     get_structured_llm,
     logger,
 )
+from prompts.zero_shot import SYSTEM_PROMPT as ZS_SYSTEM, USER_PROMPT as ZS_USER
 from prompts.h_question import (
     H_QUESTION_GEN_SYSTEM_PROMPT,
     H_QUESTION_GEN_USER_PROMPT,
 )
 from prompts.shared_classifier import classify_evidence
+from utils.aggregation import aggregate, AGGREGATION_MODES
 from utils.locator_extractor import locate_and_answer
-from utils.pos_keyphrase import extract_keyphrases
 from utils.premise_indexer import number_sentences
 from utils.retry import call_with_retry
+from utils.seeding import get_seeder, SEEDERS
 
 METHOD = "h_question"
 FALLBACK_LABEL = "Neutral"
+DEFAULT_SEEDER = "pos"
+DEFAULT_AGGREGATION = "aggregated"
 
 
 class HQuestionPipeline:
     """Hypothesis-interrogation NLI pipeline."""
 
-    def __init__(self, model: str, params: dict):
-        self.model  = model
-        self.params = params
+    def __init__(
+        self,
+        model: str,
+        params: dict,
+        seeder_name: str = DEFAULT_SEEDER,
+        aggregation: str = DEFAULT_AGGREGATION,
+    ):
+        if seeder_name not in SEEDERS:
+            raise ValueError(f"Unknown seeder '{seeder_name}'; choose from {sorted(SEEDERS)}")
+        if aggregation not in AGGREGATION_MODES:
+            raise ValueError(f"Unknown aggregation '{aggregation}'; choose from {AGGREGATION_MODES}")
+        self.model       = model
+        self.params      = params
+        self.seeder_name = seeder_name
+        self.aggregation = aggregation
+        self.seeder      = get_seeder(seeder_name, model=model, params=params)
+
+    # ── Zero-shot fallback ────────────────────────────────────────────────────
+
+    def _zero_shot_fallback(self, sample: dict, warnings: list[str]) -> str:
+        """Direct zero-shot NLI on P+H when pipeline stages produce no evidence."""
+        try:
+            messages = [
+                SystemMessage(content=ZS_SYSTEM),
+                HumanMessage(content=ZS_USER.format(
+                    premise=sample["premise"], hypothesis=sample["hypothesis"],
+                )),
+            ]
+            output = call_with_retry(get_structured_llm(self.model, NLIOutput, self.params).invoke, messages)
+            if output is not None:
+                warnings.append(f"Pipeline produced no evidence; zero-shot fallback predicted {output.label}.")
+                return output.label
+        except Exception as exc:
+            logger.warning(f"Zero-shot fallback failed: {exc}")
+        warnings.append("Zero-shot fallback also failed; using Neutral.")
+        return FALLBACK_LABEL
 
     # ── Stage 1 ───────────────────────────────────────────────────────────────
 
@@ -70,24 +108,26 @@ class HQuestionPipeline:
         hypothesis = sample["hypothesis"]
         warnings: list[str] = []
 
-        # Stage 0 — keyphrases (no LLM)
-        kp_result  = extract_keyphrases(hypothesis)
-        keyphrases = kp_result["keyphrases"]
+        # Stage 0 — seed extraction (seeder-specific, no LLM for pos/svo)
+        seeds = self.seeder.seed(hypothesis)
+        if not seeds:
+            seeds = [hypothesis]  # degenerate fallback: treat full H as one seed
 
-        # Stage 1 — generate questions
+        # Stage 1 — generate questions from H + seeds
         q_output = None
         try:
-            q_output = self.stage1_generate_questions(hypothesis, keyphrases)
+            q_output = self.stage1_generate_questions(hypothesis, seeds)
         except Exception as exc:
             logger.warning(f"Stage 1 failed: {exc}")
 
         if q_output is None or not q_output.questions:
-            warnings.append("Stage 1 returned no questions; defaulting to Neutral.")
-            return self._make_result(sample, keyphrases, [], FALLBACK_LABEL, warnings)
+            warnings.append("Stage 1 returned no questions; falling back to zero-shot.")
+            prediction = self._zero_shot_fallback(sample, warnings)
+            return self._make_result(sample, seeds, [], prediction, warnings)
 
         questions = q_output.questions
 
-        # Stage 2 — locate + answer each question, then classify the survivors
+        # Stage 2 — locate + answer each question, then aggregate over survivors
         indexed_sentences, numbered_premise = number_sentences(premise)
         qa_pairs = []
         for question in questions:
@@ -99,44 +139,55 @@ class HQuestionPipeline:
                 qa_pairs.append(result)
 
         if not qa_pairs:
-            warnings.append("All questions unanswerable; defaulting to Neutral.")
-            return self._make_result(sample, keyphrases, qa_pairs, FALLBACK_LABEL, warnings)
+            warnings.append("All questions unanswerable; falling back to zero-shot.")
+            prediction = self._zero_shot_fallback(sample, warnings)
+            return self._make_result(sample, seeds, qa_pairs, prediction, warnings)
 
-        prediction = classify_evidence(self.model, self.params, qa_pairs, hypothesis)
-        return self._make_result(sample, keyphrases, qa_pairs, prediction, warnings)
+        prediction = aggregate(self.aggregation, self.model, self.params, qa_pairs, hypothesis)
+        return self._make_result(sample, seeds, qa_pairs, prediction, warnings)
 
-    @staticmethod
     def _make_result(
-        sample:      dict,
-        keyphrases:  list[str],
-        qa_pairs:    list[dict],
-        prediction:  str,
-        warnings:    list[str],
+        self,
+        sample:    dict,
+        seeds:     list[str],
+        qa_pairs:  list[dict],
+        prediction: str,
+        warnings:  list[str],
     ) -> dict:
         return {
-            "id":         sample.get("id"),
-            "premise":    sample["premise"],
-            "hypothesis": sample["hypothesis"],
-            "gold_label": sample["label"],
-            "prediction": prediction,
-            "qa_pairs":   qa_pairs,
-            "method":     METHOD,
-            "keyphrases": keyphrases,
-            "warnings":   warnings,
+            "id":          sample.get("id"),
+            "premise":     sample["premise"],
+            "hypothesis":  sample["hypothesis"],
+            "gold_label":  sample["label"],
+            "prediction":  prediction,
+            "qa_pairs":    qa_pairs,
+            "method":      METHOD,
+            "seeder":      self.seeder_name,
+            "aggregation": self.aggregation,
+            "seeds":       seeds,
+            "warnings":    warnings,
         }
 
 
 # ── Public entry point (matches runner contract used by main.py) ──────────────
 
-def run(samples: list[dict], model: str, params: dict = DEFAULT_PARAMS) -> list[dict]:
-    pipeline = HQuestionPipeline(model, params)
+def run(
+    samples: list[dict],
+    model: str,
+    params: dict = DEFAULT_PARAMS,
+    seeder_name: str = DEFAULT_SEEDER,
+    aggregation: str = DEFAULT_AGGREGATION,
+) -> list[dict]:
+    pipeline = HQuestionPipeline(model, params, seeder_name=seeder_name, aggregation=aggregation)
 
     logger.info("=" * 60)
-    logger.info("Experiment : h_question")
-    logger.info(f"Model      : {model}")
-    logger.info(f"Temperature: {params.get('temperature')}")
-    logger.info(f"Max tokens : {params.get('max_tokens')}")
-    logger.info(f"Samples    : {len(samples)}")
+    logger.info("Experiment  : h_question")
+    logger.info(f"Model       : {model}")
+    logger.info(f"Temperature : {params.get('temperature')}")
+    logger.info(f"Max tokens  : {params.get('max_tokens')}")
+    logger.info(f"Seeder      : {seeder_name}")
+    logger.info(f"Aggregation : {aggregation}")
+    logger.info(f"Samples     : {len(samples)}")
     logger.info("=" * 60)
 
     results = []
