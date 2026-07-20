@@ -37,6 +37,8 @@ Options:
                     (default: decomposition seeded — freeform is the old baseline)
     --top_k         Stage 1b top-K for p_question (default: 3)
     --diagnose      Also run Neutral-failure diagnosis for p_question (slower)
+    --few_shots     Stage 1 few-shot modes to include: off on (default: both)
+                    'off' = zero-shot prompts, 'on' = 3-shot examples in system prompt
 """
 
 from __future__ import annotations
@@ -202,15 +204,16 @@ def run_few_shot_cot_config(dev_set: list[dict], model: str, params: dict) -> li
 
 
 def run_bridge_question_config(
-    aggregation: str,
+    aggregation: str, few_shot: bool,
     dev_set: list[dict], model: str, params: dict,
 ) -> list[dict]:
-    tag = f"bridge_question | agg={aggregation}"
+    fs_label = "|fs=on" if few_shot else "|fs=off"
+    tag = f"bridge_question | agg={aggregation}{fs_label}"
     print(f"\n{'─' * 70}\n  {tag}\n{'─' * 70}")
     try:
         return bq_runner.run(
             dev_set, model=model, params=params,
-            aggregation=aggregation,
+            aggregation=aggregation, few_shot=few_shot,
         )
     except Exception as exc:
         print(f"  ERROR: {exc}")
@@ -218,15 +221,16 @@ def run_bridge_question_config(
 
 
 def run_h_question_config(
-    seeder: str, aggregation: str,
+    seeder: str, aggregation: str, few_shot: bool,
     dev_set: list[dict], model: str, params: dict,
 ) -> list[dict]:
-    tag = f"h_question | seeder={seeder} | agg={aggregation}"
+    fs_label = "|fs=on" if few_shot else "|fs=off"
+    tag = f"h_question | seeder={seeder} | agg={aggregation}{fs_label}"
     print(f"\n{'─' * 70}\n  {tag}\n{'─' * 70}")
     try:
         return hq_runner.run(
             dev_set, model=model, params=params,
-            seeder_name=seeder, aggregation=aggregation,
+            seeder_name=seeder, aggregation=aggregation, few_shot=few_shot,
         )
     except Exception as exc:
         print(f"  ERROR: {exc}")
@@ -234,12 +238,13 @@ def run_h_question_config(
 
 
 def run_p_question_config(
-    generation: str, seeder: str, aggregation: str,
+    generation: str, seeder: str, aggregation: str, few_shot: bool,
     dev_set: list[dict], model: str, params: dict,
     top_k: int,
 ) -> list[dict]:
     seeder_label = f"|seeder={seeder}" if generation == "seeded" else ""
-    tag = f"p_question | gen={generation}{seeder_label} | agg={aggregation}"
+    fs_label = "|fs=on" if few_shot else "|fs=off"
+    tag = f"p_question | gen={generation}{seeder_label} | agg={aggregation}{fs_label}"
     print(f"\n{'─' * 70}\n  {tag}\n{'─' * 70}")
     try:
         return pq_runner.run(
@@ -248,6 +253,7 @@ def run_p_question_config(
             seeder_name=seeder if generation == "seeded" else "pos",
             aggregation=aggregation,
             top_k=top_k,
+            few_shot=few_shot,
         )
     except Exception as exc:
         print(f"  ERROR: {exc}")
@@ -274,6 +280,9 @@ def main() -> None:
     parser.add_argument("--top_k",        type=int, default=3)
     parser.add_argument("--diagnose",     action="store_true",
                         help="Run Neutral-failure diagnosis for p_question (slower)")
+    parser.add_argument("--few_shots",    nargs="+", default=["off", "on"],
+                        choices=["off", "on"],
+                        help="Stage 1 few-shot modes: off=zero-shot prompts, on=3-shot examples")
     args = parser.parse_args()
 
     params = dict(DEFAULT_PARAMS)
@@ -288,6 +297,7 @@ def main() -> None:
     print(f"  Seeders     : {args.seeders}")
     print(f"  Aggregations: {args.aggregations}")
     print(f"  Generations : {args.generations}  (p_question only; bridge_question has no seeder)")
+    print(f"  Few-shots   : {args.few_shots}  (Stage 1 prompt mode; off=zero-shot, on=3-shot)")
     print(f"{'=' * 70}")
 
     dev_set = pick_dev_set(args.n, args.split)
@@ -314,18 +324,24 @@ def main() -> None:
     if "few_shot_cot" in args.methods:
         _run_config("few_shot_cot", run_few_shot_cot_config, dev_set, args.model, params)
 
+    few_shot_flags = [fs == "on" for fs in args.few_shots]
+
     # ── bridge_question configs ───────────────────────────────────────────────
     if "bridge_question" in args.methods:
         for agg in args.aggregations:
-            tag = f"bridge_question | agg={agg}"
-            _run_config(tag, run_bridge_question_config, agg, dev_set, args.model, params)
+            for few_shot in few_shot_flags:
+                fs_label = "|fs=on" if few_shot else "|fs=off"
+                tag = f"bridge_question | agg={agg}{fs_label}"
+                _run_config(tag, run_bridge_question_config, agg, few_shot, dev_set, args.model, params)
 
     # ── h_question configs ────────────────────────────────────────────────────
     if "h_question" in args.methods:
         for seeder in args.seeders:
             for agg in args.aggregations:
-                tag = f"h_question | seeder={seeder} | agg={agg}"
-                _run_config(tag, run_h_question_config, seeder, agg, dev_set, args.model, params)
+                for few_shot in few_shot_flags:
+                    fs_label = "|fs=on" if few_shot else "|fs=off"
+                    tag = f"h_question | seeder={seeder} | agg={agg}{fs_label}"
+                    _run_config(tag, run_h_question_config, seeder, agg, few_shot, dev_set, args.model, params)
 
     # ── p_question configs ────────────────────────────────────────────────────
     if "p_question" in args.methods:
@@ -337,13 +353,15 @@ def main() -> None:
 
             for seeder in seeder_list:
                 for agg in args.aggregations:
-                    seeder_label = f"|seeder={seeder}" if generation == "seeded" else ""
-                    tag = f"p_question | gen={generation}{seeder_label} | agg={agg}"
-                    _run_config(
-                        tag, run_p_question_config,
-                        generation, seeder, agg,
-                        dev_set, args.model, params, args.top_k,
-                    )
+                    for few_shot in few_shot_flags:
+                        seeder_label = f"|seeder={seeder}" if generation == "seeded" else ""
+                        fs_label = "|fs=on" if few_shot else "|fs=off"
+                        tag = f"p_question | gen={generation}{seeder_label} | agg={agg}{fs_label}"
+                        _run_config(
+                            tag, run_p_question_config,
+                            generation, seeder, agg, few_shot,
+                            dev_set, args.model, params, args.top_k,
+                        )
 
     # ── Final summary ─────────────────────────────────────────────────────────
     if all_rows:

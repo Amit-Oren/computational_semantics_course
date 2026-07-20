@@ -1,0 +1,302 @@
+[
+  {
+    "id": "id_0",
+    "prediction": "Entailment",
+    "explanation": "The premise discusses using government subsidies to make renewable energy a price-achievable alternative to expensive fossil fuels, which directly supports the hypothesis that subsidies could lower its cost.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_1",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that renewable energy sources tend to be more expensive than their fossil-fuel counterparts, which directly supports the hypothesis that fossil fuels are currently cheaper.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_10",
+    "prediction": "Contradiction",
+    "explanation": "The premise explicitly states that Young's skill as a physician did not equal his skill as a scholar of natural philosophy or linguistics, directly contradicting the hypothesis that his medical talent surpassed his other skills.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_100",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses the historical evolution of medicine and mentions both ancient and modern treatments, but it does not provide enough information to determine whether medicine's success is owed to modern treatments.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_101",
+    "prediction": "Contradiction",
+    "explanation": "The premise explicitly contrasts traditional medicine's focus on curing illness with modern medicine's equal concern for prevention, directly contradicting the hypothesis.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_102",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses the corporate clothing industry and its business operations but provides no information regarding clothing companies planning to offer financial services.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_103",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses the marketing role of uniforms and mentions image consultants, but does not provide enough information to confirm or deny whether marketing consultants are the best selectors.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_104",
+    "prediction": "Contradiction",
+    "explanation": "The premise states that only 22 out of 1000 companies account for 85% of total sales, which directly contradicts the claim that most businesses in this market are successful.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_105",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses how uniforms convey subliminal messages and influence customer perceptions, but it does not provide information about whether being \"too smart\" specifically has a negative impact on customers.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_106",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses the evolving purposes and marketing roles of uniforms but provides no information regarding the quality or care of their manufacturing over time.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_107",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that uniforms are increasingly used for 'uniting the workforce into a homogeneous unit,' which directly supports the hypothesis that they make employees feel part of a team.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_108",
+    "prediction": "Entailment",
+    "explanation": "The premise describes the complex and subtle process of using uniforms for marketing, noting it is a 'fraught process' that requires balancing staff comfort with brand image and significant investment to get right, which directly supports the hypothesis that it requires great care.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_109",
+    "prediction": "Neutral",
+    "explanation": "The premise only mentions the occurrence of traffic jams during the monsoon without specifying their cause, so the hypothesis introduces new information that is neither confirmed nor contradicted.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_11",
+    "prediction": "Contradiction",
+    "explanation": "The premise explicitly describes Young as a child prodigy who excelled academically from a very young age, directly contradicting the hypothesis that he was not brilliant when growing up.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_110",
+    "prediction": "Neutral",
+    "explanation": "The premise only notes the occurrence of traffic jams during the monsoon without specifying their cause, so the hypothesis about increased vehicle numbers may or may not be true.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_111",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that the vast majority of respondents opposed the extension, which directly supports the hypothesis that it may face continued public opposition.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_112",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly describes Kensington and Chelsea as a 'thickly populated area of London,' which directly supports the hypothesis that it has a high residential population.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_113",
+    "prediction": "Neutral",
+    "explanation": "The premise only states the respondents' opposition to the charge extension and provides no information about their feelings toward the reduced traffic and congestion, so the hypothesis may or may not be true.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_114",
+    "prediction": "Entailment",
+    "explanation": "The premise states that the charge is being extended to Kensington and Chelsea, which logically implies that the charge does not currently apply to residents of those areas.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_115",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that the training facilities include ten commercial training kitchens, which directly confirms the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_116",
+    "prediction": "Contradiction",
+    "explanation": "The premise explicitly states that 'some' students stay in International House, which directly contradicts the hypothesis claiming that 'all' students live there.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_117",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that the villa-style units in International House accommodate four students who share the space, directly supporting the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_118",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that International House is used to enhance on-campus training, with students performing assigned duties there, which directly supports the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_119",
+    "prediction": "Neutral",
+    "explanation": "The premise states where meals are served but does not provide any information about who prepares them, so the hypothesis cannot be confirmed or denied.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_12",
+    "prediction": "Neutral",
+    "explanation": "The premise states that garbage is present alongside the threat of epidemics but does not provide enough information to confirm that garbage is the primary cause or major concern of the outbreaks.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_120",
+    "prediction": "Neutral",
+    "explanation": "The premise discusses reductions in saturated fats in bakery products and snacks but provides no information regarding processed meats, so the hypothesis cannot be verified or falsified based on the given text.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_121",
+    "prediction": "Entailment",
+    "explanation": "The premise states that trans fat intake in the UK has fallen over the last decade and describes ongoing manufacturer reforms, which supports the hypothesis that the downward trend is continuing.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_122",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly identifies avoiding the exchange of trans fatty acids for other harmful fats like saturated fatty acids as a 'major technical challenge,' which directly supports the claim that finding a safe substitute is difficult.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_123",
+    "prediction": "Neutral",
+    "explanation": "The premise only states that trans fats occur naturally in small amounts in foods from ruminant animals like beef and lamb, but does not provide enough information to confirm or deny their presence in all types of meat.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_124",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that the intake of trans fatty acids in some sectors of the population is known to be higher than the recommended limit, directly supporting the hypothesis that some people are still consuming more than experts consider safe.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_125",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that the public health implications of consuming trans fatty acids from ruminant (animal) products are considered relatively limited, which directly supports the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_126",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that adverse health effects from trans fatty acids have been observed even at very low intakes, directly supporting the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_127",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that planting nontransgenic border rows provides a refuge for susceptible insects, allowing Bt susceptibility to remain in the population, which directly supports the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_128",
+    "prediction": "Entailment",
+    "explanation": "The hypothesis directly paraphrases the premise's explanation that Bt plants express toxin in all tissues throughout the season, killing susceptible insects and leaving only resistant ones to survive and reproduce.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_129",
+    "prediction": "Contradiction",
+    "explanation": "The premise explicitly states that while regular Bt pesticides have not yet caused insect resistance, the continuous expression of the toxin in transgenic plants will inevitably lead to resistant insect populations, directly refuting the hypothesis's claim that Bt plants are probably safe.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_13",
+    "prediction": "Neutral",
+    "explanation": "The premise describes the current situation regarding receding water and garbage-related health risks, but does not provide any information about future planning for heavy rains.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_130",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that evolution will occur when transgenic plants are grown on a large scale, specifically noting the development of insect populations resistant to Bt toxin, which directly supports the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_131",
+    "prediction": "Neutral",
+    "explanation": "The premise suggests a potential increase in translations of women's books due to new publishing initiatives, but it does not definitively confirm that many more will actually be translated in the future.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_132",
+    "prediction": "Entailment",
+    "explanation": "The premise states that fewer than 100 female-authored translations represent about 26% of all English translations in the UK, which mathematically implies the total number of English-translated books is under 400, thereby entailing the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_133",
+    "prediction": "Neutral",
+    "explanation": "The premise only states that the gender balance is roughly equal among translators of a specific subgroup, but does not provide information about the overall proportion of female translators in the UK.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_134",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly states that the beginning of the 21st century brought new designers, models, and sensible designs, directly supporting the claim that key elements of the industry changed.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_135",
+    "prediction": "Neutral",
+    "explanation": "The premise states India is the third largest producer of cotton but does not provide any information regarding the proportion of cotton that is exported, so the hypothesis may be true or false.",
+    "gold_label": "Neutral"
+  },
+  {
+    "id": "id_136",
+    "prediction": "Contradiction",
+    "explanation": "The premise explicitly states that the high quality of Chapa's raw silks belies its 'crude production methods and equipment,' directly contradicting the hypothesis that modern machinery is responsible for the quality.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_137",
+    "prediction": "Entailment",
+    "explanation": "The premise indicates that internationally popular Indian fabrics and designs, such as silks produced with crude methods in a small town and the Madras check originally used for a simple lungi, originated from modest, everyday sources.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_138",
+    "prediction": "Entailment",
+    "explanation": "The premise explicitly highlights India's fundamental advantages in the garment and fabric industries, such as a skilled workforce, cost-effective production, and abundant raw materials, which directly supports the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_139",
+    "prediction": "Contradiction",
+    "explanation": "The premise states that changes in the exchange rate attracted more buyers by depressing prices, indicating a positive market impact, which directly contradicts the hypothesis that exports suffered from these changes.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_14",
+    "prediction": "Neutral",
+    "explanation": "The premise describes the current conditions in Chennai but does not mention or provide any information regarding the underlying cause of the floods, such as the drainage system.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_140",
+    "prediction": "Neutral",
+    "explanation": "The premise only provides a definition of trespassing and does not contain information to evaluate or rank specific scenarios as the \"best example\" of it.",
+    "gold_label": "Contradiction"
+  },
+  {
+    "id": "id_141",
+    "prediction": "Neutral",
+    "explanation": "The premise provides a definition of trespassing but does not contain information about the specific scenario described in the hypothesis.",
+    "gold_label": "Entailment"
+  },
+  {
+    "id": "id_142",
+    "prediction": "Contradiction",
+    "explanation": "The premise defines trespassing as entering a building without permission, but the hypothesis describes a scenario where Alonzo is the host with implied permission, directly contradicting the definition.",
+    "gold_label": "Contradiction"
+  }
+]

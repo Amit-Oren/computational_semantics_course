@@ -72,11 +72,13 @@ def locate_and_answer(
             raise ValueError("Provide either `premise` or `indexed_sentences` + `numbered_premise`.")
         indexed_sentences, numbered_premise = number_sentences(premise)
 
-    located_indices: list[int] = []
+    located_indices:   list[int] = []
+    locate_reasoning:  str       = ""
     try:
         loc = _locate(model, params, numbered_premise, question)
         if loc and loc.indices:
-            located_indices = loc.indices[:5]
+            located_indices  = loc.indices[:5]
+            locate_reasoning = loc.reasoning
     except Exception as exc:
         logger.warning(f"Locator failed for '{question[:60]}': {exc}")
 
@@ -88,16 +90,17 @@ def locate_and_answer(
         try:
             ans = _extract_answer(model, params, question, extracted)
             if ans:
-                answer = ans.answer
+                answer     = ans.answer
                 answerable = ans.answerable
         except Exception as exc:
             logger.warning(f"Answer extractor failed for '{question[:60]}': {exc}")
 
     return {
-        "question":        question,
-        "answer":          answer,
-        "answerable":      answerable,
-        "located_indices": located_indices,
+        "question":         question,
+        "answer":           answer,
+        "answerable":       answerable,
+        "located_indices":  located_indices,
+        "locate_reasoning": locate_reasoning,
     }
 
 

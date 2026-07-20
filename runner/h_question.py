@@ -31,6 +31,7 @@ from config.config import (
 from prompts.zero_shot import SYSTEM_PROMPT as ZS_SYSTEM, USER_PROMPT as ZS_USER
 from prompts.h_question import (
     H_QUESTION_GEN_SYSTEM_PROMPT,
+    H_QUESTION_GEN_FEW_SHOT_SYSTEM_PROMPT,
     H_QUESTION_GEN_USER_PROMPT,
 )
 from prompts.shared_classifier import classify_evidence
@@ -55,6 +56,7 @@ class HQuestionPipeline:
         params: dict,
         seeder_name: str = DEFAULT_SEEDER,
         aggregation: str = DEFAULT_AGGREGATION,
+        few_shot: bool = False,
     ):
         if seeder_name not in SEEDERS:
             raise ValueError(f"Unknown seeder '{seeder_name}'; choose from {sorted(SEEDERS)}")
@@ -64,6 +66,7 @@ class HQuestionPipeline:
         self.params      = params
         self.seeder_name = seeder_name
         self.aggregation = aggregation
+        self.few_shot    = few_shot
         self.seeder      = get_seeder(seeder_name, model=model, params=params)
 
     # ── Zero-shot fallback ────────────────────────────────────────────────────
@@ -92,8 +95,12 @@ class HQuestionPipeline:
         self, hypothesis: str, keyphrases: list[str]
     ) -> HQuestionsOutput | None:
         kp_str = ", ".join(keyphrases) if keyphrases else hypothesis
+        system_prompt = (
+            H_QUESTION_GEN_FEW_SHOT_SYSTEM_PROMPT if self.few_shot
+            else H_QUESTION_GEN_SYSTEM_PROMPT
+        )
         messages = [
-            SystemMessage(content=H_QUESTION_GEN_SYSTEM_PROMPT),
+            SystemMessage(content=system_prompt),
             HumanMessage(content=H_QUESTION_GEN_USER_PROMPT.format(
                 hypothesis=hypothesis, keyphrases=kp_str,
             )),
@@ -123,7 +130,7 @@ class HQuestionPipeline:
         if q_output is None or not q_output.questions:
             warnings.append("Stage 1 returned no questions; falling back to zero-shot.")
             prediction = self._zero_shot_fallback(sample, warnings)
-            return self._make_result(sample, seeds, [], prediction, warnings)
+            return self._make_result(sample, seeds, [], prediction, "", warnings)
 
         questions = q_output.questions
 
@@ -141,31 +148,34 @@ class HQuestionPipeline:
         if not qa_pairs:
             warnings.append("All questions unanswerable; falling back to zero-shot.")
             prediction = self._zero_shot_fallback(sample, warnings)
-            return self._make_result(sample, seeds, qa_pairs, prediction, warnings)
+            return self._make_result(sample, seeds, qa_pairs, prediction, "", warnings)
 
-        prediction = aggregate(self.aggregation, self.model, self.params, qa_pairs, hypothesis)
-        return self._make_result(sample, seeds, qa_pairs, prediction, warnings)
+        prediction, pred_reasoning = aggregate(self.aggregation, self.model, self.params, qa_pairs, hypothesis)
+        return self._make_result(sample, seeds, qa_pairs, prediction, pred_reasoning, warnings)
 
     def _make_result(
         self,
-        sample:    dict,
-        seeds:     list[str],
-        qa_pairs:  list[dict],
-        prediction: str,
-        warnings:  list[str],
+        sample:         dict,
+        seeds:          list[str],
+        qa_pairs:       list[dict],
+        prediction:     str,
+        pred_reasoning: str,
+        warnings:       list[str],
     ) -> dict:
         return {
-            "id":          sample.get("id"),
-            "premise":     sample["premise"],
-            "hypothesis":  sample["hypothesis"],
-            "gold_label":  sample["label"],
-            "prediction":  prediction,
-            "qa_pairs":    qa_pairs,
-            "method":      METHOD,
-            "seeder":      self.seeder_name,
-            "aggregation": self.aggregation,
-            "seeds":       seeds,
-            "warnings":    warnings,
+            "id":                 sample.get("id"),
+            "premise":            sample["premise"],
+            "hypothesis":         sample["hypothesis"],
+            "gold_label":         sample["label"],
+            "prediction":         prediction,
+            "prediction_reasoning": pred_reasoning,
+            "qa_pairs":           qa_pairs,
+            "method":             METHOD,
+            "seeder":             self.seeder_name,
+            "aggregation":        self.aggregation,
+            "few_shot":           self.few_shot,
+            "seeds":              seeds,
+            "warnings":           warnings,
         }
 
 
@@ -177,8 +187,9 @@ def run(
     params: dict = DEFAULT_PARAMS,
     seeder_name: str = DEFAULT_SEEDER,
     aggregation: str = DEFAULT_AGGREGATION,
+    few_shot: bool = False,
 ) -> list[dict]:
-    pipeline = HQuestionPipeline(model, params, seeder_name=seeder_name, aggregation=aggregation)
+    pipeline = HQuestionPipeline(model, params, seeder_name=seeder_name, aggregation=aggregation, few_shot=few_shot)
 
     logger.info("=" * 60)
     logger.info("Experiment  : h_question")
@@ -187,6 +198,7 @@ def run(
     logger.info(f"Max tokens  : {params.get('max_tokens')}")
     logger.info(f"Seeder      : {seeder_name}")
     logger.info(f"Aggregation : {aggregation}")
+    logger.info(f"Few-shot    : {few_shot}")
     logger.info(f"Samples     : {len(samples)}")
     logger.info("=" * 60)
 

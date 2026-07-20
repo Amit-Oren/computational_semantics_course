@@ -60,7 +60,7 @@ Apply these rules in strict priority order:
    unless the evidence itself covers the full scope claimed.
 
 Output format — JSON only, no extra text:
-{"label": "Entailment|Contradiction|Neutral"}\
+{"label": "Entailment|Contradiction|Neutral", "reasoning": "one sentence explaining the decision"}\
 """
 
 CLASSIFIER_USER_PROMPT = """\
@@ -88,7 +88,11 @@ def build_raw_evidence_block(sentences: list[str]) -> str:
     return "\n".join(f"- {s}" for s in sentences)
 
 
-def _classify(model: str, params: dict, evidence_block: str, hypothesis: str) -> str:
+def _classify(model: str, params: dict, evidence_block: str, hypothesis: str) -> ClassifyOutput:
+    """Call the classifier and return the full ClassifyOutput (label + reasoning).
+
+    Returns a fallback ClassifyOutput(label=FALLBACK_LABEL) on failure.
+    """
     messages = [
         SystemMessage(content=CLASSIFIER_SYSTEM_PROMPT),
         HumanMessage(content=CLASSIFIER_USER_PROMPT.format(
@@ -100,27 +104,32 @@ def _classify(model: str, params: dict, evidence_block: str, hypothesis: str) ->
         out = call_with_retry(llm.invoke, messages)
     except Exception as exc:
         logger.warning(f"classifier call failed: {exc}")
-        return FALLBACK_LABEL
-    return out.label if out else FALLBACK_LABEL
+        return ClassifyOutput(label=FALLBACK_LABEL, reasoning="classifier call failed")
+    return out if out else ClassifyOutput(label=FALLBACK_LABEL, reasoning="classifier returned None")
 
 
-def classify_evidence(model: str, params: dict, qa_pairs: list[dict], hypothesis: str) -> str:
-    """Classify hypothesis against collected (question, answer) evidence pairs.
+def classify_evidence(
+    model: str, params: dict, qa_pairs: list[dict], hypothesis: str
+) -> tuple[str, str]:
+    """Classify hypothesis against (question, answer) evidence pairs.
 
-    `qa_pairs` must already be filtered to answerable pairs only. Returns
-    "Neutral" directly (no LLM call) when qa_pairs is empty.
+    Returns (label, reasoning). qa_pairs must already be filtered to answerable pairs.
+    Returns (FALLBACK_LABEL, "") directly (no LLM call) when qa_pairs is empty.
     """
     if not qa_pairs:
-        return FALLBACK_LABEL
-    return _classify(model, params, build_evidence_block(qa_pairs), hypothesis)
+        return FALLBACK_LABEL, ""
+    out = _classify(model, params, build_evidence_block(qa_pairs), hypothesis)
+    return out.label, out.reasoning
 
 
-def classify_raw_evidence(model: str, params: dict, sentences: list[str], hypothesis: str) -> str:
-    """Classify hypothesis against raw located premise sentences (no
-    question/answer framing — no question was generated for this method).
+def classify_raw_evidence(
+    model: str, params: dict, sentences: list[str], hypothesis: str
+) -> tuple[str, str]:
+    """Classify hypothesis against raw located premise sentences.
 
-    Returns "Neutral" directly (no LLM call) when sentences is empty.
+    Returns (label, reasoning). Returns (FALLBACK_LABEL, "") when sentences is empty.
     """
     if not sentences:
-        return FALLBACK_LABEL
-    return _classify(model, params, build_raw_evidence_block(sentences), hypothesis)
+        return FALLBACK_LABEL, ""
+    out = _classify(model, params, build_raw_evidence_block(sentences), hypothesis)
+    return out.label, out.reasoning

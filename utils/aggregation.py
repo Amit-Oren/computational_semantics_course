@@ -19,7 +19,7 @@ the classifier prompt, schema, and evidence format are shared:
                    Ties broken by priority: Contradiction > Entailment > Neutral.
 
 Public entry point:
-    label = aggregate(mode, model, params, qa_pairs, hypothesis)
+    label, reasoning = aggregate(mode, model, params, qa_pairs, hypothesis)
 """
 
 from __future__ import annotations
@@ -83,14 +83,16 @@ Given this new evidence, what is the updated verdict?\
 
 def _sequential_cot(
     model: str, params: dict, qa_pairs: list[dict], hypothesis: str
-) -> str:
+) -> tuple[str, str]:
     """Run classifier step-by-step, passing running verdict forward.
 
-    Returns the final label after all Q/A pairs are processed.
-    Falls back to FALLBACK_LABEL if all LLM calls fail.
+    Annotates each qa_pair with 'cot_label' and 'cot_reasoning' in place.
+    Returns (final_label, reasoning_of_last_step).
+    Falls back to (FALLBACK_LABEL, "") if all LLM calls fail.
     """
     llm = get_structured_llm(model, _StepOutput, params)
     running_verdict = "None yet"
+    last_reasoning = ""
     total = len(qa_pairs)
 
     for step, pair in enumerate(qa_pairs, start=1):
@@ -109,43 +111,59 @@ def _sequential_cot(
             out: _StepOutput | None = call_with_retry(llm.invoke, messages)
         except Exception as exc:
             logger.warning(f"sequential_cot step {step} failed: {exc}")
+            pair["cot_label"] = running_verdict
+            pair["cot_reasoning"] = f"step failed: {exc}"
             continue
 
         if out is None:
+            pair["cot_label"] = running_verdict
+            pair["cot_reasoning"] = "step returned None"
             continue
 
         label = out.label.strip()
         if label not in ("Entailment", "Contradiction", "Neutral"):
             logger.warning(f"sequential_cot step {step}: unexpected label '{label}', keeping {running_verdict}")
+            pair["cot_label"] = running_verdict
+            pair["cot_reasoning"] = f"unexpected label '{label}'"
             continue
 
         logger.debug(f"sequential_cot step {step}/{total}: {label} — {out.reasoning}")
+        pair["cot_label"] = label
+        pair["cot_reasoning"] = out.reasoning
         running_verdict = label
+        last_reasoning = out.reasoning
 
-    return running_verdict if running_verdict != "None yet" else FALLBACK_LABEL
+    final = running_verdict if running_verdict != "None yet" else FALLBACK_LABEL
+    return final, last_reasoning
 
 
 def _voting(
     model: str, params: dict, qa_pairs: list[dict], hypothesis: str
-) -> str:
+) -> tuple[str, str]:
     """Run one classifier call per Q/A pair, return majority label.
 
-    Ties are broken by LABEL_PRIORITY: Contradiction > Entailment > Neutral.
+    Annotates each qa_pair with 'vote_label' and 'vote_reasoning' in place.
+    Ties broken by LABEL_PRIORITY: Contradiction > Entailment > Neutral.
+    Returns (majority_label, summary_of_votes).
     """
     votes: list[str] = []
     for pair in qa_pairs:
         evidence_block = f"Q: {pair['question']}\nA: {pair['answer']}"
-        label = _classify(model, params, evidence_block, hypothesis)
-        votes.append(label)
-        logger.debug(f"voting — '{pair['question'][:60]}…' → {label}")
+        out = _classify(model, params, evidence_block, hypothesis)
+        pair["vote_label"]     = out.label
+        pair["vote_reasoning"] = out.reasoning
+        votes.append(out.label)
+        logger.debug(f"voting — '{pair['question'][:60]}…' → {out.label}: {out.reasoning}")
 
     if not votes:
-        return FALLBACK_LABEL
+        return FALLBACK_LABEL, ""
 
     counts = Counter(votes)
     max_count = max(counts.values())
     winners = [lbl for lbl in LABEL_PRIORITY if counts.get(lbl, 0) == max_count]
-    return winners[0]
+    winner = winners[0]
+    summary = ", ".join(f"{lbl}×{counts.get(lbl,0)}" for lbl in LABEL_PRIORITY if counts.get(lbl, 0))
+    return winner, f"votes: {summary}"
 
 
 # ── Public entry point ────────────────────────────────────────────────────────
@@ -156,21 +174,23 @@ def aggregate(
     params: dict,
     qa_pairs: list[dict],
     hypothesis: str,
-) -> str:
+) -> tuple[str, str]:
     """Classify hypothesis against Q/A evidence using the specified aggregation mode.
 
     Args:
         mode: one of "aggregated", "sequential_cot", "voting"
         model: LLM model name
         params: LLM params dict (temperature, max_tokens, …)
-        qa_pairs: answerable Q/A pairs from locate_and_answer
+        qa_pairs: answerable Q/A pairs from locate_and_answer (mutated in place
+                  for voting/sequential_cot to add per-pair vote/cot fields)
         hypothesis: the NLI hypothesis string
 
     Returns:
-        label string: "Entailment", "Contradiction", or "Neutral"
+        (label, reasoning): label is "Entailment"/"Contradiction"/"Neutral",
+        reasoning is a one-sentence explanation of the decision.
     """
     if not qa_pairs:
-        return FALLBACK_LABEL
+        return FALLBACK_LABEL, ""
 
     if mode == "aggregated":
         return classify_evidence(model, params, qa_pairs, hypothesis)

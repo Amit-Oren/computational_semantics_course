@@ -58,10 +58,12 @@ from config.config import (
 )
 from prompts.p_question import (
     P_QUESTION_SYSTEM_PROMPT,
+    P_QUESTION_FEW_SHOT_SYSTEM_PROMPT,
     P_QUESTION_USER_PROMPT,
     P_QUESTION_FREEFORM_SYSTEM_PROMPT,
     P_QUESTION_FREEFORM_USER_PROMPT,
     P_QUESTION_SEEDED_SYSTEM_PROMPT,
+    P_QUESTION_SEEDED_FEW_SHOT_SYSTEM_PROMPT,
     P_QUESTION_SEEDED_USER_PROMPT,
 )
 from prompts.zero_shot import SYSTEM_PROMPT as ZS_SYSTEM, USER_PROMPT as ZS_USER
@@ -96,6 +98,7 @@ class PQuestionPipeline:
         max_questions: int = P_QUESTION_MAX_QUESTIONS,
         seeder_name: str = "pos",
         aggregation: str = DEFAULT_AGGREGATION,
+        few_shot: bool = False,
     ):
         if generation not in GENERATION_MODES:
             raise ValueError(f"Unknown generation mode '{generation}'; choose from {GENERATION_MODES}")
@@ -113,6 +116,7 @@ class PQuestionPipeline:
         self.max_questions = max_questions
         self.seeder_name   = seeder_name
         self.aggregation   = aggregation
+        self.few_shot      = few_shot
         self.seeder        = get_seeder(seeder_name, model=model, params=params) if generation == "seeded" else None
 
     # ── NER coverage (additive, purely metric-based) ──────────────────────────
@@ -195,8 +199,12 @@ class PQuestionPipeline:
                 return [{"q": q, "type": "fact"} for q in out.questions]
 
             seeds_str = "\n".join(f"- {s}" for s in seeds)
+            seeded_sys = (
+                P_QUESTION_SEEDED_FEW_SHOT_SYSTEM_PROMPT if self.few_shot
+                else P_QUESTION_SEEDED_SYSTEM_PROMPT
+            )
             messages = [
-                SystemMessage(content=P_QUESTION_SEEDED_SYSTEM_PROMPT),
+                SystemMessage(content=seeded_sys),
                 HumanMessage(content=P_QUESTION_SEEDED_USER_PROMPT.format(
                     premise=premise, seeds=seeds_str,
                 )),
@@ -208,8 +216,9 @@ class PQuestionPipeline:
             return [{"q": q, "type": "fact"} for q in out.questions]
 
         # decomposition (default)
+        decomp_sys = P_QUESTION_FEW_SHOT_SYSTEM_PROMPT if self.few_shot else P_QUESTION_SYSTEM_PROMPT
         messages = [
-            SystemMessage(content=P_QUESTION_SYSTEM_PROMPT),
+            SystemMessage(content=decomp_sys),
             HumanMessage(content=P_QUESTION_USER_PROMPT.format(premise=premise)),
         ]
         llm = get_structured_llm(self.model, PQuestionListOutput, self.params)
@@ -286,7 +295,7 @@ class PQuestionPipeline:
         if not decomposed:
             warnings.append("Stage 1a returned no questions; falling back to zero-shot.")
             prediction = self._zero_shot_fallback(sample, warnings)
-            return self._make_result(sample, [], [], [], prediction, warnings, 0, 0)
+            return self._make_result(sample, [], [], prediction, "", warnings, 0, 0)
 
         ner_questions = self._ner_coverage_questions(premise, [d["q"] for d in decomposed])
         if ner_questions:
@@ -306,12 +315,10 @@ class PQuestionPipeline:
         n_fact     = sum(1 for d in decomposed if d["type"] == "fact")
         n_relation = sum(1 for d in decomposed if d["type"] == "relation")
 
-        # Stage 1b — swappable scorer + selection mode
-        selected = self.stage1b_select_questions(questions, hypothesis)
-        for item in selected:
-            item["type"] = type_map.get(item["question"], "fact")
+        # Stage 1b removed — all generated questions go directly to locate_and_answer
+        selected = [{"question": q, "type": type_map.get(q, "fact")} for q in questions]
 
-        # Stage 1c — shared locate_and_answer per selected question
+        # Stage 1c — shared locate_and_answer per question
         indexed_sentences, numbered_premise = number_sentences(premise)
         qa_pairs = []
         for item in selected:
@@ -319,52 +326,50 @@ class PQuestionPipeline:
                 self.model, self.params, item["question"],
                 indexed_sentences=indexed_sentences, numbered_premise=numbered_premise,
             )
-            result["relevance"] = item["relevance"]
-            result["type"]      = item["type"]
+            result["type"] = item["type"]
             if result["answerable"]:
                 qa_pairs.append(result)
 
         # Stage 2 — aggregate over surviving Q/A pairs
+        pred_reasoning = ""
         if not qa_pairs:
             warnings.append("All questions unanswerable; falling back to zero-shot.")
             prediction = self._zero_shot_fallback(sample, warnings)
         else:
-            prediction = aggregate(self.aggregation, self.model, self.params, qa_pairs, hypothesis)
+            prediction, pred_reasoning = aggregate(self.aggregation, self.model, self.params, qa_pairs, hypothesis)
 
         return self._make_result(
-            sample, decomposed, selected, qa_pairs, prediction, warnings, n_fact, n_relation,
+            sample, decomposed, qa_pairs, prediction, pred_reasoning, warnings, n_fact, n_relation,
         )
 
     def _make_result(
         self,
-        sample:        dict,
-        all_questions: list[dict],
-        selected:      list[dict],
-        qa_pairs:      list[dict],
-        prediction:    str,
-        warnings:      list[str],
-        n_fact:        int,
-        n_relation:    int,
+        sample:         dict,
+        all_questions:  list[dict],
+        qa_pairs:       list[dict],
+        prediction:     str,
+        pred_reasoning: str,
+        warnings:       list[str],
+        n_fact:         int,
+        n_relation:     int,
     ) -> dict:
         return {
-            "id":            sample.get("id"),
-            "premise":       sample["premise"],
-            "hypothesis":    sample["hypothesis"],
-            "gold_label":    sample["label"],
-            "prediction":    prediction,
-            "qa_pairs":      qa_pairs,
-            "method":        METHOD,
-            "generation":    self.generation,
-            "seeder":        self.seeder_name,
-            "aggregation":   self.aggregation,
-            "selector":      self.selector,
-            "selection":     self.selection,
-            "mmr_lambda":    self.mmr_lambda,
-            "all_questions": all_questions,
-            "n_fact":        n_fact,
-            "n_relation":    n_relation,
-            "selected":      selected,
-            "warnings":      warnings,
+            "id":                   sample.get("id"),
+            "premise":              sample["premise"],
+            "hypothesis":           sample["hypothesis"],
+            "gold_label":           sample["label"],
+            "prediction":           prediction,
+            "prediction_reasoning": pred_reasoning,
+            "qa_pairs":             qa_pairs,
+            "method":               METHOD,
+            "generation":           self.generation,
+            "seeder":               self.seeder_name,
+            "aggregation":          self.aggregation,
+            "few_shot":             self.few_shot,
+            "all_questions":        all_questions,
+            "n_fact":               n_fact,
+            "n_relation":           n_relation,
+            "warnings":             warnings,
         }
 
 
@@ -382,11 +387,12 @@ def run(
     max_questions: int = P_QUESTION_MAX_QUESTIONS,
     seeder_name: str = "pos",
     aggregation: str = DEFAULT_AGGREGATION,
+    few_shot: bool = False,
 ) -> list[dict]:
     pipeline = PQuestionPipeline(
         model, params, generation=generation, selector=selector, selection=selection,
         top_k=top_k, mmr_lambda=mmr_lambda, max_questions=max_questions,
-        seeder_name=seeder_name, aggregation=aggregation,
+        seeder_name=seeder_name, aggregation=aggregation, few_shot=few_shot,
     )
 
     logger.info("=" * 60)
@@ -398,6 +404,7 @@ def run(
     if pipeline.generation == "seeded":
         logger.info(f"Seeder            : {pipeline.seeder_name}")
     logger.info(f"Aggregation       : {pipeline.aggregation}")
+    logger.info(f"Few-shot          : {pipeline.few_shot}")
     logger.info(f"Selector          : {pipeline.selector}")
     logger.info(f"Selection         : {pipeline.selection}")
     if pipeline.selection == "mmr":

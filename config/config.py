@@ -313,8 +313,9 @@ class HMAnswerOutput(BaseModel):
 # components shared across q2_pipeline, p_question, h_question, and h_multihop.
 
 class LocateOutput(BaseModel):
-    """Locator output: sentence indices from the numbered premise."""
-    indices: list[int]
+    """Locator output: sentence indices + one-sentence reason for selection."""
+    indices:   list[int]
+    reasoning: str = Field(default="", description="One sentence explaining why these sentences are relevant")
 
     @field_validator("indices", mode="before")
     @classmethod
@@ -352,8 +353,9 @@ class AnswerOutput(BaseModel):
 
 
 class ClassifyOutput(BaseModel):
-    """Shared classifier output: one NLI label over a full evidence block."""
-    label: Literal["Entailment", "Contradiction", "Neutral"]
+    """Shared classifier output: one NLI label + one-sentence reasoning."""
+    label:     Literal["Entailment", "Contradiction", "Neutral"]
+    reasoning: str = Field(default="", description="One sentence explaining the classification decision")
 
     @field_validator("label", mode="before")
     @classmethod

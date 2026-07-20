@@ -23,7 +23,7 @@ Rules:
   • Return ONLY indices — no sentence text.
 
 Output format — JSON only, no extra text:
-{"indices": [0, 3, 7]}\
+{"indices": [0, 3, 7], "reasoning": "one sentence explaining why these sentences are relevant"}\
 """
 
 LOCATE_USER_PROMPT = """\

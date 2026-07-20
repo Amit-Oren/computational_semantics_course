@@ -54,9 +54,9 @@ class RetrieveThenClassifyPipeline:
         located_sentences = loc["located_sentences"]
 
         # Stage 4 — shared classifier over raw located sentences (no Q/A framing)
-        prediction = classify_raw_evidence(self.model, self.params, located_sentences, hypothesis)
+        prediction, pred_reasoning = classify_raw_evidence(self.model, self.params, located_sentences, hypothesis)
 
-        return self._make_result(sample, located_indices, located_sentences, prediction)
+        return self._make_result(sample, located_indices, located_sentences, prediction, pred_reasoning)
 
     @staticmethod
     def _make_result(
@@ -64,16 +64,18 @@ class RetrieveThenClassifyPipeline:
         located_indices:    list[int],
         located_sentences:  list[str],
         prediction:         str,
+        pred_reasoning:     str,
     ) -> dict:
         return {
-            "id":                sample.get("id"),
-            "premise":           sample["premise"],
-            "hypothesis":        sample["hypothesis"],
-            "gold_label":        sample["label"],
-            "prediction":        prediction,
-            "method":            METHOD,
-            "located_indices":   located_indices,
-            "located_sentences": located_sentences,
+            "id":                   sample.get("id"),
+            "premise":              sample["premise"],
+            "hypothesis":           sample["hypothesis"],
+            "gold_label":           sample["label"],
+            "prediction":           prediction,
+            "prediction_reasoning": pred_reasoning,
+            "method":               METHOD,
+            "located_indices":      located_indices,
+            "located_sentences":    located_sentences,
         }
 
 

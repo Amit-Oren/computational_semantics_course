@@ -31,6 +31,7 @@ from config.config import (
 )
 from prompts.bridge_question import (
     BRIDGE_QUESTION_GEN_SYSTEM_PROMPT,
+    BRIDGE_QUESTION_GEN_FEW_SHOT_SYSTEM_PROMPT,
     BRIDGE_QUESTION_GEN_USER_PROMPT,
     BRIDGE_QUESTION_RETRY_USER_PROMPT,
 )
@@ -48,12 +49,13 @@ DEFAULT_AGGREGATION = "aggregated"
 class BridgeQuestionPipeline:
     """Both-texts bridging NLI pipeline."""
 
-    def __init__(self, model: str, params: dict, aggregation: str = DEFAULT_AGGREGATION):
+    def __init__(self, model: str, params: dict, aggregation: str = DEFAULT_AGGREGATION, few_shot: bool = False):
         if aggregation not in AGGREGATION_MODES:
             raise ValueError(f"Unknown aggregation '{aggregation}'; choose from {AGGREGATION_MODES}")
         self.model       = model
         self.params      = params
         self.aggregation = aggregation
+        self.few_shot    = few_shot
 
     # ── Zero-shot fallback ────────────────────────────────────────────────────
 
@@ -80,8 +82,12 @@ class BridgeQuestionPipeline:
     def stage1_generate_questions(
         self, premise: str, hypothesis: str
     ) -> BridgeQuestionOutput | None:
+        system_prompt = (
+            BRIDGE_QUESTION_GEN_FEW_SHOT_SYSTEM_PROMPT if self.few_shot
+            else BRIDGE_QUESTION_GEN_SYSTEM_PROMPT
+        )
         messages = [
-            SystemMessage(content=BRIDGE_QUESTION_GEN_SYSTEM_PROMPT),
+            SystemMessage(content=system_prompt),
             HumanMessage(content=BRIDGE_QUESTION_GEN_USER_PROMPT.format(
                 premise=premise, hypothesis=hypothesis,
             )),
@@ -118,7 +124,7 @@ class BridgeQuestionPipeline:
         if q_output is None or not q_output.questions:
             warnings.append("Stage 1 returned no questions; falling back to zero-shot.")
             prediction = self._zero_shot_fallback(sample, warnings)
-            return self._make_result(sample, [], prediction, warnings, no_bridge_generated=True)
+            return self._make_result(sample, [], prediction, "", warnings, no_bridge_generated=True)
 
         no_bridge_generated = False
         if not q_output.bridge_indices:
@@ -157,16 +163,17 @@ class BridgeQuestionPipeline:
         if not qa_pairs:
             warnings.append("All questions unanswerable; falling back to zero-shot.")
             prediction = self._zero_shot_fallback(sample, warnings)
-            return self._make_result(sample, [], prediction, warnings, no_bridge_generated)
+            return self._make_result(sample, [], prediction, "", warnings, no_bridge_generated)
 
-        prediction = aggregate(self.aggregation, self.model, self.params, qa_pairs, hypothesis)
-        return self._make_result(sample, qa_pairs, prediction, warnings, no_bridge_generated)
+        prediction, pred_reasoning = aggregate(self.aggregation, self.model, self.params, qa_pairs, hypothesis)
+        return self._make_result(sample, qa_pairs, prediction, pred_reasoning, warnings, no_bridge_generated)
 
     def _make_result(
         self,
         sample:               dict,
         qa_pairs:             list[dict],
         prediction:           str,
+        pred_reasoning:       str,
         warnings:             list[str],
         no_bridge_generated:  bool,
     ) -> dict:
@@ -176,8 +183,10 @@ class BridgeQuestionPipeline:
             "hypothesis":           sample["hypothesis"],
             "gold_label":           sample["label"],
             "prediction":           prediction,
+            "prediction_reasoning": pred_reasoning,
             "method":               METHOD,
             "aggregation":          self.aggregation,
+            "few_shot":             self.few_shot,
             "qa_pairs":             qa_pairs,
             "no_bridge_generated":  no_bridge_generated,
             "warnings":             warnings,
@@ -191,8 +200,9 @@ def run(
     model: str,
     params: dict = DEFAULT_PARAMS,
     aggregation: str = DEFAULT_AGGREGATION,
+    few_shot: bool = False,
 ) -> list[dict]:
-    pipeline = BridgeQuestionPipeline(model, params, aggregation=aggregation)
+    pipeline = BridgeQuestionPipeline(model, params, aggregation=aggregation, few_shot=few_shot)
 
     logger.info("=" * 60)
     logger.info("Experiment  : bridge_question")
@@ -200,6 +210,7 @@ def run(
     logger.info(f"Temperature : {params.get('temperature')}")
     logger.info(f"Max tokens  : {params.get('max_tokens')}")
     logger.info(f"Aggregation : {aggregation}")
+    logger.info(f"Few-shot    : {few_shot}")
     logger.info(f"Samples     : {len(samples)}")
     logger.info("=" * 60)
 
