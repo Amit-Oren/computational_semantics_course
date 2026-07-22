@@ -155,3 +155,38 @@ def score_questions(
         selected_qs = sorted(questions, key=lambda q: rel[q], reverse=True)[:top_k]
 
     return [(q, rel[q]) for q in selected_qs]
+
+
+def select_for_voting(
+    questions: list[dict],
+    hypothesis: str,
+    cap: int = 10,
+) -> list[dict]:
+    """Filter Stage 1a's generated questions down to `cap` for voting
+    aggregation only. Keeps all relation-type questions (scarce, high-value
+    — the ones that require connecting two pieces of information, the same
+    shape of reasoning a decisive vote needs), then fills remaining slots
+    with the top-ranked fact-type questions by ROUGE-L relevance to the
+    hypothesis. If relations alone exceed cap, rank and trim them the same
+    way.
+
+    `questions` is the Stage 1a output shape: [{"q": str, "type": "fact"|"relation"}, ...].
+    Returns a list of the same shape, length <= cap.
+    """
+    if not questions or cap <= 0:
+        return []
+
+    relations = [d for d in questions if d["type"] == "relation"]
+    facts     = [d for d in questions if d["type"] != "relation"]
+
+    def _by_rouge_l(items: list[dict]) -> list[dict]:
+        scored = [(d, _score_rouge_l(d["q"], hypothesis)) for d in items]
+        scored.sort(key=lambda pair: pair[1], reverse=True)
+        return [d for d, _ in scored]
+
+    if len(relations) > cap:
+        return _by_rouge_l(relations)[:cap]
+
+    remaining = cap - len(relations)
+    selected_facts = _by_rouge_l(facts)[:remaining] if remaining > 0 else []
+    return relations + selected_facts
