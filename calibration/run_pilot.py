@@ -39,7 +39,7 @@ PINNED_IDS_PATH = os.path.join(CALIB_DIR, "pinned_ids.json")
 N_PINNED = 20
 N_LIGHT = 10  # subset of the same pinned IDs used for the two lighter-pass models
 TRAIN_N = 4000  # project's chosen full-scale target (not the full 6719-sample train split)
-MAX_PROJECTED_HOURS = 3  # confirm before Task 3 — see module docstring
+MAX_PROJECTED_HOURS = 5  # confirm before Task 3 — see module docstring
 
 PARAMS = {"temperature": 0.0, "max_tokens": 4096}
 
