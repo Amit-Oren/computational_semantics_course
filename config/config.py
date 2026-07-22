@@ -47,7 +47,7 @@ MODELS = {
     # ── Groq ──────────────────────────────────────────────────────────────────
     "llama-3.1-8b-instant":    "groq",
     "llama-3.3-70b-versatile": "groq",
-    "qwen/qwen3-32b":          "groq",
+    "qwen/qwen3.6-27b":        "groq",
     # ── Local Ollama ──────────────────────────────────────────────────────────
     "llama3.1-8b-local": "ollama",
 }
@@ -137,7 +137,7 @@ P_QUESTION_MMR_LAMBDA: float = 0.7              # 1.0 reduces MMR exactly to top
 # relation-type questions (scarce, high-value) are kept first, fact-type
 # fills the remainder. See runner/p_question.py._cap_questions. Freeform mode
 # self-caps at ~15 via its prompt, so this rarely binds for it.
-P_QUESTION_MAX_QUESTIONS: int = 30
+P_QUESTION_MAX_QUESTIONS: int = 15
 
 
 # ── P-Question Pipeline schemas ───────────────────────────────────────────────
@@ -394,6 +394,15 @@ logger = logging.getLogger("control")
 
 _JSON_FENCE_RE = re.compile(r'```(?:json)?\s*\n?(.*?)\n?\s*```', re.DOTALL)
 
+# Recurring vLLM output slip: an enum-like string value emitted without
+# quotes (e.g. `"type": fact` instead of `"type": "fact"`) — invalid JSON
+# even though the rest of the object is well-formed. Matches a bare
+# identifier value (excluding true/false/null, which are valid unquoted)
+# immediately followed by a comma/brace/bracket, and quotes it.
+_BARE_JSON_VALUE_RE = re.compile(
+    r'"([a-zA-Z_]\w*)"\s*:\s*(?!true\b|false\b|null\b)([a-zA-Z_]\w*)(\s*[,}\]])'
+)
+
 
 class _StructuredOutput:
     """LLM wrapper for open_source models: passes response_format=json_object
@@ -411,6 +420,7 @@ class _StructuredOutput:
         m = _JSON_FENCE_RE.search(content)
         if m:
             content = m.group(1).strip()
+        content = _BARE_JSON_VALUE_RE.sub(r'"\1": "\2"\3', content)
         return self._schema.model_validate_json(content)
 
 
