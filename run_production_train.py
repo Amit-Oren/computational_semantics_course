@@ -30,6 +30,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from config.config import RESULTS_DIR, setup_logger, logger, DEFAULT_PARAMS
 from data.data import load_split
 
+PRODUCTION_RESULTS_DIR = os.path.join(RESULTS_DIR, "production")
 PRODUCTION_SEED = 42
 SAMPLE_IDS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "production_train_sample_ids.json")
 
@@ -198,10 +199,10 @@ def run_all(model: str, max_workers: int):
         acc = correct / n_results if n_results else 0.0
         logger.info(f"  {label}: {correct}/{n_results} = {acc:.4f}")
 
-        os.makedirs(RESULTS_DIR, exist_ok=True)
+        os.makedirs(PRODUCTION_RESULTS_DIR, exist_ok=True)
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
         tag = f"production_train_{label}"
-        path = os.path.join(RESULTS_DIR, f"{tag}_{model}_{ts}.json")
+        path = os.path.join(PRODUCTION_RESULTS_DIR, f"{tag}_{model}_{ts}.json")
         with open(path, "w") as f:
             json.dump(results, f, indent=2, default=str)
         logger.info(f"Saved {len(results)} results for {label} -> {path}")
