@@ -318,16 +318,16 @@ class PQuestionPipeline:
         n_relation = sum(1 for d in decomposed if d["type"] == "relation")
 
         # Stage 1b removed — all generated questions go directly to locate_and_answer,
-        # except voting mode, which filters to a relation-priority top-K first (see
+        # except voting mode, which filters to a relevance-ranked top-K first (see
         # utils/question_selectors.py::select_for_voting) to avoid diluting the
-        # majority vote with low-signal atomic-fact questions.
+        # majority vote with low-signal, hypothesis-irrelevant questions.
         selection_pool = decomposed
         if self.aggregation == "voting":
             selection_pool = select_for_voting(decomposed, hypothesis, cap=self.voting_cap)
             if len(selection_pool) < len(decomposed):
                 warnings.append(
                     f"Voting filter: kept {len(selection_pool)}/{len(decomposed)} questions "
-                    f"(relations prioritized, cap={self.voting_cap})."
+                    f"(top ROUGE-L relevance, cap={self.voting_cap})."
                 )
         selected = [{"question": d["q"], "type": d["type"]} for d in selection_pool]
 
