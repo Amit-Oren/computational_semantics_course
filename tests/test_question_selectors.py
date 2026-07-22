@@ -11,40 +11,37 @@ def _q(text, qtype):
     return {"q": text, "type": qtype}
 
 
-def test_all_relations_kept_when_under_cap():
-    questions = [
-        _q("How does X compare to Y?", "relation"),
-        _q("What year did X happen?", "fact"),
-        _q("What year did Y happen?", "fact"),
-    ]
-    result = select_for_voting(questions, "X surpassed Y.", cap=10)
-    types = [d["type"] for d in result]
-    assert types.count("relation") == 1
-    assert len(result) == 3  # nothing to trim, all fit under cap
-
-
-def test_facts_fill_remaining_slots_by_relevance():
-    questions = [
-        _q("How does X compare to Y?", "relation"),
-        _q("What is the capital of France?", "fact"),
-        _q("Did X surpass Y in skill?", "fact"),
-    ]
-    result = select_for_voting(questions, "X surpassed Y in skill.", cap=2)
-    assert len(result) == 2
-    qs = [d["q"] for d in result]
-    assert "How does X compare to Y?" in qs
-    assert "Did X surpass Y in skill?" in qs  # more relevant fact kept over the unrelated one
-
-
-def test_relations_trimmed_by_relevance_when_over_cap():
+def test_keeps_top_cap_by_relevance_regardless_of_type():
     questions = [
         _q("Did X surpass Y in skill?", "relation"),
-        _q("What is the weather today?", "relation"),
+        _q("What is the capital of France?", "fact"),
         _q("How tall is the tower?", "relation"),
     ]
     result = select_for_voting(questions, "X surpassed Y in skill.", cap=1)
     assert len(result) == 1
     assert result[0]["q"] == "Did X surpass Y in skill?"
+
+
+def test_relevant_fact_beats_irrelevant_relation():
+    # A fact-type question that closely matches the hypothesis should
+    # outrank a relation-type question about something unrelated — type no
+    # longer gives relations automatic priority.
+    questions = [
+        _q("What is the weather today?", "relation"),
+        _q("Did X surpass Y in skill?", "fact"),
+    ]
+    result = select_for_voting(questions, "X surpassed Y in skill.", cap=1)
+    assert len(result) == 1
+    assert result[0]["q"] == "Did X surpass Y in skill?"
+
+
+def test_returns_all_when_under_cap():
+    questions = [
+        _q("How does X compare to Y?", "relation"),
+        _q("What year did X happen?", "fact"),
+    ]
+    result = select_for_voting(questions, "X surpassed Y.", cap=10)
+    assert len(result) == 2
 
 
 def test_empty_input_returns_empty_list():

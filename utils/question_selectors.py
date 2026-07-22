@@ -163,12 +163,16 @@ def select_for_voting(
     cap: int = 10,
 ) -> list[dict]:
     """Filter Stage 1a's generated questions down to `cap` for voting
-    aggregation only. Keeps all relation-type questions (scarce, high-value
-    — the ones that require connecting two pieces of information, the same
-    shape of reasoning a decisive vote needs), then fills remaining slots
-    with the top-ranked fact-type questions by ROUGE-L relevance to the
-    hypothesis. If relations alone exceed cap, rank and trim them the same
-    way.
+    aggregation only. Ranks ALL questions (fact and relation alike) by
+    ROUGE-L relevance to the hypothesis and keeps the top `cap`.
+
+    Fact-vs-relation type was tried first and dropped: it measures the
+    premise's own internal structure (does this connect two facts), not
+    relevance to THIS hypothesis. A premise can have many genuine relations
+    about unrelated parts of the text; keeping all of them still buried the
+    one decisive vote under 6+ irrelevant-but-real relations (confirmed on
+    id_130: 30.0%, identical to no filtering at all). Direct relevance
+    scoring targets what actually matters instead.
 
     `questions` is the Stage 1a output shape: [{"q": str, "type": "fact"|"relation"}, ...].
     Returns a list of the same shape, length <= cap.
@@ -176,17 +180,6 @@ def select_for_voting(
     if not questions or cap <= 0:
         return []
 
-    relations = [d for d in questions if d["type"] == "relation"]
-    facts     = [d for d in questions if d["type"] != "relation"]
-
-    def _by_rouge_l(items: list[dict]) -> list[dict]:
-        scored = [(d, _score_rouge_l(d["q"], hypothesis)) for d in items]
-        scored.sort(key=lambda pair: pair[1], reverse=True)
-        return [d for d, _ in scored]
-
-    if len(relations) > cap:
-        return _by_rouge_l(relations)[:cap]
-
-    remaining = cap - len(relations)
-    selected_facts = _by_rouge_l(facts)[:remaining] if remaining > 0 else []
-    return relations + selected_facts
+    scored = [(d, _score_rouge_l(d["q"], hypothesis)) for d in questions]
+    scored.sort(key=lambda pair: pair[1], reverse=True)
+    return [d for d, _ in scored][:cap]
