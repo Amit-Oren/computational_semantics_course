@@ -1,273 +1,151 @@
 # NLI Methods — Overview
 
-**Task:** Document-level Natural Language Inference on the ConTRoL dataset.  
-Each sample has a long premise P (~500 words), a short hypothesis H, and a gold label ∈ {Entailment, Contradiction, Neutral}.  
-All methods output a structured JSON result with `metadata` and per-sample fields: `id, premise, hypothesis, label, prediction`.
+**Task:** Document-level Natural Language Inference on the ConTRoL dataset.
+Each sample has a long premise P (~500 words), a short hypothesis H, and a gold label ∈ {Entailment, Contradiction, Neutral}.
+
+**Note on scope:** two earlier methods, `q2_pipeline` and `h_multihop`, were archived before this document's last rewrite and are not part of the current core method set — see `experiments/archived/` if they're needed for reference. This document covers the 6 methods currently in `runner/`.
 
 ---
 
 ## Baselines
 
-### Zero-Shot
+### Zero-Shot (`zero_shot`)
 
 **LLM calls:** 1
 
-The simplest possible approach. The full premise and hypothesis are placed directly into a single prompt and the model is asked to decide the label in one shot — no examples, no decomposition, no intermediate steps.
+The full premise and hypothesis go directly into a single prompt; the model decides the label in one shot — no examples, no decomposition, no intermediate steps.
 
 ```
-Prompt → [P + H] → LLM → {label, explanation}
+[P + H] → LLM → {label, explanation}
 ```
 
-**Output fields:** `id, label, prediction, explanation`
-
-**When to use as reference:** Sets the lower bound. Any pipeline method should beat this on hard long-document cases.
+**When to use as reference:** Sets the lower bound. Any pipeline method should beat this.
 
 ---
 
-### Few-Shot Chain-of-Thought (few_shot_cot)
+### Few-Shot Chain-of-Thought (`few_shot_cot`)
 
 **LLM calls:** 1
 
-Same single-call structure as zero-shot, but the prompt is prefixed with **3 fixed demonstrations** — one example of each label (Entailment, Contradiction, Neutral), drawn from the dev split (ids: `id_193`, `id_123`, `id_315`). The demonstrations are manually verified and held constant across all runs to ensure reproducibility.
-
-The model is implicitly nudged to reason step-by-step (chain-of-thought) before outputting a label.
+Same single-call structure as zero-shot, prefixed with **3 fixed demonstrations** — one per label — drawn from the dev split (`id_193`, `id_123`, `id_315`), held constant across all runs.
 
 ```
-Prompt → [3 demonstrations + P + H] → LLM → {label, explanation}
+[3 demonstrations + P + H] → LLM → {label, explanation}
 ```
 
-**Output fields:** `id, label, prediction, explanation`
+**When to use as reference:** Upper bound for single-call approaches — shows how much the multi-stage pipelines add beyond in-context learning.
 
-**When to use as reference:** Upper bound for single-call approaches. Establishes how much the multi-stage pipelines add beyond in-context learning.
+---
+
+## Control Baseline
+
+### Retrieve-Then-Classify (`retrieve_then_classify`)
+
+**LLM calls:** 2 (no question generation, no Answer Extractor)
+
+Isolates the Locator's contribution from question generation. The Locator runs directly on the **hypothesis itself** as its query (not a generated question), pulling up to 5 relevant premise sentences; those raw sentences (not a paraphrased "answer") go straight to the classifier.
+
+```
+Stage 1: [numbered P + H as query] → Locator (LLM) → {indices}
+Stage 2: [raw located sentences + H] → Classifier (LLM) → {label}
+```
+
+Purpose: `zero_shot → retrieve_then_classify` gap = value of locating alone. `retrieve_then_classify → question-based methods` gap = value actually added by generating questions. In practice this has been the strongest-performing method tested so far (70% on an n=50 diagnostic slice, ahead of every `p_question` configuration) — because it's the only method whose Locator sees the hypothesis directly, and the only one that never risks the Answer Extractor rephrasing/losing precision from the original sentence.
+
+**No aggregation axis, no few-shot axis** — it's a fixed, minimal 2-stage method by design.
 
 ---
 
 ## Multi-Stage Pipelines
 
-### q2_pipeline — Query-Based Factual Audit
+All three question-based pipelines below (`h_question`, `p_question`, `bridge_question`) share the same evidence-finding and classification infrastructure — only Stage 1 (question generation) differs. See **Shared Infrastructure** at the end.
 
-**LLM calls:** 2
+### h_question — Hypothesis Interrogation (`runner/h_question.py`)
 
-A lightweight two-stage verifier. The hypothesis is interrogated to extract anchors and targeted questions; then a single audit call over the full premise performs structured fact-checking.
+Generates probe questions from the hypothesis (premise-blind at generation time), then locates/answers/classifies via the shared pipeline.
 
-#### Stage 1 — Question Generator
-Input: H  
-Output: a list of **anchor phrases** from H + **2–3 verification questions**, each targeting a single verifiable fact in H.
+**Stage 0 — Keyphrase extraction (no LLM):** NLTK POS tagging (`pos` seeder) or LLM-based semantic-role extraction (`srl` seeder) pulls keyphrases from H.
 
-```
-H → LLM → {anchors: [...], questions: ["q1", "q2", "q3"]}
-```
-
-#### Stage 2 — Factual Auditor
-Input: P + H + the Stage 1 questions  
-Output: a structured **audit table** — one row per question — with:
-- verbatim premise evidence for each question
-- whether the evidence was found (`found: true/false`)
-- cross-check flags across questions
-- a final NLI label + explanation
+**Stage 1 — Probe question generation (LLM):** given H + keyphrases, generates **2-4** targeted probe questions. Includes a comparison/scope rule (hypotheses with "more/less/than", "always/never" etc. must get at least one question testing the comparison directly, not just per-entity yes/no questions) and an information-integration rule (hypotheses requiring combining two facts get one combined question, not two isolated ones — this rule is present under the label `INFORMATION INTEGRATION` inline in the prompt).
 
 ```
-[P + H + questions] → LLM → {audit_table, matrix_flags, label, explanation}
+[H + keyphrases] → LLM → {questions: [...]}
 ```
 
-**Decision:** The auditor produces the label directly; no aggregation step needed.
+**Stages 2-4 — shared** (see Shared Infrastructure): locate + extract per question, then classify.
 
-**Output fields:** `id, label, prediction, hypothesis, questions, audit_table, explanation`
+**Axes:** `seeder_name` (`pos`/`srl`), `aggregation` (`aggregated`/`sequential_cot`/`voting`), `few_shot` (on/off — 3 worked examples appended to the Stage 1 prompt).
 
 ---
 
-### p_question — Premise Interrogation Pipeline
+### p_question — Premise Interrogation (`runner/p_question.py`)
 
-**LLM calls:** 3–4 per question (× top-K questions)
+Generates questions from the premise (**premise-blind** — never sees H at generation time), then locates/answers/classifies. This premise-blindness is a known, confirmed limitation: it structurally cannot target a hypothesis-specific comparison unless the premise happens to invite one on its own (see `bridge_question` below, designed specifically to fix this).
 
-Interrogates the premise rather than the hypothesis. The premise is asked what questions it can answer; the most hypothesis-relevant questions are then used to extract evidence and classify.
+**Stage 1a — Question generation (LLM), 3 generation modes:**
+- `decomposition` (default) — decomposes P into atomic **facts** and **relations** (comparisons, causal links, evaluative claims, temporal ordering), tagging each question `"fact"` or `"relation"`.
+- `seeded` — a seeder (`pos` or `srl`) extracts keyphrases/anchors from P first, then one question is generated per anchor.
+- `freeform` (legacy baseline) — up to 15 breadth-first questions, no fact/relation distinction.
 
-#### Stage 1a — Question Generation (LLM)
-Input: P  
-Output: up to **15 factual questions** the premise directly answers, written breadth-first across topics.
+**NER coverage layer (no LLM):** for premises over 300 words, spaCy NER scans P and adds gap-filling questions for any named entity not already covered.
 
-```
-P → LLM → {questions: ["q1", ..., "q15"]}
-```
+**Capping:** the combined question pool is capped at `P_QUESTION_MAX_QUESTIONS` (currently 15), keeping relation-type questions first (scarce, higher-value) and filling the remainder with facts.
 
-**NER Coverage Layer (no LLM):** For long premises (>300 words), spaCy NER scans P and adds gap-filling questions for any named entity (person, place, date, quantity) not already covered by the LLM questions. Questions are tagged `[LLM]` or `[NER]` for traceability.
+**Stage 1b (selection) is currently disabled** for `aggregated`/`sequential_cot` — all generated questions go directly to Stage 1c unfiltered (removing the old top-K relevance filter measurably improved `aggregated` mode's accuracy: 54-58% vs. 24-46% under the old filtered code, on the same n=50 slice).
 
-#### Stage 1b — Question Alignment (metric, no LLM)
-Input: all questions + H  
-Each question is scored against H using **ROUGE-L** (default) or **BLEU**.  
-The **top-K** (default K=3) highest-scoring questions are kept.
+**Voting mode has its own separate filter** (`utils/question_selectors.py::select_for_voting`), because `voting`'s per-question isolated classification collapses toward Neutral when diluted by many low-signal questions (confirmed: 30% unfiltered, and two different filtering strategies — relation-type priority, then pure ROUGE-L relevance ranking — both failed to improve on that baseline, at 30% and 24% respectively, on an n=50 diagnostic). The filter still exists in code (`voting_cap`, default 10) but should be treated as **unresolved** — no filtering approach tried so far has fixed voting mode for `p_question`; the underlying problem looks like the per-question isolated-classification mechanism itself, not question selection.
 
-```
-questions × H → ROUGE-L scores → top-3 selected
-```
+**Stages 1c-2 — shared** (see Shared Infrastructure).
 
-#### Stage 1c — Answer Extraction (2 LLM calls per question)
-For each of the top-K questions, a two-step extraction:
-
-**Step 1 — Evidence Gathering:**  
-Scan the full P and collect every relevant sentence (verbatim or close paraphrase).
-
-```
-[P + question] → LLM → {evidence_sentences: [...], has_evidence: bool}
-```
-
-**Step 2 — Answer Synthesis:**  
-Summarise the gathered evidence sentences into one clean, final answer.
-
-```
-[evidence_sentences + question] → LLM → {answer, unanswerable: bool}
-```
-
-#### Stage 2 — NLI Classification (LLM)
-Input: all answers + H  
-The collected (question, answer) pairs are fed to an NLI classifier to decide the final label.  
-Two modes (configurable):
-- **`concatenated`** — all Q/A pairs in one call, one label
-- **`majority_vote`** — one call per Q/A pair, label by vote
-
-```
-[Q/A pairs + H] → LLM → {label}
-```
-
-**Output fields:** `id, label, prediction, stage1a_questions, stage1a_sources, stage1b_aligned, stage1c_answers, stage2_label`
+**Axes:** `generation` (`decomposition`/`seeded`/`freeform`), `seeder_name` (for seeded mode), `aggregation`, `few_shot`.
 
 ---
 
-### h_question — Hypothesis Interrogation Pipeline
+### bridge_question — Both-Texts Bridging (`runner/bridge_question.py`)
 
-**LLM calls:** 1 + 2 per probe question + 1 (judge)
+Generates questions from **both P and H together** — the only question-based method whose Stage 1 sees both texts, specifically to fix the premise-blind/hypothesis-blind gap the other two methods have.
 
-Inverts p_question: instead of asking what the premise covers, it asks what the hypothesis needs the premise to confirm. Probe questions are generated from H, then each is answered from P, and a holistic judge decides the final label.
-
-#### Stage 0 — Keyphrase Extraction (no LLM)
-Input: H  
-NLTK POS tagging extracts noun phrases, main verbs, and standalone numerals as **keyphrases**.
+**Stage 1 (LLM):** given P + H, generates **2-4** sub-questions; at least one must be a bridging/comparison question testing the hypothesis's **core claim** directly (identified explicitly as a first step in the prompt). A retry fires once if no bridging question comes out on the first attempt. Includes the same information-integration rule as `h_question` (labeled `INFORMATION INTEGRATION` in this file), with a worked ✗/✓ example since it can see the premise too.
 
 ```
-H → POS tagger → {keyphrases: [...], claim_from_H: str}
+[P + H] → LLM → {questions: [...], bridge_indices: [...]}
 ```
 
-#### Stage 1 — Probe Question Generation (LLM)
-Input: H + keyphrases  
-Output: **1–2 targeted probe questions** that, when answered from P, will reveal whether H is entailed, contradicted, or neutral. Each question targets exactly one verifiable claim.
+**Stages 2-4 — shared** (see Shared Infrastructure).
 
-```
-[H + keyphrases] → LLM → {questions: ["q1", "q2"]}
-```
-
-#### Stage 2a — Sentence Locator (LLM, per question)
-Input: numbered P (each sentence indexed `[0], [1], ...`) + probe question  
-Output: up to 5 **sentence indices** in P most relevant to answering the question (multi-hop allowed).
-
-```
-[numbered P + question] → LLM → {indices: [2, 7, 11]}
-```
-
-#### Stage 2b — Answer Extractor (LLM, per question)
-Input: extracted sentences + probe question  
-Output: a **one-sentence answer** using only the located sentences. Returns `NOT_ANSWERABLE` only if the sentences contain no related information at all (allowed to make one small, obvious inference).
-
-```
-[sentences + question] → LLM → {answer: str}
-```
-
-#### Stage 3 — Holistic Judge (LLM)
-Input: H + all (question, answer) pairs as a structured probes block  
-The judge sees the full picture at once and decides ONE label, reasoning over all probes together. Scope rules: partial or topic-specific evidence does not entail "overall/same/always" claims.
-
-```
-[H + probes block] → LLM → {label}
-```
-
-**Output fields:** `id, label, prediction, keyphrases, gen_questions, per_question_details[]`  
-Each `per_question_details` entry: `question, located_indices, extracted_sentences, answer_from_P, answerable_flag`
-
----
-
-### h_multihop — Atomic Sub-Question Chaining
-
-**LLM calls:** 1 + 2 per hop (max 3 hops) + 1 (classifier)
-
-The most structurally complex method. Rather than generating independent parallel questions, it builds a **sequential chain** of atomic sub-questions where each hop's answer becomes context for the next. Designed to handle multi-step reasoning (e.g. "does entity X exist?" → "what did X do?" → "does that match H?").
-
-#### Stage 0 — Keyphrase Extraction (no LLM)
-Same as h_question: NLTK POS tagging extracts keyphrases from H.
-
-#### Stage 1 — Decomposition Planner (LLM)
-Input: H + keyphrases  
-Output: **2–3 ordered atomic sub-questions**, designed so the simplest/most-presupposed fact is checked first.
-
-Ordering rules enforced by the prompt:
-- **Existence first:** if H assumes an entity exists (e.g. "his mother"), the first sub-question must verify that entity exists in P before asking what it did.
-- Each sub-question uses the exact names and qualifiers from H (never replaced with generic words).
-- Maximum 3 sub-questions.
-
-```
-[H + keyphrases] → LLM → {sub_questions: ["q1", "q2", "q3"]}
-```
-
-#### Stage 2 — Sequential Answering Loop (LLM × 2 per hop, max 3 hops)
-
-For each sub-question **in order**:
-
-**Stage 2a — Sentence Locator (LLM):**  
-Same locator as h_question — returns up to 5 sentence indices from numbered P.
-
-**Stage 2b — Per-hop Answer Extractor (LLM):**  
-Answers the sub-question using extracted sentences **plus the running context** (all prior sub-questions and their answers). Allowed one small inference. Returns `NOT_ANSWERABLE` only if sentences have no related information.
-
-```
-[prior Q/A context + sub-question + sentences] → LLM → {answer, answerable: bool}
-```
-
-**Halting rule:** If a hop returns `NOT_ANSWERABLE`, the chain stops asking further sub-questions — but does **not** automatically set the label to Neutral. All hops that were answered are still passed to the classifier.
-
-Running context after each answered hop:
-```
-Q1: <sub_question_1>
-A1: <answer_1>
-
-Q2: <sub_question_2>
-A2: <answer_2>
-```
-
-#### Stage 3 — Chain Classifier (LLM)
-Input: H + the **answered hops** as a structured chain block (partial chains are valid)  
-Decides ONE label. A single answered hop that proves a conflict → Contradiction even if later hops were unanswerable.
-
-```
-[H + chain block (answered hops only)] → LLM → {label}
-```
-
-**Fallback:** If NO hop was answered at all → Neutral (classifier not called).
-
-**Output fields:** `id, label, prediction, keyphrases, gen_questions, per_question_details[], chain[]`  
-`per_question_details` mirrors h_question shape for backward compatibility.  
-`chain[]` adds per-hop fields: `hop_index, sub_question, context_at_hop, located_indices, extracted_sentences, answer_from_P, answerable_flag, halted`
-
----
-
-## Summary Table
-
-| Method | LLM Calls | Interrogates | Key Idea |
-|---|---|---|---|
-| zero_shot | 1 | — | Direct classification, no decomposition |
-| few_shot_cot | 1 | — | 3 fixed demonstrations guide reasoning |
-| q2_pipeline | 2 | H | Structured audit table per question |
-| p_question | 3–4 × K | P | Premise-generated questions filtered by alignment to H |
-| h_question | 1 + 2K + 1 | H | Parallel probe questions answered from P, holistic judge |
-| h_multihop | 1 + 2K + 1 | H | Sequential chain: each hop's answer feeds the next |
-
-*K = number of questions/hops (p_question default K=3, h_question 1–2, h_multihop max 3)*
+**Axes:** `aggregation`, `few_shot`. No seeder axis (doesn't need one — it sees both texts directly).
 
 ---
 
 ## Shared Infrastructure
 
-- **Model backend:** OpenAI-compatible API (`ChatOpenAI`) — lab server via Tailscale, HuggingFace, or Groq
-- **Structured output:** All LLM calls use `with_structured_output` (Pydantic schemas) — no manual JSON parsing
-- **Sentence indexing:** `utils/premise_indexer.py` — NLTK sentence tokenizer, `[i] sentence` format
-- **Keyphrase extraction:** `utils/pos_keyphrase.py` — NLTK RegexpParser for NP/VB/CD chunks
-- **Retry logic:** All LLM calls wrapped in `_call_with_retry` (5 attempts, 30s wait on 429/503)
-- **Results:** Saved to `results/{experiment}_{model}_{timestamp}.json`
-- **Logs:** Per-run log to `logs/{experiment}_{model}_{timestamp}.log`
+Used identically by `h_question`, `p_question`, and `bridge_question` — only question generation (Stage 1) differs between them.
+
+- **Locator** (`utils/locator_extractor.py::locate_and_answer`) — numbered premise + question → up to 5 sentence indices (multi-hop allowed), plus a one-sentence `reasoning` field.
+- **Answer Extractor** — extracted sentences + question → a concise answer, using only those sentences (at most one small, obvious inference allowed). Returns `NOT_ANSWERABLE` only when the sentences contain no related information at all.
+- **Classifier** (`prompts/shared_classifier.py::classify_evidence`) — evidence + hypothesis → one NLI label. Priority order: Contradiction → Entailment → Neutral; explicitly instructed not to let weak/tangential evidence "average away" one independently decisive piece.
+- **Aggregation modes** (`utils/aggregation.py`), used by all three question-based methods:
+  - `aggregated` — all (question, answer) pairs in a single classifier call.
+  - `sequential_cot` — pairs processed one at a time, running verdict updated after each.
+  - `voting` — one classifier call per pair, majority label wins (ties broken by the same Contradiction > Entailment > Neutral priority). **Known to underperform significantly** for `p_question` (see above) — not yet root-caused beyond "per-question isolation dilutes the few decisive votes among many correctly-uninformative ones."
+- **Model backend:** OpenAI-compatible API (`ChatOpenAI`), routed via `config.config.get_llm`/`get_structured_llm` — lab server (self-hosted open-weight models via an Ollama-backed gateway), HuggingFace, or Groq depending on the model.
+- **Structured output:** all "open_source" (lab-hosted) model calls go through a custom `_StructuredOutput` wrapper (`config/config.py`) — strips markdown fences and repairs a recurring Ollama formatting slip (unquoted enum-like values, e.g. `"type": fact` instead of `"type": "fact"`) before Pydantic validation. Other providers use LangChain's `with_structured_output` directly.
+- **Retry logic:** `utils/retry.py::call_with_retry` — up to 5 attempts, 30s wait, only on errors matching `capacity/rate limit/429/503/overloaded/timeout` substrings (a bare connection reset is *not* retried — it's treated as a same-call failure and falls through to that stage's own fallback).
+- **Zero-shot fallback:** every question-based method falls back to a direct zero-shot P+H call if Stage 1 produces no questions, or if every generated question turns out unanswerable — check a result's `warnings` field for "Stage 1a/1 returned no questions" or "zero-shot fallback" before trusting its prediction as reflecting that method's actual mechanism.
+- **Sentence indexing:** `utils/premise_indexer.py` — NLTK sentence tokenizer, `[i] sentence` format.
+- **Keyphrase extraction:** `utils/pos_keyphrase.py` (POS/NLTK) and `utils/seeding/` (POS/SRL seeders used by `h_question` and `p_question`'s seeded mode).
+- **Results:** saved to `results/{experiment}_{model}_{timestamp}.json` (or `ablation_{tag}_{model}_{timestamp}.json` for ablation-script runs).
+- **Logs:** per-run log to `logs/{experiment}_{model}_{timestamp}.log`.
+
+---
+
+## Summary Table
+
+| Method | LLM calls | Sees at generation | Aggregation axis | Few-shot axis | Key idea |
+|---|---|---|---|---|---|
+| `zero_shot` | 1 | — | — | — | Direct classification, no decomposition |
+| `few_shot_cot` | 1 | — | — | — | 3 fixed demonstrations guide reasoning |
+| `retrieve_then_classify` | 2 | H (as Locator query) | — | — | Locator-only control; no question generation |
+| `h_question` | 1 + 2 per question + 1 | H only | ✓ | ✓ | Hypothesis-generated probes, premise-blind at generation |
+| `p_question` | 1 + 2 per question + 1 | P only | ✓ | ✓ | Premise-generated questions; known premise-blind gap |
+| `bridge_question` | 1 + 2 per question + 1 | Both P and H | ✓ | ✓ | Only method whose Stage 1 sees both texts together |
