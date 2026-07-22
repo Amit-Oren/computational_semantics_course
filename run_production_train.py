@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import os
+import random
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
@@ -27,7 +28,30 @@ from datetime import datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from config.config import RESULTS_DIR, setup_logger, logger, DEFAULT_PARAMS
-from experiments.evaluate_shared_pipeline import pick_dev_set
+from data.data import load_split
+
+PRODUCTION_SEED = 42
+SAMPLE_IDS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "production_train_sample_ids.json")
+
+
+def get_production_samples(n: int) -> list[dict]:
+    """Fixed random-seed sample from the train split, saved once so every
+    model uses the exact same n samples (not a sorted-by-id slice, which
+    string-sorts IDs like id_1, id_10, id_100, id_1000, id_1001, ..., id_11
+    — an arbitrary, non-representative order, not numeric and not random)."""
+    train = load_split("train")
+    if os.path.exists(SAMPLE_IDS_PATH):
+        with open(SAMPLE_IDS_PATH) as f:
+            ids = json.load(f)
+        by_id = {s["id"]: s for s in train}
+        return [by_id[i] for i in ids]
+
+    rng = random.Random(PRODUCTION_SEED)
+    picked = rng.sample(train, n)
+    with open(SAMPLE_IDS_PATH, "w") as f:
+        json.dump([s["id"] for s in picked], f, indent=2)
+    logger.info(f"Generated {len(picked)} fixed-seed (seed={PRODUCTION_SEED}) production sample IDs -> {SAMPLE_IDS_PATH}")
+    return picked
 from utils.retry import call_with_retry
 
 N = 1500
@@ -152,7 +176,7 @@ def run_method_concurrent(label: str, samples: list[dict], model: str, params: d
 
 
 def run_all(model: str, max_workers: int):
-    samples = pick_dev_set(N, "train")
+    samples = get_production_samples(N)
     logger.info(f"Loaded {len(samples)} pinned train-split samples for production run (model={model}, workers={max_workers})")
 
     for label in METHOD_LABELS:
