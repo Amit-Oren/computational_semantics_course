@@ -32,7 +32,10 @@ Usage:
 import argparse
 import json
 import os
+import sys
 from datetime import datetime
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # repo root, for the imports below
 
 from config.config import DEFAULT_PARAMS, RESULTS_DIR, setup_logger
 from experiments.evaluate_shared_pipeline import pick_dev_set, precision_recall_f1, _gold
