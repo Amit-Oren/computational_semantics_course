@@ -71,7 +71,7 @@ from prompts.shared_classifier import classify_evidence
 from utils.aggregation import aggregate, AGGREGATION_MODES
 from utils.locator_extractor import locate_and_answer
 from utils.premise_indexer import number_sentences
-from utils.question_selectors import score_questions
+from utils.question_selectors import score_questions, select_for_voting
 from utils.retry import call_with_retry
 from utils.seeding import get_seeder, SEEDERS
 
@@ -99,6 +99,7 @@ class PQuestionPipeline:
         seeder_name: str = "pos",
         aggregation: str = DEFAULT_AGGREGATION,
         few_shot: bool = False,
+        voting_cap: int = 10,
     ):
         if generation not in GENERATION_MODES:
             raise ValueError(f"Unknown generation mode '{generation}'; choose from {GENERATION_MODES}")
@@ -117,6 +118,7 @@ class PQuestionPipeline:
         self.seeder_name   = seeder_name
         self.aggregation   = aggregation
         self.few_shot      = few_shot
+        self.voting_cap    = voting_cap
         self.seeder        = get_seeder(seeder_name, model=model, params=params) if generation == "seeded" else None
 
     # ── NER coverage (additive, purely metric-based) ──────────────────────────
@@ -315,8 +317,19 @@ class PQuestionPipeline:
         n_fact     = sum(1 for d in decomposed if d["type"] == "fact")
         n_relation = sum(1 for d in decomposed if d["type"] == "relation")
 
-        # Stage 1b removed — all generated questions go directly to locate_and_answer
-        selected = [{"question": q, "type": type_map.get(q, "fact")} for q in questions]
+        # Stage 1b removed — all generated questions go directly to locate_and_answer,
+        # except voting mode, which filters to a relation-priority top-K first (see
+        # utils/question_selectors.py::select_for_voting) to avoid diluting the
+        # majority vote with low-signal atomic-fact questions.
+        selection_pool = decomposed
+        if self.aggregation == "voting":
+            selection_pool = select_for_voting(decomposed, hypothesis, cap=self.voting_cap)
+            if len(selection_pool) < len(decomposed):
+                warnings.append(
+                    f"Voting filter: kept {len(selection_pool)}/{len(decomposed)} questions "
+                    f"(relations prioritized, cap={self.voting_cap})."
+                )
+        selected = [{"question": d["q"], "type": d["type"]} for d in selection_pool]
 
         # Stage 1c — shared locate_and_answer per question
         indexed_sentences, numbered_premise = number_sentences(premise)
@@ -388,11 +401,13 @@ def run(
     seeder_name: str = "pos",
     aggregation: str = DEFAULT_AGGREGATION,
     few_shot: bool = False,
+    voting_cap: int = 10,
 ) -> list[dict]:
     pipeline = PQuestionPipeline(
         model, params, generation=generation, selector=selector, selection=selection,
         top_k=top_k, mmr_lambda=mmr_lambda, max_questions=max_questions,
         seeder_name=seeder_name, aggregation=aggregation, few_shot=few_shot,
+        voting_cap=voting_cap,
     )
 
     logger.info("=" * 60)
@@ -411,6 +426,7 @@ def run(
         logger.info(f"MMR lambda        : {pipeline.mmr_lambda}")
     logger.info(f"Top-K questions   : {pipeline.top_k}")
     logger.info(f"Max questions     : {pipeline.max_questions}")
+    logger.info(f"Voting cap        : {pipeline.voting_cap}")
     logger.info(f"Samples           : {len(samples)}")
     logger.info("=" * 60)
 
