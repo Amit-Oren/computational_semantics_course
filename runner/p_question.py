@@ -20,10 +20,9 @@ side-by-side rather than one replacing the other:
                generation was observed to miss the specific relation a
                hypothesis depended on even while covering everything else
                salient in the premise. Can produce 20-40 candidates per
-               premise, so the combined (decomposed + NER-coverage) pool is
-               capped, keeping all relation-type questions first
-               (scarce, high-value) and filling the rest with fact-type up
-               to the cap — see `_cap_questions`.
+               premise, so the pool is capped, keeping all relation-type
+               questions first (scarce, high-value) and filling the rest
+               with fact-type up to the cap — see `_cap_questions`.
   "freeform" (old/baseline) — up to 15 breadth-first wh-questions, no
                fact/relation distinction (n_relation is always 0).
 
@@ -80,8 +79,6 @@ FALLBACK_LABEL = "Neutral"
 GENERATION_MODES = ("decomposition", "freeform", "seeded")
 DEFAULT_AGGREGATION = "aggregated"
 
-_SPACY_NLP = None  # loaded once on first use
-
 
 class PQuestionPipeline:
     """Swappable Stage 1a generation + Stage 1b scorer/selection + shared evidence-finding/classification."""
@@ -120,51 +117,6 @@ class PQuestionPipeline:
         self.few_shot      = few_shot
         self.voting_cap    = voting_cap
         self.seeder        = get_seeder(seeder_name, model=model, params=params) if generation == "seeded" else None
-
-    # ── NER coverage (additive, purely metric-based) ──────────────────────────
-
-    def _ner_coverage_questions(
-        self, premise: str, existing_questions: list[str]
-    ) -> list[str]:
-        """Return gap-filling questions for entities not covered by existing_questions."""
-        if len(premise.split()) < 300:
-            return []
-        global _SPACY_NLP
-        try:
-            import spacy as _spacy
-            if _SPACY_NLP is None:
-                _SPACY_NLP = _spacy.load("en_core_web_sm")
-        except Exception as exc:
-            logger.warning(f"spaCy unavailable — NER coverage skipped: {exc}")
-            return []
-
-        doc = _SPACY_NLP(premise)
-        covered_lower = " ".join(existing_questions).lower()
-        seen_texts: set[str] = set()
-        new_questions: list[str] = []
-
-        for ent in doc.ents:
-            text = ent.text.strip()
-            if len(text) < 3:
-                continue
-            key = text.lower()
-            if key in seen_texts:
-                continue
-            seen_texts.add(key)
-            if key in covered_lower:
-                continue
-
-            label = ent.label_
-            if label in ("PERCENT", "CARDINAL", "QUANTITY"):
-                q = f"What was the {text} figure mentioned in the premise?"
-            elif label in ("DATE", "TIME"):
-                q = f"What happened in/at {text} according to the premise?"
-            else:
-                q = f"What does the premise say about {text}?"
-
-            new_questions.append(q)
-
-        return new_questions
 
     # ── Stage 1a ─────────────────────────────────────────────────────────────
 
@@ -298,11 +250,6 @@ class PQuestionPipeline:
             warnings.append("Stage 1a returned no questions; falling back to zero-shot.")
             prediction = self._zero_shot_fallback(sample, warnings)
             return self._make_result(sample, [], [], prediction, "", warnings, 0, 0)
-
-        ner_questions = self._ner_coverage_questions(premise, [d["q"] for d in decomposed])
-        if ner_questions:
-            logger.info(f"NER coverage added {len(ner_questions)} question(s): {ner_questions}")
-            decomposed += [{"q": q, "type": "fact"} for q in ner_questions]
 
         n_generated = len(decomposed)
         decomposed = self._cap_questions(decomposed, self.max_questions)
