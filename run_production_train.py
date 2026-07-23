@@ -176,11 +176,25 @@ def run_method_concurrent(label: str, samples: list[dict], model: str, params: d
     return results
 
 
+def _already_done(label: str, model: str) -> bool:
+    """True if a results file for this method+model already exists —
+    lets a run resume on a fresh machine (e.g. a stronger GPU pod) without
+    redoing methods that were already completed and pushed elsewhere."""
+    import glob
+    safe_model = model.replace("/", "-").replace(":", "-")
+    pattern = os.path.join(PRODUCTION_RESULTS_DIR, f"production_train_{label}_{safe_model}*.json")
+    return len(glob.glob(pattern)) > 0
+
+
 def run_all(model: str, max_workers: int):
     samples = get_production_samples(N)
     logger.info(f"Loaded {len(samples)} pinned train-split samples for production run (model={model}, workers={max_workers})")
 
     for label in METHOD_LABELS:
+        if _already_done(label, model):
+            logger.info(f"SKIP {label} (model={model}) — results file already exists in {PRODUCTION_RESULTS_DIR}")
+            continue
+
         logger.info("#" * 70)
         logger.info(f"PRODUCTION RUN | model={model} | method={label} | n={len(samples)} | workers={max_workers}")
         logger.info("#" * 70)
@@ -202,7 +216,8 @@ def run_all(model: str, max_workers: int):
         os.makedirs(PRODUCTION_RESULTS_DIR, exist_ok=True)
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
         tag = f"production_train_{label}"
-        path = os.path.join(PRODUCTION_RESULTS_DIR, f"{tag}_{model}_{ts}.json")
+        safe_model = model.replace("/", "-").replace(":", "-")
+        path = os.path.join(PRODUCTION_RESULTS_DIR, f"{tag}_{safe_model}_{ts}.json")
         with open(path, "w") as f:
             json.dump(results, f, indent=2, default=str)
         logger.info(f"Saved {len(results)} results for {label} -> {path}")
