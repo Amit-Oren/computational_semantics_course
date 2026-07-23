@@ -152,9 +152,14 @@ METHOD_LABELS = [
 ]
 
 
-def _checkpoint_path(label: str, model: str) -> str:
+def _model_dir(model: str) -> str:
+    """Per-model subfolder under results/production/, e.g. results/production/qwen2.5-32b/."""
     safe_model = model.replace("/", "-").replace(":", "-")
-    return os.path.join(PRODUCTION_RESULTS_DIR, f"checkpoint_{label}_{safe_model}.json")
+    return os.path.join(PRODUCTION_RESULTS_DIR, safe_model)
+
+
+def _checkpoint_path(label: str, model: str) -> str:
+    return os.path.join(_model_dir(model), f"checkpoint_{label}.json")
 
 
 CHECKPOINT_EVERY = 50  # write partial progress every N completed samples
@@ -198,7 +203,7 @@ def run_method_concurrent(label: str, samples: list[dict], model: str, params: d
                 logger.info(f"  [{done}/{total}] id={sample.get('id')} gold={gold} pred={pred}")
 
                 if done % CHECKPOINT_EVERY == 0:
-                    os.makedirs(PRODUCTION_RESULTS_DIR, exist_ok=True)
+                    os.makedirs(_model_dir(model), exist_ok=True)
                     with open(ckpt_path, "w") as f:
                         json.dump(results, f, indent=2, default=str)
                     logger.info(f"  Checkpoint saved: {len(results)} results -> {ckpt_path}")
@@ -207,13 +212,21 @@ def run_method_concurrent(label: str, samples: list[dict], model: str, params: d
 
 
 def _already_done(label: str, model: str) -> bool:
-    """True if a results file for this method+model already exists —
-    lets a run resume on a fresh machine (e.g. a stronger GPU pod) without
-    redoing methods that were already completed and pushed elsewhere."""
+    """True if a real (non-empty) results file for this method+model already
+    exists in its per-model folder -- lets a run resume on a fresh machine
+    (e.g. a stronger GPU pod) without redoing methods that were already
+    completed and pushed elsewhere. A file with zero results (e.g. from a
+    run that failed on every sample) does NOT count as done."""
     import glob
-    safe_model = model.replace("/", "-").replace(":", "-")
-    pattern = os.path.join(PRODUCTION_RESULTS_DIR, f"production_train_{label}_{safe_model}*.json")
-    return len(glob.glob(pattern)) > 0
+    pattern = os.path.join(_model_dir(model), f"production_train_{label}_*.json")
+    for path in glob.glob(pattern):
+        try:
+            with open(path) as f:
+                if len(json.load(f)) > 0:
+                    return True
+        except Exception:
+            continue
+    return False
 
 
 def run_all(model: str, max_workers: int, only: list[str] | None = None, limit: int | None = None):
@@ -246,11 +259,11 @@ def run_all(model: str, max_workers: int, only: list[str] | None = None, limit: 
         acc = correct / n_results if n_results else 0.0
         logger.info(f"  {label}: {correct}/{n_results} = {acc:.4f}")
 
-        os.makedirs(PRODUCTION_RESULTS_DIR, exist_ok=True)
+        model_dir = _model_dir(model)
+        os.makedirs(model_dir, exist_ok=True)
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
         tag = f"production_train_{label}" if not limit else f"pilot{limit}_{label}"
-        safe_model = model.replace("/", "-").replace(":", "-")
-        path = os.path.join(PRODUCTION_RESULTS_DIR, f"{tag}_{safe_model}_{ts}.json")
+        path = os.path.join(model_dir, f"{tag}_{ts}.json")
         with open(path, "w") as f:
             json.dump(results, f, indent=2, default=str)
         logger.info(f"Saved {len(results)} results for {label} -> {path}")
