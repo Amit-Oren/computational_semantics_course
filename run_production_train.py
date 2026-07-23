@@ -152,10 +152,33 @@ METHOD_LABELS = [
 ]
 
 
+def _checkpoint_path(label: str, model: str) -> str:
+    safe_model = model.replace("/", "-").replace(":", "-")
+    return os.path.join(PRODUCTION_RESULTS_DIR, f"checkpoint_{label}_{safe_model}.json")
+
+
+CHECKPOINT_EVERY = 50  # write partial progress every N completed samples
+
+
 def run_method_concurrent(label: str, samples: list[dict], model: str, params: dict, max_workers: int) -> list[dict]:
+    """Runs `samples` concurrently, resuming from a checkpoint if one exists
+    for this label+model (skips already-completed sample IDs), and writing a
+    fresh checkpoint every CHECKPOINT_EVERY completions so a kill/interrupt
+    partway through doesn't lose everything -- only whatever's newer than the
+    last checkpoint write."""
+    ckpt_path = _checkpoint_path(label, model)
+    prior_results: list[dict] = []
+    if os.path.exists(ckpt_path):
+        with open(ckpt_path) as f:
+            prior_results = json.load(f)
+        done_ids = {r.get("id") for r in prior_results}
+        samples = [s for s in samples if s.get("id") not in done_ids]
+        logger.info(f"  Resuming {label} from checkpoint: {len(prior_results)} already done, {len(samples)} remaining")
+
     worker = _build_worker(label, model, params)
-    results = []
-    done = 0
+    results = list(prior_results)
+    done = len(prior_results)
+    total = done + len(samples)
 
     def _safe_call(sample):
         try:
@@ -164,14 +187,21 @@ def run_method_concurrent(label: str, samples: list[dict], model: str, params: d
             logger.error(f"  {label} | id={sample.get('id')} failed: {exc}")
             return None
 
-    with ThreadPoolExecutor(max_workers=max_workers) as ex:
-        for sample, result in zip(samples, ex.map(_safe_call, samples)):
-            done += 1
-            if result is not None:
-                results.append(result)
-            pred = result.get("prediction") if result else None
-            gold = sample.get("label")
-            logger.info(f"  [{done}/{len(samples)}] id={sample.get('id')} gold={gold} pred={pred}")
+    if samples:
+        with ThreadPoolExecutor(max_workers=max_workers) as ex:
+            for sample, result in zip(samples, ex.map(_safe_call, samples)):
+                done += 1
+                if result is not None:
+                    results.append(result)
+                pred = result.get("prediction") if result else None
+                gold = sample.get("label")
+                logger.info(f"  [{done}/{total}] id={sample.get('id')} gold={gold} pred={pred}")
+
+                if done % CHECKPOINT_EVERY == 0:
+                    os.makedirs(PRODUCTION_RESULTS_DIR, exist_ok=True)
+                    with open(ckpt_path, "w") as f:
+                        json.dump(results, f, indent=2, default=str)
+                    logger.info(f"  Checkpoint saved: {len(results)} results -> {ckpt_path}")
 
     return results
 
@@ -224,6 +254,11 @@ def run_all(model: str, max_workers: int, only: list[str] | None = None, limit: 
         with open(path, "w") as f:
             json.dump(results, f, indent=2, default=str)
         logger.info(f"Saved {len(results)} results for {label} -> {path}")
+
+        ckpt_path = _checkpoint_path(label, model)
+        if os.path.exists(ckpt_path):
+            os.remove(ckpt_path)
+            logger.info(f"  Removed checkpoint (superseded by final save): {ckpt_path}")
 
 
 if __name__ == "__main__":
