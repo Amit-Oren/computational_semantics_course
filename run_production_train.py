@@ -186,12 +186,15 @@ def _already_done(label: str, model: str) -> bool:
     return len(glob.glob(pattern)) > 0
 
 
-def run_all(model: str, max_workers: int):
+def run_all(model: str, max_workers: int, only: list[str] | None = None, limit: int | None = None):
     samples = get_production_samples(N)
+    if limit:
+        samples = samples[:limit]
     logger.info(f"Loaded {len(samples)} pinned train-split samples for production run (model={model}, workers={max_workers})")
 
-    for label in METHOD_LABELS:
-        if _already_done(label, model):
+    labels = only if only else METHOD_LABELS
+    for label in labels:
+        if not limit and _already_done(label, model):
             logger.info(f"SKIP {label} (model={model}) — results file already exists in {PRODUCTION_RESULTS_DIR}")
             continue
 
@@ -215,7 +218,7 @@ def run_all(model: str, max_workers: int):
 
         os.makedirs(PRODUCTION_RESULTS_DIR, exist_ok=True)
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-        tag = f"production_train_{label}"
+        tag = f"production_train_{label}" if not limit else f"pilot{limit}_{label}"
         safe_model = model.replace("/", "-").replace(":", "-")
         path = os.path.join(PRODUCTION_RESULTS_DIR, f"{tag}_{safe_model}_{ts}.json")
         with open(path, "w") as f:
@@ -225,9 +228,26 @@ def run_all(model: str, max_workers: int):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print(f"Usage: python run_production_train.py <model> [max_workers={DEFAULT_MAX_WORKERS}]")
+        print(f"Usage: python run_production_train.py <model> [max_workers={DEFAULT_MAX_WORKERS}] [--only label1,label2] [--limit N]")
         sys.exit(1)
-    model = sys.argv[1]
-    max_workers = int(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_MAX_WORKERS
+
+    args = sys.argv[1:]
+    only_labels = None
+    limit_n = None
+    positional = []
+    i = 0
+    while i < len(args):
+        if args[i] == "--only":
+            only_labels = args[i + 1].split(",")
+            i += 2
+        elif args[i] == "--limit":
+            limit_n = int(args[i + 1])
+            i += 2
+        else:
+            positional.append(args[i])
+            i += 1
+
+    model = positional[0]
+    max_workers = int(positional[1]) if len(positional) > 1 else DEFAULT_MAX_WORKERS
     setup_logger("production_train", model)
-    run_all(model, max_workers)
+    run_all(model, max_workers, only=only_labels, limit=limit_n)
