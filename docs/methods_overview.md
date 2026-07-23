@@ -87,7 +87,7 @@ Generates questions from the premise (**premise-blind** — never sees H at gene
 - `seeded` — a seeder (`pos` or `srl`) extracts keyphrases/anchors from P first, then one question is generated per anchor.
 - `freeform` (legacy baseline) — up to 15 breadth-first questions, no fact/relation distinction.
 
-**Capping:** the generated question pool is capped at `P_QUESTION_MAX_QUESTIONS` (currently 25), keeping relation-type questions first (scarce, higher-value) and filling the remainder with facts.
+**Capping:** the generated question pool is capped at `P_QUESTION_MAX_QUESTIONS` (currently 20), keeping relation-type questions first (scarce, higher-value) and filling the remainder with facts.
 
 **Stage 1b (selection) is currently disabled** for `aggregated`/`sequential_cot` — all generated questions go directly to Stage 1c unfiltered (removing the old top-K relevance filter measurably improved `aggregated` mode's accuracy: 54-58% vs. 24-46% under the old filtered code, on the same n=50 slice).
 

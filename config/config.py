@@ -137,7 +137,7 @@ P_QUESTION_MMR_LAMBDA: float = 0.7              # 1.0 reduces MMR exactly to top
 # relation-type questions (scarce, high-value) are kept first, fact-type
 # fills the remainder. See runner/p_question.py._cap_questions. Freeform mode
 # self-caps at ~15 via its prompt, so this rarely binds for it.
-P_QUESTION_MAX_QUESTIONS: int = 25
+P_QUESTION_MAX_QUESTIONS: int = 20
 
 
 # ── P-Question Pipeline schemas ───────────────────────────────────────────────
