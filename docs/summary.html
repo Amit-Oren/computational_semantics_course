@@ -1,0 +1,346 @@
+<title>ConTRoL NLI — Ablation Summary</title>
+<style>
+  :root {
+    --ink: #1c1a17; --ink-muted: #4a453e; --ink-faint: #8a8377;
+    --surface: #fbf9f5; --surface-raised: #ffffff; --border-soft: #e8e3d9;
+    --accent: #a4501f; --accent-soft: #f3e3d5;
+    --good: #2e7d53; --good-soft: #e4f3ea;
+    --bad: #b3392b; --bad-soft: #fbe6e2;
+    --warn: #9c7a17; --warn-soft: #f6edd0;
+    --m-baseline: #6b7280; --m-baseline-soft: #eef0f2;
+    --m-control: #7C4FCC; --m-control-soft: #F1EAFB;
+    --m-hquestion: #35548C; --m-hquestion-soft: #EAF0FA;
+    --m-pquestion: #D2691E; --m-pquestion-soft: #FBEEE1;
+    --m-bridge: #1A8A9E; --m-bridge-soft: #E2F4F7;
+    --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --font-mono: 'SF Mono', 'Menlo', 'Consolas', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #f0ede6; --ink-muted: #c2bcaf; --ink-faint: #8a8377;
+      --surface: #16140f; --surface-raised: #201d17; --border-soft: #33302a;
+      --accent: #e08a4f; --accent-soft: #3a2a1c;
+      --good: #6fd39a; --good-soft: #1a2e22;
+      --bad: #f0897d; --bad-soft: #3a1f1c;
+      --warn: #e0c46f; --warn-soft: #332a12;
+      --m-baseline: #9aa0aa; --m-baseline-soft: #24262b;
+      --m-control: #b79cf0; --m-control-soft: #241d38;
+      --m-hquestion: #8fb0e8; --m-hquestion-soft: #1b2536;
+      --m-pquestion: #f0a355; --m-pquestion-soft: #362213;
+      --m-bridge: #6fd3e6; --m-bridge-soft: #16292d;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #f0ede6; --ink-muted: #c2bcaf; --ink-faint: #8a8377;
+    --surface: #16140f; --surface-raised: #201d17; --border-soft: #33302a;
+    --accent: #e08a4f; --accent-soft: #3a2a1c;
+    --good: #6fd39a; --good-soft: #1a2e22;
+    --bad: #f0897d; --bad-soft: #3a1f1c;
+    --warn: #e0c46f; --warn-soft: #332a12;
+    --m-baseline: #9aa0aa; --m-baseline-soft: #24262b;
+    --m-control: #b79cf0; --m-control-soft: #241d38;
+    --m-hquestion: #8fb0e8; --m-hquestion-soft: #1b2536;
+    --m-pquestion: #f0a355; --m-pquestion-soft: #362213;
+    --m-bridge: #6fd3e6; --m-bridge-soft: #16292d;
+  }
+  :root[data-theme="light"] {
+    --ink: #1c1a17; --ink-muted: #4a453e; --ink-faint: #8a8377;
+    --surface: #fbf9f5; --surface-raised: #ffffff; --border-soft: #e8e3d9;
+    --accent: #a4501f; --accent-soft: #f3e3d5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--surface); color: var(--ink);
+    font-family: var(--font-body); font-size: 16px; line-height: 1.65;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 48px 24px 96px; }
+  h1 {
+    font-family: var(--font-display); font-size: 34px; font-weight: 600;
+    margin: 0 0 6px; text-wrap: balance; letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-family: var(--font-mono); font-size: 13px; color: var(--ink-faint);
+    margin: 0 0 28px;
+  }
+  .subtitle code { color: var(--ink-muted); }
+  h2 {
+    font-family: var(--font-display); font-size: 24px; font-weight: 600;
+    margin: 48px 0 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border-soft);
+  }
+  h3 {
+    font-family: var(--font-display); font-size: 18px; font-weight: 600;
+    margin: 28px 0 8px;
+  }
+  p { margin: 0 0 14px; color: var(--ink-muted); }
+  strong { color: var(--ink); }
+  code {
+    font-family: var(--font-mono); font-size: 0.88em; background: var(--border-soft);
+    padding: 1px 5px; border-radius: 4px; color: var(--ink);
+  }
+  a { color: var(--accent); }
+
+  .note {
+    background: var(--warn-soft); border-left: 3px solid var(--warn);
+    padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 20px 0;
+    font-size: 14.5px; color: var(--ink-muted);
+  }
+  .note strong { color: var(--ink); }
+
+  .status {
+    background: var(--good-soft); border-left: 3px solid var(--good);
+    padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 20px 0;
+    font-size: 14.5px; color: var(--ink-muted);
+  }
+  .status strong { color: var(--ink); }
+
+  .pipeline-card {
+    background: var(--surface-raised); border: 1px solid var(--border-soft);
+    border-left: 4px solid var(--m-baseline); border-radius: 0 10px 10px 0;
+    padding: 14px 18px; margin: 12px 0;
+  }
+  .pipeline-card.baseline { border-left-color: var(--m-baseline); }
+  .pipeline-card.control { border-left-color: var(--m-control); }
+  .pipeline-card.hquestion { border-left-color: var(--m-hquestion); }
+  .pipeline-card.pquestion { border-left-color: var(--m-pquestion); }
+  .pipeline-card.bridge { border-left-color: var(--m-bridge); }
+  .pipeline-name {
+    font-family: var(--font-mono); font-weight: 700; font-size: 14.5px;
+  }
+  .pipeline-card.baseline .pipeline-name { color: var(--m-baseline); }
+  .pipeline-card.control .pipeline-name { color: var(--m-control); }
+  .pipeline-card.hquestion .pipeline-name { color: var(--m-hquestion); }
+  .pipeline-card.pquestion .pipeline-name { color: var(--m-pquestion); }
+  .pipeline-card.bridge .pipeline-name { color: var(--m-bridge); }
+  .pipeline-card ol { margin: 8px 0 0; padding-left: 20px; }
+  .pipeline-card li { color: var(--ink-muted); font-size: 14.5px; margin: 3px 0; }
+  .pipeline-card > p { margin: 6px 0 0; font-size: 14.5px; }
+
+  .axis-block { margin: 16px 0; }
+  .axis-block ul { padding-left: 20px; margin: 8px 0; }
+  .axis-block li { margin: 6px 0; font-size: 15px; }
+
+  .table-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--border-soft); border-radius: 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 560px; }
+  thead th {
+    background: var(--border-soft); text-align: left; padding: 10px 12px;
+    font-family: var(--font-mono); font-size: 11.5px; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--ink-muted); white-space: nowrap;
+  }
+  tbody td {
+    padding: 8px 12px; border-top: 1px solid var(--border-soft);
+    font-variant-numeric: tabular-nums; color: var(--ink-muted); white-space: nowrap;
+  }
+  tbody td:first-child { color: var(--ink); white-space: normal; }
+  tbody tr.highlight td { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
+  .caption { font-size: 13px; color: var(--ink-faint); margin-top: 6px; font-style: italic; }
+
+  .finding {
+    background: var(--surface-raised); border: 1px solid var(--border-soft);
+    border-radius: 10px; padding: 18px 20px; margin: 14px 0;
+  }
+  .finding-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%; background: var(--accent-soft);
+    color: var(--accent); font-family: var(--font-mono); font-weight: 700; font-size: 13px;
+    margin-right: 10px; flex-shrink: 0;
+  }
+  .finding-head { display: flex; align-items: baseline; margin-bottom: 8px; }
+  .finding-title { font-weight: 700; color: var(--ink); font-size: 15.5px; }
+  .finding p { margin: 0; font-size: 14.5px; }
+
+  .conclusion {
+    background: var(--surface-raised); border: 1px solid var(--border-soft);
+    border-radius: 12px; padding: 22px 24px; margin: 16px 0;
+  }
+
+  ::selection { background: var(--accent-soft); }
+</style>
+
+<div class="wrap">
+
+  <h1>ConTRoL NLI — Ablation Summary</h1>
+  <p class="subtitle">Model: <code>qwen2.5-32b</code> · Dataset: ConTRoL test split (unless noted) · N=50 samples (unless noted)</p>
+
+  <div class="note">
+    <strong>Dating note:</strong> the original table below ("Results — stale, pre-fix") predates two significant fixes made 2026-07-21/22: a lab-server connectivity bug (wrong Tailscale IP + wrong URL path in <code>.env</code>, causing silent multi-minute hangs) and a JSON-parsing bug in <code>p_question</code>'s decomposition output (an unquoted enum value that silently discarded ~14% of samples to a zero-shot fallback). Those numbers should be treated as historical, not current — see "Results — current code" below for verified re-runs.
+  </div>
+
+  <h2>Pipelines</h2>
+
+  <div class="pipeline-card baseline">
+    <span class="pipeline-name">zero_shot</span>
+    <p>Direct NLI. One call: <code>(P, H) → label</code>. No reasoning steps.</p>
+  </div>
+
+  <div class="pipeline-card baseline">
+    <span class="pipeline-name">few_shot_cot</span>
+    <p>Same but with 3 fixed demonstrations (one per label) in the prompt + chain-of-thought instruction. Forces the model to reason before labeling.</p>
+  </div>
+
+  <div class="pipeline-card control">
+    <span class="pipeline-name">retrieve_then_classify</span>
+    <p>Control baseline, added after the original table below. No question generation at all: the Locator runs directly on the hypothesis itself as its query, and the classifier reads the raw located sentences (not a paraphrased "answer"). Isolates how much of any question-based method's gain comes from locating evidence alone vs. the questions themselves.</p>
+  </div>
+
+  <div class="pipeline-card hquestion">
+    <span class="pipeline-name">h_question</span> — Interrogate H via P.
+    <ol>
+      <li>Extract seeds from H (keyphrases)</li>
+      <li>Generate probe questions from those seeds</li>
+      <li>Locate answers in P (Locator: is it answerable? what's the answer?)</li>
+      <li>Classify: given all Q/A pairs → NLI label</li>
+    </ol>
+  </div>
+
+  <div class="pipeline-card pquestion">
+    <span class="pipeline-name">p_question</span> — Decompose P, test against H.
+    <ol>
+      <li>Generate questions <em>about</em> P (from decomposed facts/relations or seeded keyphrases)</li>
+      <li>Locate answers in P</li>
+      <li><s>Filter top-K by relevance to H</s> — <strong>removed</strong> in the current code for <code>aggregated</code>/<code>sequential_cot</code> (all generated questions go straight to Stage 1c unfiltered). Voting mode has its own separate, still-unresolved filter.</li>
+      <li>Classify: given Q/A pairs → NLI label</li>
+    </ol>
+  </div>
+
+  <div class="pipeline-card bridge">
+    <span class="pipeline-name">bridge_question</span> — Questions that span both P and H.
+    <ol>
+      <li>Generate questions requiring both P and H to answer</li>
+      <li>Locate answers in P</li>
+      <li>Classify from Q/A pairs</li>
+    </ol>
+  </div>
+
+  <h2>Ablation Axes</h2>
+
+  <div class="axis-block">
+    <h3>Seeder — how seed phrases are extracted from the text</h3>
+    <p>Used by <strong>h_question</strong> (seeds from H) and <strong>p_question|seeded</strong> (seeds from P).</p>
+    <ul>
+      <li><code>pos</code> — NLTK POS tagger extracts noun phrases and named entities. Deterministic, fast, no LLM call.</li>
+      <li><code>srl</code> — LLM extracts PropBank-style semantic roles (agent, theme, time, location…). Richer than POS but depends on another LLM call.</li>
+    </ul>
+  </div>
+
+  <div class="axis-block">
+    <h3>Generation — how questions are formed from P</h3>
+    <p>Used by <strong>p_question only</strong>.</p>
+    <ul>
+      <li><code>decomposition</code> — LLM reads P and breaks it into atomic <strong>facts</strong> and <strong>relations</strong> (comparisons, causal links, evaluative claims, temporal ordering), tagging each question accordingly.</li>
+      <li><code>seeded</code> — Keyphrases extracted from P by the seeder (pos or srl), then passed to the LLM as seeds. Two sub-configs: seeded|pos and seeded|srl.</li>
+    </ul>
+  </div>
+
+  <div class="axis-block">
+    <h3>Aggregation — how Q/A pairs are combined into a final NLI label</h3>
+    <p>Used by <strong>h_question</strong>, <strong>p_question</strong>, <strong>bridge_question</strong>.</p>
+    <ul>
+      <li><code>aggregated</code> — All Q/A pairs passed together in a single classifier call.</li>
+      <li><code>sequential_cot</code> — Q/A pairs processed one at a time, running verdict updated after each.</li>
+      <li><code>voting</code> — Each Q/A pair classified independently (one call per pair); majority vote wins.</li>
+    </ul>
+  </div>
+
+  <div class="axis-block">
+    <h3>Few-shot (added after the original table below)</h3>
+    <p>Toggle on Stage 1's question-generation prompt for <code>h_question</code>/<code>p_question</code>/<code>bridge_question</code> — off (zero-shot instructions only) or on (3 worked examples appended). Not present as an axis in the original 20-config sweep below.</p>
+  </div>
+
+  <h2>Results — N=50, stale (pre-fix, kept for historical reference)</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Config</th><th>Acc</th><th>Macro F1</th><th>Entail R</th><th>Contr R</th><th>Neutral R</th><th>N-fail</th></tr></thead>
+      <tbody>
+        <tr class="highlight"><td>h_question | pos | aggregated</td><td>0.780</td><td>0.760</td><td>0.800</td><td>0.688</td><td>0.889</td><td>9</td></tr>
+        <tr><td>h_question | pos | voting</td><td>0.740</td><td>0.728</td><td>0.680</td><td>0.750</td><td>0.889</td><td>10</td></tr>
+        <tr><td>h_question | srl | aggregated</td><td>0.740</td><td>0.720</td><td>0.760</td><td>0.688</td><td>0.778</td><td>11</td></tr>
+        <tr><td>bridge_question | aggregated</td><td>0.720</td><td>0.698</td><td>0.720</td><td>0.688</td><td>0.778</td><td>11</td></tr>
+        <tr class="highlight"><td>few_shot_cot (baseline)</td><td>0.700</td><td>0.682</td><td>0.720</td><td>0.500</td><td>1.000</td><td>14</td></tr>
+        <tr><td>h_question | srl | sequential_cot</td><td>0.700</td><td>0.684</td><td>0.720</td><td>0.563</td><td>0.889</td><td>13</td></tr>
+        <tr><td>h_question | srl | voting</td><td>0.700</td><td>0.683</td><td>0.680</td><td>0.688</td><td>0.778</td><td>9</td></tr>
+        <tr class="highlight"><td>zero_shot (baseline)</td><td>0.640</td><td>0.618</td><td>0.680</td><td>0.375</td><td>1.000</td><td>18</td></tr>
+        <tr><td>h_question | pos | sequential_cot</td><td>0.640</td><td>0.647</td><td>0.560</td><td>0.625</td><td>0.889</td><td>17</td></tr>
+        <tr><td>bridge_question | voting</td><td>0.620</td><td>0.604</td><td>0.640</td><td>0.500</td><td>0.778</td><td>16</td></tr>
+        <tr><td>bridge_question | sequential_cot</td><td>0.580</td><td>0.580</td><td>0.520</td><td>0.563</td><td>0.778</td><td>17</td></tr>
+        <tr><td>p_question | decomposition | aggregated</td><td>0.460</td><td>0.467</td><td>0.400</td><td>0.375</td><td>0.778</td><td>24</td></tr>
+        <tr><td>p_question | seeded|pos | aggregated</td><td>0.440</td><td>0.451</td><td>0.320</td><td>0.438</td><td>0.778</td><td>24</td></tr>
+        <tr><td>p_question | seeded|srl | aggregated</td><td>0.400</td><td>0.413</td><td>0.280</td><td>0.375</td><td>0.778</td><td>26</td></tr>
+        <tr><td>p_question | decomposition | sequential_cot</td><td>0.320</td><td>0.329</td><td>0.160</td><td>0.313</td><td>0.778</td><td>29</td></tr>
+        <tr><td>p_question | seeded|srl | sequential_cot</td><td>0.320</td><td>0.326</td><td>0.200</td><td>0.250</td><td>0.778</td><td>29</td></tr>
+        <tr><td>p_question | seeded|srl | voting</td><td>0.280</td><td>0.275</td><td>0.080</td><td>0.250</td><td>0.889</td><td>34</td></tr>
+        <tr><td>p_question | seeded|pos | sequential_cot</td><td>0.280</td><td>0.279</td><td>0.160</td><td>0.188</td><td>0.778</td><td>33</td></tr>
+        <tr><td>p_question | decomposition | voting</td><td>0.260</td><td>0.237</td><td>0.040</td><td>0.188</td><td>1.000</td><td>36</td></tr>
+        <tr><td>p_question | seeded|pos | voting</td><td>0.240</td><td>0.218</td><td>0.080</td><td>0.125</td><td>0.889</td><td>37</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="caption">N-fail = samples where gold is Entailment/Contradiction but model predicted Neutral</p>
+
+  <h2>Results — N=50, current code, 2026-07-22 (verified after both fixes)</h2>
+  <p>Only <code>p_question</code> and <code>retrieve_then_classify</code> have been re-verified under current code so far; <code>h_question</code>/<code>bridge_question</code> still need fresh runs (using the stale numbers above as reference in the meantime).</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Config</th><th>Acc</th></tr></thead>
+      <tbody>
+        <tr class="highlight"><td>retrieve_then_classify</td><td>0.700</td></tr>
+        <tr><td>p_question | decomposition | aggregated | few-shot on</td><td>0.580</td></tr>
+        <tr><td>p_question | decomposition | aggregated | few-shot off</td><td>0.540</td></tr>
+        <tr><td>p_question | decomposition | voting | few-shot off (unfiltered)</td><td>0.300</td></tr>
+        <tr><td>p_question | decomposition | voting | type-priority filter | few-shot off</td><td>0.300</td></tr>
+        <tr><td>p_question | decomposition | voting | few-shot on (unfiltered)</td><td>0.240</td></tr>
+        <tr><td>p_question | decomposition | voting | ROUGE-L filter | few-shot off</td><td>0.240</td></tr>
+        <tr><td>p_question | decomposition | voting | type-priority filter | few-shot on</td><td>0.220</td></tr>
+        <tr><td>p_question | decomposition | voting | ROUGE-L filter | few-shot on</td><td>0.220</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Key Findings</h2>
+
+  <div class="finding">
+    <div class="finding-head"><span class="finding-num">1</span><span class="finding-title">(Stale-table finding) Best method at the time: h_question | pos | aggregated (78%)</span></div>
+    <p>Held under the old code/connectivity conditions. Not yet re-verified under current code — treat as a lead, not a confirmed number.</p>
+  </div>
+
+  <div class="finding">
+    <div class="finding-head"><span class="finding-num">2</span><span class="finding-title">retrieve_then_classify beats every re-verified p_question config, and needs no question generation at all</span></div>
+    <p>70% vs. p_question's best of 58% — a 12-point gap, with better label balance too (no severe collapse toward one label, unlike p_question's heavy Neutral over-prediction). Root cause, confirmed via direct example inspection: its Locator runs on the <strong>hypothesis itself</strong>, so it reliably finds the one decisive premise sentence a comparison/combination hypothesis depends on. p_question's Stage 1 is <strong>premise-blind</strong> — it never sees the hypothesis at generation time — so it structurally cannot target a hypothesis-specific comparison unless the premise happens to invite one on its own. Confirmed concretely on a real sample (Thomas Young / "surpassed his other skills"): p_question generated 30 real questions, none of which tested the comparison; retrieve_then_classify found the exact sentence directly because it could see what it was looking for.</p>
+    <p style="margin-top:8px;"><code>retrieve_then_classify</code> also skips the Answer Extractor entirely — the classifier reads the premise's original wording verbatim instead of a model-generated paraphrase, avoiding a second source of information loss.</p>
+  </div>
+
+  <div class="finding">
+    <div class="finding-head"><span class="finding-num">3</span><span class="finding-title">Removing p_question's Stage 1b relevance filter measurably helped aggregated mode</span></div>
+    <p>54-58% now vs. 24-46% in the stale table — a large jump. The filter previously capped Stage 1c to only the top-3 questions by ROUGE-L/embedding relevance to H; removing it lets the classifier's own "one decisive piece of evidence is enough" rule actually find the needle across the full question pool instead of gambling on a pre-filtered subset.</p>
+  </div>
+
+  <div class="finding">
+    <div class="finding-head"><span class="finding-num">4</span><span class="finding-title">Few-shot prompting gives a small, consistent boost to p_question's aggregated mode (+4 points), but doesn't help voting</span></div>
+    <p>54%→58% (aggregated) but 30%→24%/22% (voting, across both filter attempts) — few-shot doesn't fix voting's underlying problem, and may make it marginally worse.</p>
+  </div>
+
+  <div class="finding">
+    <div class="finding-head"><span class="finding-num">5</span><span class="finding-title">p_question's voting mode is fundamentally broken, and question-filtering doesn't fix it</span></div>
+    <p>Three separate approaches tried, none beat the unfiltered 30%/24% baseline: no filter, a relation-type-priority filter, and a pure ROUGE-L relevance filter. Root cause, confirmed on a real sample (<code>id_130</code>, Bt-resistant insects): the one genuinely decisive question got the correct vote, but was outvoted 9-to-1 by other questions that were each individually, correctly Neutral in isolation — because voting classifies every question with zero visibility into the others. This looks like a limitation of per-question isolated classification itself, not of which questions get selected.</p>
+  </div>
+
+  <div class="finding">
+    <div class="finding-head"><span class="finding-num">6</span><span class="finding-title">Dominant failure mode across all methods: Neutral over-prediction</span></div>
+    <p>Still holds under current code — p_question's aggregated-mode confusion matrix shows heavy Neutral over-prediction on true Entailment/Contradiction cases, consistent with the stale-table finding.</p>
+  </div>
+
+  <div class="finding">
+    <div class="finding-head"><span class="finding-num">7</span><span class="finding-title">At least one dataset label looks wrong</span></div>
+    <p><code>id_109</code>: gold label is Entailment, but the premise ("Traffic jams... have become a regular feature during monsoon") contains no textual basis whatsoever for the hypothesis (about road-construction material and potholes) — confirmed directly against the raw ConTRoL test.jsonl, not a data-loading bug. Some fraction of "wrong" predictions across every method may be hitting this kind of label noise, an unrecoverable ceiling independent of pipeline quality.</p>
+  </div>
+
+  <h2>Conclusion <span style="font-family: var(--font-mono); font-size: 14px; color: var(--ink-faint); font-weight: 400;">(updated 2026-07-22)</span></h2>
+  <div class="conclusion">
+    <p>The original conclusion — that h_question's question-decomposition approach substantially outperforms direct prompting — likely still holds directionally, but needs re-verification under current code before treating 78% as a real number. The bigger update: <strong>retrieve_then_classify</strong>, the simplest possible evidence-grounded method (no question generation, no Answer Extractor), currently outperforms every re-verified p_question configuration — suggesting that for this dataset/model, decomposing a premise into many small questions may be actively counterproductive, most likely because it fragments the reasoning that the model actually handles better when reading the original located sentences in one piece. Whether this holds up against a re-verified h_question/bridge_question is the open question going into the next round of runs. <code>p_question</code>'s voting mode should be considered unresolved/deprioritized rather than fixed by filtering; a real fix, if pursued, likely needs to change the aggregation mechanism itself, not the question selection feeding into it.</p>
+  </div>
+
+  <div class="status">
+    <strong>Current status:</strong> a larger production sweep (n=1500, fixed random seed, train split) across <code>qwen2.5-32b</code>, <code>gpt-oss-20b</code>, and <code>gemma4-31b</code> is in progress as of this writing — see <code>results/production/</code> once complete for a properly-scaled comparison across all methods and models.
+  </div>
+
+</div>
