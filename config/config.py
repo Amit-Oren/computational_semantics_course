@@ -28,6 +28,10 @@ GROQ_API_URL = "https://api.groq.com/openai/v1"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_API_URL = "https://api.openai.com/v1"
 
+# DeepSeek API (OpenAI-compatible) -- same rationale as gpt-4o-mini above.
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
+DEEPSEEK_API_URL = "https://api.deepseek.com/v1"
+
 # Local Ollama server (no external API, no shared/rate-limited resource —
 # runs entirely on this machine). `ollama serve` must be running;
 # `brew services start ollama` keeps it up in the background.
@@ -56,6 +60,8 @@ MODELS = {
     "qwen/qwen3.6-27b":        "groq",
     # ── OpenAI (real API, not the lab gateway) ──────────────────────────────────
     "gpt-4o-mini": "openai",
+    # ── DeepSeek ──────────────────────────────────────────────────────────────
+    "deepseek-chat": "deepseek",
     # ── Local Ollama ──────────────────────────────────────────────────────────
     "llama3.1-8b-local": "ollama",
 }
@@ -499,6 +505,17 @@ def get_llm(model: str, params: dict = DEFAULT_PARAMS):
             model=model,
             base_url=OPENAI_API_URL,
             api_key=OPENAI_API_KEY,
+            temperature=params.get("temperature", 0.0),
+            max_tokens=params.get("max_tokens", 2048),
+            timeout=_REQUEST_TIMEOUT,
+            max_retries=_SDK_MAX_RETRIES,
+        )
+    if MODELS.get(model) == "deepseek":
+        from langchain_openai import ChatOpenAI
+        return ChatOpenAI(
+            model=model,
+            base_url=DEEPSEEK_API_URL,
+            api_key=DEEPSEEK_API_KEY,
             temperature=params.get("temperature", 0.0),
             max_tokens=params.get("max_tokens", 2048),
             timeout=_REQUEST_TIMEOUT,
