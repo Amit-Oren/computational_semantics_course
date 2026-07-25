@@ -61,7 +61,7 @@ MODELS = {
     # ── OpenAI (real API, not the lab gateway) ──────────────────────────────────
     "gpt-4o-mini": "openai",
     # ── DeepSeek ──────────────────────────────────────────────────────────────
-    "deepseek-chat": "deepseek",
+    "deepseek-v4-flash": "deepseek",
     # ── Local Ollama ──────────────────────────────────────────────────────────
     "llama3.1-8b-local": "ollama",
 }
