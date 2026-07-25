@@ -22,6 +22,16 @@ HF_MODEL_MAP = {
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GROQ_API_URL = "https://api.groq.com/openai/v1"
 
+# Real OpenAI API (not the lab gateway) -- for genuinely fast/cheap hosted
+# models like gpt-4o-mini, run as their own comparison point rather than
+# through any self-hosted infrastructure.
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_API_URL = "https://api.openai.com/v1"
+
+# DeepSeek API (OpenAI-compatible) -- same rationale as gpt-4o-mini above.
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
+DEEPSEEK_API_URL = "https://api.deepseek.com/v1"
+
 # Local Ollama server (no external API, no shared/rate-limited resource —
 # runs entirely on this machine). `ollama serve` must be running;
 # `brew services start ollama` keeps it up in the background.
@@ -48,6 +58,10 @@ MODELS = {
     "llama-3.1-8b-instant":    "groq",
     "llama-3.3-70b-versatile": "groq",
     "qwen/qwen3.6-27b":        "groq",
+    # ── OpenAI (real API, not the lab gateway) ──────────────────────────────────
+    "gpt-4o-mini": "openai",
+    # ── DeepSeek ──────────────────────────────────────────────────────────────
+    "deepseek-v4-flash": "deepseek",
     # ── Local Ollama ──────────────────────────────────────────────────────────
     "llama3.1-8b-local": "ollama",
 }
@@ -410,8 +424,8 @@ class _StructuredOutput:
     before Pydantic validation. json_mode alone doesn't reliably prevent fences;
     fence stripping alone loses the JSON-mode guidance that helps the locator."""
 
-    def __init__(self, llm, schema):
-        self._llm = llm.bind(response_format={"type": "json_object"})
+    def __init__(self, llm, schema, use_response_format: bool = True):
+        self._llm = llm.bind(response_format={"type": "json_object"}) if use_response_format else llm
         self._schema = schema
 
     def invoke(self, messages):
@@ -428,6 +442,15 @@ def get_structured_llm(model: str, schema, params: dict = DEFAULT_PARAMS):
     llm = get_llm(model, params)
     if MODELS.get(model) == "groq":
         return llm.with_structured_output(schema, method="json_mode")
+    if MODELS.get(model) == "deepseek":
+        # DeepSeek's v4 "thinking mode" rejects both response_format-based
+        # JSON mode ("This response_format type is unavailable now") and
+        # forced tool_choice ("Thinking mode does not support this
+        # tool_choice") -- neither of LangChain's structured-output methods
+        # work. Fall back to plain text + manual JSON parsing/repair
+        # (same approach as the open_source lab models), with no
+        # response_format binding at all.
+        return _StructuredOutput(llm, schema, use_response_format=False)
     if MODELS.get(model) == "open_source":
         return _StructuredOutput(llm, schema)
     return llm.with_structured_output(schema)
@@ -480,6 +503,28 @@ def get_llm(model: str, params: dict = DEFAULT_PARAMS):
             model=OLLAMA_MODEL_MAP[model],
             base_url=OLLAMA_API_URL,
             api_key="ollama",  # unused by Ollama, but the client requires a non-empty value
+            temperature=params.get("temperature", 0.0),
+            max_tokens=params.get("max_tokens", 2048),
+            timeout=_REQUEST_TIMEOUT,
+            max_retries=_SDK_MAX_RETRIES,
+        )
+    if MODELS.get(model) == "openai":
+        from langchain_openai import ChatOpenAI
+        return ChatOpenAI(
+            model=model,
+            base_url=OPENAI_API_URL,
+            api_key=OPENAI_API_KEY,
+            temperature=params.get("temperature", 0.0),
+            max_tokens=params.get("max_tokens", 2048),
+            timeout=_REQUEST_TIMEOUT,
+            max_retries=_SDK_MAX_RETRIES,
+        )
+    if MODELS.get(model) == "deepseek":
+        from langchain_openai import ChatOpenAI
+        return ChatOpenAI(
+            model=model,
+            base_url=DEEPSEEK_API_URL,
+            api_key=DEEPSEEK_API_KEY,
             temperature=params.get("temperature", 0.0),
             max_tokens=params.get("max_tokens", 2048),
             timeout=_REQUEST_TIMEOUT,
