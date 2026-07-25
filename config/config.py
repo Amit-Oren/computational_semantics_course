@@ -424,8 +424,8 @@ class _StructuredOutput:
     before Pydantic validation. json_mode alone doesn't reliably prevent fences;
     fence stripping alone loses the JSON-mode guidance that helps the locator."""
 
-    def __init__(self, llm, schema):
-        self._llm = llm.bind(response_format={"type": "json_object"})
+    def __init__(self, llm, schema, use_response_format: bool = True):
+        self._llm = llm.bind(response_format={"type": "json_object"}) if use_response_format else llm
         self._schema = schema
 
     def invoke(self, messages):
@@ -442,6 +442,15 @@ def get_structured_llm(model: str, schema, params: dict = DEFAULT_PARAMS):
     llm = get_llm(model, params)
     if MODELS.get(model) == "groq":
         return llm.with_structured_output(schema, method="json_mode")
+    if MODELS.get(model) == "deepseek":
+        # DeepSeek's v4 "thinking mode" rejects both response_format-based
+        # JSON mode ("This response_format type is unavailable now") and
+        # forced tool_choice ("Thinking mode does not support this
+        # tool_choice") -- neither of LangChain's structured-output methods
+        # work. Fall back to plain text + manual JSON parsing/repair
+        # (same approach as the open_source lab models), with no
+        # response_format binding at all.
+        return _StructuredOutput(llm, schema, use_response_format=False)
     if MODELS.get(model) == "open_source":
         return _StructuredOutput(llm, schema)
     return llm.with_structured_output(schema)
