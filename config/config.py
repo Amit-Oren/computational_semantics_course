@@ -22,6 +22,12 @@ HF_MODEL_MAP = {
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GROQ_API_URL = "https://api.groq.com/openai/v1"
 
+# Real OpenAI API (not the lab gateway) -- for genuinely fast/cheap hosted
+# models like gpt-4o-mini, run as their own comparison point rather than
+# through any self-hosted infrastructure.
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_API_URL = "https://api.openai.com/v1"
+
 # Local Ollama server (no external API, no shared/rate-limited resource —
 # runs entirely on this machine). `ollama serve` must be running;
 # `brew services start ollama` keeps it up in the background.
@@ -48,6 +54,8 @@ MODELS = {
     "llama-3.1-8b-instant":    "groq",
     "llama-3.3-70b-versatile": "groq",
     "qwen/qwen3.6-27b":        "groq",
+    # ── OpenAI (real API, not the lab gateway) ──────────────────────────────────
+    "gpt-4o-mini": "openai",
     # ── Local Ollama ──────────────────────────────────────────────────────────
     "llama3.1-8b-local": "ollama",
 }
@@ -480,6 +488,17 @@ def get_llm(model: str, params: dict = DEFAULT_PARAMS):
             model=OLLAMA_MODEL_MAP[model],
             base_url=OLLAMA_API_URL,
             api_key="ollama",  # unused by Ollama, but the client requires a non-empty value
+            temperature=params.get("temperature", 0.0),
+            max_tokens=params.get("max_tokens", 2048),
+            timeout=_REQUEST_TIMEOUT,
+            max_retries=_SDK_MAX_RETRIES,
+        )
+    if MODELS.get(model) == "openai":
+        from langchain_openai import ChatOpenAI
+        return ChatOpenAI(
+            model=model,
+            base_url=OPENAI_API_URL,
+            api_key=OPENAI_API_KEY,
             temperature=params.get("temperature", 0.0),
             max_tokens=params.get("max_tokens", 2048),
             timeout=_REQUEST_TIMEOUT,
