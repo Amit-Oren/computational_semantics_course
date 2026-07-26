@@ -141,16 +141,15 @@ class PQuestionPipeline:
         if self.generation == "seeded":
             seeds = self.seeder.seed(premise)
             if not seeds:
-                logger.warning("Seeder returned no seeds; falling back to freeform.")
-                messages = [
-                    SystemMessage(content=P_QUESTION_FREEFORM_SYSTEM_PROMPT),
-                    HumanMessage(content=P_QUESTION_FREEFORM_USER_PROMPT.format(premise=premise)),
-                ]
-                llm = get_structured_llm(self.model, PQuestionFreeformOutput, self.params)
-                out = call_with_retry(llm.invoke, messages)
-                if out is None:
-                    return []
-                return [{"q": q, "type": "fact"} for q in out.questions]
+                # Previously silently substituted freeform generation here --
+                # that mislabels the sample as "seeded" when it's actually a
+                # different generation method entirely. Returning [] instead
+                # routes through run_sample()'s existing "no questions ->
+                # zero-shot fallback" path, which records the failure
+                # honestly in the sample's own `warnings` field instead of
+                # hiding it inside seemingly-normal seeded results.
+                logger.warning("Seeder returned no seeds; no questions generated for this sample.")
+                return []
 
             seeds_str = "\n".join(f"- {s}" for s in seeds)
             seeded_sys = (
