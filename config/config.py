@@ -22,6 +22,9 @@ HF_MODEL_MAP = {
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GROQ_API_URL = "https://api.groq.com/openai/v1"
 
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
+OPENROUTER_API_URL = "https://openrouter.ai/api/v1"
+
 # Local Ollama server (no external API, no shared/rate-limited resource —
 # runs entirely on this machine). `ollama serve` must be running;
 # `brew services start ollama` keeps it up in the background.
@@ -50,6 +53,11 @@ MODELS = {
     "qwen/qwen3.6-27b":        "groq",
     # ── Local Ollama ──────────────────────────────────────────────────────────
     "llama3.1-8b-local": "ollama",
+    # ── OpenRouter ────────────────────────────────────────────────────────────
+    "google/gemma-3-27b-it":           "openrouter",
+    "google/gemma-3-12b-it":           "openrouter",
+    "qwen/qwen2.5-32b-instruct":       "openrouter",
+    "meta-llama/llama-3.1-70b-instruct": "openrouter",
 }
 
 DEFAULT_PARAMS = {
@@ -430,6 +438,8 @@ def get_structured_llm(model: str, schema, params: dict = DEFAULT_PARAMS):
         return llm.with_structured_output(schema, method="json_mode")
     if MODELS.get(model) == "open_source":
         return _StructuredOutput(llm, schema)
+    if MODELS.get(model) == "openrouter":
+        return llm.with_structured_output(schema)
     return llm.with_structured_output(schema)
 
 
@@ -480,6 +490,17 @@ def get_llm(model: str, params: dict = DEFAULT_PARAMS):
             model=OLLAMA_MODEL_MAP[model],
             base_url=OLLAMA_API_URL,
             api_key="ollama",  # unused by Ollama, but the client requires a non-empty value
+            temperature=params.get("temperature", 0.0),
+            max_tokens=params.get("max_tokens", 2048),
+            timeout=_REQUEST_TIMEOUT,
+            max_retries=_SDK_MAX_RETRIES,
+        )
+    if MODELS.get(model) == "openrouter":
+        from langchain_openai import ChatOpenAI
+        return ChatOpenAI(
+            model=model,
+            base_url=OPENROUTER_API_URL,
+            api_key=OPENROUTER_API_KEY,
             temperature=params.get("temperature", 0.0),
             max_tokens=params.get("max_tokens", 2048),
             timeout=_REQUEST_TIMEOUT,
