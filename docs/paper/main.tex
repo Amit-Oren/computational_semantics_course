@@ -1,0 +1,292 @@
+\documentclass[11pt]{article}
+
+% Change "review" to "final" for the camera-ready version.
+\usepackage[review]{acl}
+
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{makecell}
+
+\title{Can Prompt Engineering Bridge the Long-Context NLI Reasoning Gap?}
+
+\author{
+  Your Name \\
+  Your Department \\
+  Your University \\
+  \texttt{your@email} \\
+  \And
+  Teammate Name \\
+  Your Department \\
+  Your University \\
+  \texttt{teammate@email} \\
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+% TODO: 3-5 sentences -- the problem, why it matters, your approach,
+% and the headline finding.
+\end{abstract}
+
+\section{Introduction}
+
+Natural language inference (NLI) asks whether a hypothesis is entailed by,
+contradicted by, or neither supported nor contradicted by a premise, and is
+widely used to evaluate language understanding. However, influential
+benchmarks such as SNLI and MultiNLI predominantly consist of sentence-level
+premise--hypothesis pairs \citep{bowman-etal-2015-large,williams-etal-2018-broad}.
+High accuracy on these datasets does not necessarily indicate robust
+reasoning, as models can exploit annotation artifacts and shallow syntactic
+heuristics that correlate with the labels
+\citep{gururangan-etal-2018-annotation,mccoy-etal-2019-right}. Evaluating NLI
+over longer passages therefore provides a stricter test, requiring models to
+locate and integrate evidence distributed across multiple sentences before
+assigning a label.
+
+ConTRoL addresses this limitation by evaluating NLI over long, expert-designed
+passages that require reasoning across multiple sentences and paragraphs. The
+dataset contains 8,325 premise--hypothesis pairs, with premises averaging 452
+words, and covers logical, information-integration, coreferential, temporal,
+and analytical reasoning. In the original study, the strongest fine-tuned
+baseline achieved 60.95\% accuracy, compared with a human ceiling of 94.4\%,
+with particularly low performance on logical reasoning and information
+integration. ConTRoL therefore tests more than the ability to process a long
+input: models must identify, combine, and interpret the evidence relevant to
+the hypothesis \citep{liu-etal-2021-natural}.
+
+Modern instruction-tuned language models enable task adaptation without
+ConTRoL-specific fine-tuning through direct instructions, in-context
+demonstrations, and intermediate evidence-seeking steps. Prior work has shown
+that demonstrations can guide model behavior without parameter updates
+\citep{brown2020language}, while question-based methods can support factual
+verification and multi-step reasoning by decomposing complex claims and
+gathering relevant evidence \citep{wang-etal-2020-asking,min-etal-2019-multi}.
+However, the relative contributions of these mechanisms remain unclear for
+NLI over long passages with three possible labels. We therefore ask whether
+question-guided evidence extraction improves performance beyond direct
+prompting and the retrieval of relevant premise sentences alone.
+
+To answer this question, we evaluate three modern open-weight language models
+on ConTRoL using six strategies that differ in how they retrieve and
+structure evidence. Two single-call baselines use zero-shot and three-shot
+prompting, while a retrieve-then-classify control isolates the contribution
+of locating relevant premise sentences. Three question-guided pipelines
+generate evidence-seeking questions from the hypothesis alone, the premise
+alone, or both the premise and hypothesis, before locating supporting
+sentences, extracting answers, aggregating the resulting evidence, and
+predicting the NLI label. This design separates the contributions of
+demonstrations, evidence retrieval, question generation, and the information
+available during decomposition, while also enabling analysis of the
+pipelines' intermediate questions and extracted evidence. Figure~\ref{fig:example}
+shows a worked example of this process on a real ConTRoL instance.
+
+\begin{figure}[t]
+\centering
+\small
+\fbox{%
+\begin{minipage}{0.94\linewidth}
+\textbf{Premise:} ``Most of the private companies have decided against
+awarding annual increase in the salaries of their employees for the previous
+year due to the current economic situation.''
+
+\textbf{Hypothesis:} These companies may announce a hike in salaries next
+year.
+
+\vspace{4pt}
+\textbf{Q1 (bridge/comparison):} Does the premise mention any plans or
+possibilities for salary increases in the future?\\
+\textbf{A1:} The premise mentions that private companies have decided
+against salary increases for the previous year, but does not provide
+information about future plans or possibilities for salary increases.
+
+\vspace{4pt}
+\textbf{Q2 (regular):} What is the reason given in the premise for not
+awarding annual salary increases this year?\\
+\textbf{A2:} The reason given is the current economic situation.
+
+\vspace{4pt}
+\textbf{Predicted label:} Neutral (matches gold) --- the premise explains
+why last year's raise was withheld, but says nothing about next year, so it
+neither supports nor contradicts the hypothesis.
+\end{minipage}%
+}
+\caption{A \texttt{bridge-question} example from ConTRoL (\texttt{id\_4089}):
+questions are generated jointly from the premise and hypothesis, answered
+against the premise, and passed to the classifier along with the hypothesis.
+Q1 tests the hypothesis's claim directly; Q2 surfaces supporting context.
+Because the premise never addresses next year, the classifier correctly
+predicts Neutral rather than guessing.}
+\label{fig:example}
+\end{figure}
+
+\section{Related Work}
+
+Popular sentence-level NLI benchmarks such as SNLI and MultiNLI
+\citep{bowman-etal-2015-large,williams-etal-2018-broad} have a known problem:
+models can score well on them by learning shortcuts and surface patterns
+instead of actually reasoning about the premise and hypothesis
+\citep{gururangan-etal-2018-annotation,mccoy-etal-2019-right}. Most fixes for
+this happen during training, for example by filtering out easy examples or
+adding extra supervision. ConTRoL takes a different approach: it makes these
+shortcuts harder to use by requiring evidence to be found and combined across
+a long, multi-sentence premise \citep{liu-etal-2021-natural}. We take yet
+another approach. Instead of retraining or re-annotating data, we test
+whether prompting and structured question generation, used only at inference
+time with no fine-tuning at all, can close this performance gap.
+
+Working only at inference time means we have to rely on prompting to adapt
+the model to the task. In zero-shot prompting, the task is described using
+instructions alone. Few-shot in-context learning adds example demonstrations
+that show the model what the labels mean \citep{brown2020language}.
+Chain-of-thought prompting goes a step further, adding worked-out reasoning
+steps to these examples \citep{wei2022chain}. Our zero-shot and three-shot
+conditions test only the effect of adding demonstrations: since our
+three-shot examples do not include any reasoning steps, we treat them as
+plain in-context learning, not chain-of-thought.
+
+Beyond demonstrations, our question-based methods build on a different line
+of work: using generated questions to check and structure evidence, instead
+of just showing the model labeled examples. QA and NLI are closely linked
+tasks: \citet{demszky2018transforming} show that QA datasets can be
+mechanically turned into NLI examples, by rewriting each question-answer
+pair as a declarative hypothesis paired with the source passage as premise.
+Our pipelines lean on the reverse direction of that connection, using
+generated questions and their answers as intermediate evidence for an NLI
+classifier, rather than converting them into NLI training data directly.
+QAGS and FEQA generate questions
+from a summary and answer them using the source document, to check whether
+the summary stays factually consistent with it
+\citep{wang-etal-2020-asking,durmus-etal-2020-feqa}. FActScore instead breaks
+long generated text into small, independently checkable facts
+\citep{min-etal-2023-factscore}. Multi-hop QA work such as HotpotQA and
+DecompRC shows the value of a related idea: finding supporting evidence and
+breaking a complex question into simpler ones
+\citep{yang-etal-2018-hotpotqa,min-etal-2019-multi}. None of these methods
+target three-way inference over long passages; they check summaries or
+answer single questions instead. We adapt their core idea to passage-level
+NLI: we generate questions from the hypothesis, the premise, or both, and
+add a retrieval-only control to show how much of the benefit simply comes
+from finding the right sentences, versus from the generated questions
+themselves.
+
+\input{methods_section}
+
+\section{Experimental Evaluation}
+
+\subsection{Experimental Setting}
+
+We evaluate five models spanning self-hosted and API-hosted settings
+(Section 3.5): Qwen2.5-32B, gpt-oss-20B, GPT-4o-mini, DeepSeek-V4-Flash, and
+Gemma-3-27B. Following Section 3.2, the six non-premise methods are evaluated
+on N=1,500 fixed-seed samples from the ConTRoL train split, identical across
+all models; the three p-question methods are evaluated on the first N=150 of
+that same sample, due to their substantially higher per-instance cost. We
+report accuracy as the primary metric, alongside macro-averaged
+precision/recall/F1 (robust to label imbalance) and the Matthews Correlation
+Coefficient, a single robust summary statistic standard in the GLUE benchmark
+\citep{wang2018glue}. At the time of writing, gpt-oss-20B and GPT-4o-mini are
+missing bridge-question and, for GPT-4o-mini, h-question (srl) and the
+p-question trio, due to provider-side rate limits encountered during the
+production run; these cells are marked `--' below.
+
+\subsection{Key Results}
+
+\begin{table}[t]
+\centering
+\small
+\renewcommand{\arraystretch}{0.92}
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lcccccc}
+\toprule
+Model & \makecell{zero-\\shot} & \makecell{few-\\shot} & \makecell{retrieve-\\classify} & \makecell{h-quest.\\(pos)} & \makecell{h-quest.\\(srl)} & \makecell{bridge-\\question} \\
+\midrule
+Qwen2.5-32B & 67.1 & 69.6 & 69.4 & 67.1 & 66.0 & 69.0 \\
+gpt-oss-20B & 70.8 & 70.0 & 68.2 & 64.7 & 65.9 & -- \\
+GPT-4o-mini & 65.9 & 65.5 & 67.1 & 59.8 & -- & -- \\
+DeepSeek-V4-Flash & 74.6 & 73.5 & 71.3 & 59.4 & 69.3 & 71.9 \\
+Gemma-3-27B & 64.5 & 64.9 & 63.5 & 64.5 & 63.2 & 67.0 \\
+\bottomrule
+\end{tabular}
+\caption{Accuracy (\%) across the six N=1,500 methods and five models. `--'
+marks gpt-oss-20B's not-yet-completed bridge-question run and GPT-4o-mini's
+pending bridge-question/h-question~(srl) reruns (Section 4.1).}
+\label{tab:main-results}
+\end{table}
+
+Table~\ref{tab:main-results} reports accuracy across the six N=1,500 methods
+and five models. Two patterns stand out. First, no method uniformly wins:
+DeepSeek-V4-Flash's strongest results come from its baselines (zero-shot
+74.6\%, few-shot 73.5\%), which outscore every question-based method on that
+model, including bridge-question (71.9\%). This pattern recurs, to varying
+degrees, across all five models --- question-guided evidence extraction does
+not reliably beat direct prompting or retrieval-only classification in this
+evaluation. Second, within the question-based family, bridge-question is
+consistently the strongest configuration, consistent with it being the only
+method whose question-generation stage observes both the premise and
+hypothesis jointly.
+
+\subsection{Premise-Question Methods: An Independent Comparison}
+
+\begin{table*}[t]
+\centering
+\small
+\renewcommand{\arraystretch}{0.92}
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lccccc|ccc}
+\toprule
+Model & \makecell{zero-\\shot} & \makecell{few-\\shot} & \makecell{retrieve-\\classify} & \makecell{h-quest.\\(pos)} & \makecell{bridge-\\question} & \makecell{p-quest.\\(decomp)} & \makecell{p-quest.\\(seed,pos)} & \makecell{p-quest.\\(seed,srl)} \\
+\midrule
+Qwen2.5-32B & 70.0 & 74.7 & 78.0$^\dagger$ & 74.7 & 73.3 & 59.3 & 61.3$^\dagger$ & 60.7 \\
+DeepSeek-V4-Flash & 80.0$^\dagger$ & 80.0 & 79.3 & 71.3 & 77.3 & 68.7$^\dagger$ & 62.7 & 62.0 \\
+Gemma-3-27B & 68.0 & 68.7 & 64.0 & 68.0 & 74.0$^\dagger$ & 55.3$^\dagger$ & 47.3 & 51.3 \\
+\bottomrule
+\end{tabular}
+\caption{Accuracy (\%) on the identical 150-item subset used by the
+p-question methods, letting every method be compared fairly against
+p-question despite its smaller N (Section 3.2). $^\dagger$ marks the
+per-model best-baseline/best-p-question pair tested with a McNemar exact
+test \citep{dror-etal-2018-hitchhikers}; all three are significant at
+$p<0.01$.}
+\label{tab:pq-fair}
+\end{table*}
+
+The three p-question variants were evaluated at N=150 rather than N=1,500
+(Section 3.2), so comparing raw numbers risks conflating sample and method
+differences. Table~\ref{tab:pq-fair} instead restricts every method to the
+identical 150 items, giving a true paired comparison. The gap widens, not
+narrows: each model's best baseline scores higher on this slice than its
+full-1,500 average (e.g. DeepSeek-V4-Flash's zero-shot reaches 80.0\% vs.
+74.6\% overall), while p-question stays roughly flat. A McNemar exact test
+\citep{dror-etal-2018-hitchhikers} on each model's
+best-baseline-vs-best-p-question pair confirms this is not noise: all three
+differences are significant at $p<0.01$.
+
+The bottleneck is generation, not answering. Restricted to questions Stage 1
+actually produced, the Locator/Extractor answers 96-100\% of them across
+every model and variant. But 21-79\% of samples never got a usable question
+from Stage 1, forcing a zero-shot or hardcoded-Neutral fallback.
+p-question's weakness is that premise-only decomposition often generates
+nothing to answer, corroborating an earlier manual trace where 3 of 4
+checked failures were missing questions, not bad answers.
+
+Within p-question, no seeding strategy dominates uniformly: decomposition is
+strongest for two of three models, seeded-pos for the third.
+
+\section{Conclusion}
+% TODO
+
+\section*{Limitations}
+% TODO -- required section. The N=1500 vs N=150 sample-size asymmetry
+% (Section~\ref{sec:sampling}) belongs here at minimum.
+
+\bibliography{references}
+\bibliographystyle{acl_natbib}
+
+\end{document}

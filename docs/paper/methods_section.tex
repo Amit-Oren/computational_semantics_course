@@ -1,0 +1,162 @@
+\section{Method}
+\label{sec:method}
+
+\subsection{Dataset}
+\label{sec:dataset}
+
+We evaluate on \textbf{ConTRoL} \citep{liu-etal-2021-natural}, a dataset for
+document-level natural language inference constructed from expert-designed
+reading-comprehension material. Each ConTRoL instance pairs a long premise
+(averaging approximately 500 words) with a short hypothesis, and requires
+identifying whether the hypothesis is \textbf{Entailed}, \textbf{Contradicted},
+or \textbf{Neutral} with respect to the premise. The dataset comprises 8,325
+premise-hypothesis pairs. Premises are long, multi-sentence passages rather
+than single sentences, so the evidence needed to decide a label is often
+spread across several sentences rather than contained in one. This makes
+ConTRoL more demanding than sentence-level NLI benchmarks.
+
+\subsection{Sampling}
+\label{sec:sampling}
+
+All experiments were run against fixed samples drawn from the ConTRoL train
+split, using a fixed random seed (seed~$=$~42).\footnote{A na\"ive
+lexicographic sort over string-formatted instance IDs (e.g.\ \texttt{id\_1},
+\texttt{id\_10}, \texttt{id\_100}, \ldots, \texttt{id\_11}) does not
+correspond to a numeric or random ordering and yields a non-representative
+sample.} The sampled instance IDs were persisted once and reused identically
+across every model, ensuring that all models and methods are evaluated on the
+exact same data.
+
+Due to the substantially higher computational cost of the premise-decomposition
+methods (Section~\ref{sec:methods}), we adopt two sample sizes: $N=1{,}500$
+for the six methods that issue a bounded number of model calls per instance,
+and $N=150$ for the three premise-question configurations, whose per-instance
+cost scales with the number of decomposed sub-questions.
+
+\subsection{Seeding Strategies}
+\label{sec:seeding}
+
+Two of our pipelines (Section~\ref{sec:methods}) generate probe questions from
+an anchor set of extracted spans, rather than directly from the raw text. We
+compare two seeding strategies for producing this anchor set.
+
+\paragraph{Part-of-Speech (POS) seeding.} We use NLTK's POS tagger
+\citep{loper2002nltk} to extract noun phrases, main verbs, and numeric spans
+from the source text via shallow chunking. This method requires no model
+inference and is fully deterministic.
+
+\paragraph{Semantic Role Labeling (SRL) seeding.} Following the QA-SRL
+paradigm \citep{fitzgerald2018large,pyatkin2021asking}, we prompt the
+evaluated LLM to extract PropBank-style predicate-argument structures ---
+agent (ARG0), theme (ARG1), recipient (ARG2), and modifier roles for time,
+location, manner, and cause --- for each predicate in the source text. Each
+role-argument pair is converted into an anchor of the form
+\texttt{\{role\}: \{span\} [predicate: \{verb\}]}. This strategy is more
+computationally expensive than POS seeding, requiring one additional model
+call, but yields anchors with explicit predicate-argument structure rather
+than flat lexical spans.
+
+\subsection{Methods}
+\label{sec:methods}
+
+We evaluate nine method configurations, organized into three groups.
+
+\paragraph{Direct baselines.} \texttt{zero-shot} issues the premise and
+hypothesis to the model in a single call with no intermediate reasoning step.
+\texttt{few-shot-CoT} uses the same single-call structure, prepending three
+fixed demonstrations --- one worked example per label, held constant across
+all evaluations --- following \citet{wei2022chain}.
+
+\paragraph{Retrieval control.} \texttt{retrieve-then-classify} isolates the
+contribution of evidence localization from that of question generation. A
+locator model identifies the premise sentences most relevant to the
+hypothesis, using the \textbf{hypothesis itself} as the retrieval query; the
+classifier is then given these sentences verbatim, without an intermediate
+answer-extraction step. This condition allows us to attribute any additional
+gain from the question-based methods below specifically to the generated
+questions, rather than to evidence retrieval alone.
+
+\paragraph{Question-based pipelines.} The remaining six configurations share a
+common three-stage architecture: (i) question generation, (ii) evidence
+localization and answer extraction, and (iii) classification of the
+hypothesis given the resulting (question, answer) pairs. Stages (ii) and
+(iii) are implemented identically across all six configurations (detailed
+below), so that any difference in downstream accuracy can be attributed to
+\emph{which} questions were generated and \emph{which text they were
+generated from}, not to how they are answered or judged. The three
+question-based methods differ precisely along this second axis --- questions
+generated from the hypothesis, from the premise, or from both --- letting us
+compare which side of the premise-hypothesis pair is more productive to
+interrogate.
+
+\subsubsection{Answering and Classification}
+
+\paragraph{Locate and answer.} A locator model reads the premise and one
+question and returns up to five relevant sentence indices (not necessarily
+adjacent, allowing multi-hop evidence). An extractor model then answers the
+question using only those sentences, returning a not-answerable marker
+instead of guessing if they do not address it; such questions are dropped.
+
+\paragraph{Classify.} The surviving (question, answer) pairs and the
+hypothesis are given to the classifier in one call, which returns a single
+Entailment / Contradiction / Neutral label. Priority is Contradiction over
+Entailment over Neutral, and one clearly decisive piece of evidence is
+treated as sufficient on its own, without being diluted by other, merely
+tangential evidence in the same call.
+
+Stage (i) --- question generation --- is the only stage that differs between
+the three methods below.
+
+\begin{itemize}
+    \item \textbf{h-question} generates 2--4 probe questions directly from
+    the hypothesis, seeded via either POS or SRL extraction
+    (Section~\ref{sec:seeding}) applied to the hypothesis text. This pipeline
+    is hypothesis-aware but premise-blind at generation time.
+
+    \item \textbf{bridge-question} generates 2--4 sub-questions from the
+    premise and hypothesis jointly, with at least one question explicitly
+    required to test the hypothesis's core claim against premise evidence,
+    following the bridging/comparison framing of multi-hop QA
+    \citep{yang-etal-2018-hotpotqa,min-etal-2019-multi}. This is the only configuration
+    whose question-generation stage observes both texts simultaneously.
+
+    \item \textbf{p-question (decomposition)} applies \emph{atomic
+    decomposition} to the premise: the model is prompted to break the
+    premise into the smallest standalone factual claims it contains ---
+    each covering exactly one date, name, number, or event --- following
+    the atomic-fact paradigm of FActScore \citep{min-etal-2023-factscore}. A claim
+    is ``atomic'' in the sense that it cannot be split further without
+    losing a checkable unit of information; a premise stating that ``the
+    government paid \$1~lakh to families of railway-accident victims''
+    atomizes into separate facts for the amount, the recipients, and the
+    triggering event. In a second step, the model additionally identifies
+    \emph{relations} between these facts --- comparisons, causal links, and
+    temporal orderings --- following relation-level verification in the
+    style of \citet{goyal2020evaluating,goyal2021annotating}. Each generated
+    question is tagged as targeting either a single fact or a relation
+    between facts. This two-step decomposition guarantees that both the
+    premise's individual claims and the connections between them are
+    covered by construction, rather than left to the model's unconstrained
+    judgment of what is salient. This mode is premise-aware but
+    hypothesis-blind at generation time.
+
+    \item \textbf{p-question (seeded)} generates one question per anchor
+    extracted from the premise via the seeding strategies of
+    Section~\ref{sec:seeding}, evaluated separately for POS and SRL
+    seeding.
+\end{itemize}
+
+Stage-1 question generation additionally receives three worked examples
+in-context for all six question-based configurations, following the same
+few-shot design as \texttt{few-shot-CoT}.
+
+\subsection{Models}
+\label{sec:models}
+
+We evaluate four models spanning both self-hosted open-weight and API-hosted
+settings: \textbf{Qwen2.5-32B} and \textbf{gpt-oss-20B}, run locally via
+Ollama-backed infrastructure, and \textbf{GPT-4o-mini} and
+\textbf{DeepSeek-V4-Flash}, accessed via their respective provider APIs. This
+selection allows comparison across model scale and serving infrastructure,
+while controlling the evaluation pipeline, prompts, and sampled data
+identically across all four.
