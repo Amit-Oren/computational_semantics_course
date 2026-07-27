@@ -33,6 +33,9 @@ from prompts.h_question import (
     H_QUESTION_GEN_SYSTEM_PROMPT,
     H_QUESTION_GEN_FEW_SHOT_SYSTEM_PROMPT,
     H_QUESTION_GEN_USER_PROMPT,
+    H_QUESTION_GEN_MORE_SYSTEM_PROMPT,
+    H_QUESTION_GEN_MORE_FEW_SHOT_SYSTEM_PROMPT,
+    H_QUESTION_GEN_MORE_USER_PROMPT,
 )
 from prompts.shared_classifier import classify_evidence
 from utils.aggregation import aggregate, AGGREGATION_MODES
@@ -57,17 +60,19 @@ class HQuestionPipeline:
         seeder_name: str = DEFAULT_SEEDER,
         aggregation: str = DEFAULT_AGGREGATION,
         few_shot: bool = False,
+        more_questions: bool = False,
     ):
         if seeder_name not in SEEDERS:
             raise ValueError(f"Unknown seeder '{seeder_name}'; choose from {sorted(SEEDERS)}")
         if aggregation not in AGGREGATION_MODES:
             raise ValueError(f"Unknown aggregation '{aggregation}'; choose from {AGGREGATION_MODES}")
-        self.model       = model
-        self.params      = params
-        self.seeder_name = seeder_name
-        self.aggregation = aggregation
-        self.few_shot    = few_shot
-        self.seeder      = get_seeder(seeder_name, model=model, params=params)
+        self.model          = model
+        self.params         = params
+        self.seeder_name    = seeder_name
+        self.aggregation    = aggregation
+        self.few_shot       = few_shot
+        self.more_questions = more_questions
+        self.seeder         = get_seeder(seeder_name, model=model, params=params)
 
     # ── Zero-shot fallback ────────────────────────────────────────────────────
 
@@ -95,13 +100,21 @@ class HQuestionPipeline:
         self, hypothesis: str, keyphrases: list[str]
     ) -> HQuestionsOutput | None:
         kp_str = ", ".join(keyphrases) if keyphrases else hypothesis
-        system_prompt = (
-            H_QUESTION_GEN_FEW_SHOT_SYSTEM_PROMPT if self.few_shot
-            else H_QUESTION_GEN_SYSTEM_PROMPT
-        )
+        if self.more_questions:
+            system_prompt = (
+                H_QUESTION_GEN_MORE_FEW_SHOT_SYSTEM_PROMPT if self.few_shot
+                else H_QUESTION_GEN_MORE_SYSTEM_PROMPT
+            )
+            user_prompt = H_QUESTION_GEN_MORE_USER_PROMPT
+        else:
+            system_prompt = (
+                H_QUESTION_GEN_FEW_SHOT_SYSTEM_PROMPT if self.few_shot
+                else H_QUESTION_GEN_SYSTEM_PROMPT
+            )
+            user_prompt = H_QUESTION_GEN_USER_PROMPT
         messages = [
             SystemMessage(content=system_prompt),
-            HumanMessage(content=H_QUESTION_GEN_USER_PROMPT.format(
+            HumanMessage(content=user_prompt.format(
                 hypothesis=hypothesis, keyphrases=kp_str,
             )),
         ]
@@ -174,6 +187,7 @@ class HQuestionPipeline:
             "seeder":             self.seeder_name,
             "aggregation":        self.aggregation,
             "few_shot":           self.few_shot,
+            "more_questions":     self.more_questions,
             "seeds":              seeds,
             "warnings":           warnings,
         }
@@ -188,8 +202,12 @@ def run(
     seeder_name: str = DEFAULT_SEEDER,
     aggregation: str = DEFAULT_AGGREGATION,
     few_shot: bool = False,
+    more_questions: bool = False,
 ) -> list[dict]:
-    pipeline = HQuestionPipeline(model, params, seeder_name=seeder_name, aggregation=aggregation, few_shot=few_shot)
+    pipeline = HQuestionPipeline(
+        model, params, seeder_name=seeder_name, aggregation=aggregation,
+        few_shot=few_shot, more_questions=more_questions,
+    )
 
     logger.info("=" * 60)
     logger.info("Experiment  : h_question")

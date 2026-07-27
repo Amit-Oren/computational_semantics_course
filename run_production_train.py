@@ -116,6 +116,11 @@ def _build_worker(label: str, model: str, params: dict):
         pipeline = HQuestionPipeline(model, params, seeder_name="srl", aggregation="aggregated", few_shot=True)
         return lambda sample: pipeline.run_sample(sample)
 
+    if label == "h_question_pos_more":
+        from runner.h_question import HQuestionPipeline
+        pipeline = HQuestionPipeline(model, params, seeder_name="pos", aggregation="aggregated", few_shot=True, more_questions=True)
+        return lambda sample: pipeline.run_sample(sample)
+
     if label == "bridge_question":
         from runner.bridge_question import BridgeQuestionPipeline
         pipeline = BridgeQuestionPipeline(model, params, aggregation="aggregated", few_shot=True)
