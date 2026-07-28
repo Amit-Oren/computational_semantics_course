@@ -12,6 +12,16 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{makecell}
+\usepackage{titlesec}
+
+% Custom hyphenation points -- prevents awkward mid-word breaks like
+% "determin-istic" and protects proper nouns/acronyms from being split at all.
+\hyphenation{de-ter-min-is-tic com-pu-ta-tion-al-ly clas-si-fi-ca-tion}
+\newcommand{\ConTRoL}{\mbox{ConTRoL}}
+
+% Tighter spacing before/after \paragraph{} run-in headers (default article-class
+% spacing is looser than typical ACL papers).
+\titlespacing*{\paragraph}{0pt}{1.2ex plus 0.4ex minus 0.2ex}{0.6em}
 
 \title{Can Prompt Engineering Bridge the Long-Context NLI Reasoning Gap?}
 
@@ -117,7 +127,7 @@ why last year's raise was withheld, but says nothing about next year, so it
 neither supports nor contradicts the hypothesis.
 \end{minipage}%
 }
-\caption{A \texttt{bridge-question} example from ConTRoL (\texttt{id\_4089}):
+\caption{A \textsc{bridge-question} example from ConTRoL (\texttt{id\_4089}):
 questions are generated jointly from the premise and hypothesis, answered
 against the premise, and passed to the classifier along with the hypothesis.
 Q1 tests the hypothesis's claim directly; Q2 surfaces supporting context.
@@ -181,20 +191,17 @@ themselves.
 \section{Experimental Evaluation}
 
 \subsection{Experimental Setting}
+\label{sec:setting}
 
-We evaluate five models spanning self-hosted and API-hosted settings
-(Section 3.5): Qwen2.5-32B, gpt-oss-20B, GPT-4o-mini, DeepSeek-V4-Flash, and
-Gemma-3-27B. Following Section 3.2, the six non-premise methods are evaluated
-on N=1,500 fixed-seed samples from the ConTRoL train split, identical across
-all models; the three p-question methods are evaluated on the first N=150 of
-that same sample, due to their substantially higher per-instance cost. We
-report accuracy as the primary metric, alongside macro-averaged
-precision/recall/F1 (robust to label imbalance) and the Matthews Correlation
-Coefficient, a single robust summary statistic standard in the GLUE benchmark
-\citep{wang2018glue}. At the time of writing, gpt-oss-20B and GPT-4o-mini are
-missing bridge-question and, for GPT-4o-mini, h-question (srl) and the
-p-question trio, due to provider-side rate limits encountered during the
-production run; these cells are marked `--' below.
+Models, sampling, and sample sizes follow Sections~\ref{sec:models} and
+\ref{sec:sampling}. We report accuracy as the primary metric, together with
+macro-averaged precision, recall, and F1 (which handle unequal label counts
+well), and the Matthews Correlation Coefficient, a standard single-number
+summary used in the GLUE benchmark \citep{wang2018glue}. At the time of
+writing, gpt-oss-20B is missing the p-question trio, and GPT-4o-mini is
+missing h-question (srl) and the p-question trio, due to provider rate
+limits hit during the evaluation run; these cells are marked `--' in the
+tables below.
 
 \subsection{Key Results}
 
@@ -207,30 +214,79 @@ production run; these cells are marked `--' below.
 \toprule
 Model & \makecell{zero-\\shot} & \makecell{few-\\shot} & \makecell{retrieve-\\classify} & \makecell{h-quest.\\(pos)} & \makecell{h-quest.\\(srl)} & \makecell{bridge-\\question} \\
 \midrule
-Qwen2.5-32B & 67.1 & 69.6 & 69.4 & 67.1 & 66.0 & 69.0 \\
-gpt-oss-20B & 70.8 & 70.0 & 68.2 & 64.7 & 65.9 & -- \\
-GPT-4o-mini & 65.9 & 65.5 & 67.1 & 59.8 & -- & -- \\
-DeepSeek-V4-Flash & 74.6 & 73.5 & 71.3 & 59.4 & 69.3 & 71.9 \\
-Gemma-3-27B & 64.5 & 64.9 & 63.5 & 64.5 & 63.2 & 67.0 \\
+Qwen2.5-32B        & 67.1         & \textbf{69.6} & 69.4 & 67.1 & 66.0 & 69.0 \\
+gpt-oss-20B        & \textbf{70.8} & 70.0         & 68.2 & 64.7 & 65.9 & 67.7 \\
+GPT-4o-mini        & 65.9         & 65.5          & \textbf{67.1} & 59.8 & -- & 62.5 \\
+DeepSeek-V4-Flash  & \textbf{74.6} & 73.5         & 71.3 & 59.4 & 69.3 & 71.9 \\
+Gemma-3-27B        & 64.5         & 64.9          & 63.5 & 64.5 & 63.2 & \textbf{67.0} \\
 \bottomrule
 \end{tabular}
-\caption{Accuracy (\%) across the six N=1,500 methods and five models. `--'
-marks gpt-oss-20B's not-yet-completed bridge-question run and GPT-4o-mini's
-pending bridge-question/h-question~(srl) reruns (Section 4.1).}
+\caption{Accuracy (\%) across the six $N=1{,}500$ methods and five models.
+`--' marks GPT-4o-mini's pending h-question~(srl) rerun
+(Section~\ref{sec:setting}).}
 \label{tab:main-results}
 \end{table}
 
-Table~\ref{tab:main-results} reports accuracy across the six N=1,500 methods
-and five models. Two patterns stand out. First, no method uniformly wins:
-DeepSeek-V4-Flash's strongest results come from its baselines (zero-shot
-74.6\%, few-shot 73.5\%), which outscore every question-based method on that
-model, including bridge-question (71.9\%). This pattern recurs, to varying
-degrees, across all five models --- question-guided evidence extraction does
-not reliably beat direct prompting or retrieval-only classification in this
-evaluation. Second, within the question-based family, bridge-question is
-consistently the strongest configuration, consistent with it being the only
-method whose question-generation stage observes both the premise and
-hypothesis jointly.
+\begin{table*}[t]
+\centering
+\small
+\renewcommand{\arraystretch}{0.92}
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lcccccc}
+\toprule
+Model & \makecell{zero-\\shot} & \makecell{few-\\shot} & \makecell{retrieve-\\classify} & \makecell{h-quest.\\(pos)} & \makecell{h-quest.\\(srl)} & \makecell{bridge-\\question} \\
+\midrule
+Qwen2.5-32B        & 68.0/67.2     & \textbf{69.8/69.5} & 69.5/69.2 & 67.1/66.9 & 65.8/65.7 & 68.5/68.5 \\
+gpt-oss-20B        & \textbf{71.4/70.6} & 70.5/69.9     & 68.7/67.7 & 64.3/64.4 & 65.6/65.5 & 67.1/67.1 \\
+GPT-4o-mini        & 65.3/65.3     & 65.2/65.1          & \textbf{66.3/66.1} & 57.3/55.3 & -- & 59.9/58.1 \\
+DeepSeek-V4-Flash  & \textbf{75.2/74.6} & 74.0/73.4     & 71.9/71.2 & 60.2/59.8 & 68.7/68.6 & 71.0/71.0 \\
+Gemma-3-27B        & 64.2/63.4     & 64.0/63.5          & 62.5/61.8 & 63.2/62.9 & 61.9/61.5 & \textbf{65.7/65.3} \\
+\bottomrule
+\end{tabular}
+\caption{Macro-Recall / Macro-F1 (\%) for the same six methods and five
+models as Table~\ref{tab:main-results}, shown as R/F1 in each cell. Bold
+marks each model's best-accuracy configuration from
+Table~\ref{tab:main-results}; that same configuration also ranks highest
+under both metrics here.}
+\label{tab:main-results-f1}
+\end{table*}
+
+Table~\ref{tab:main-results} reports accuracy across the six $N=1{,}500$
+methods and five models, with each model's best result in bold.
+Table~\ref{tab:main-results-f1} reports macro-recall and macro-F1 for the
+same grid; the best-accuracy configuration is also the top scorer under both
+metrics, so the ranking in Table~\ref{tab:main-results} is not specific to
+accuracy alone. Two patterns stand out.
+
+First, no single method wins across all models. DeepSeek-V4-Flash performs
+best with its baselines (zero-shot 74.6\%, few-shot 73.5\%), which score
+higher than every question-based method on that model, including
+bridge-question (71.9\%). This pattern appears, to varying degrees, across
+all five models: question-guided evidence extraction does not reliably
+outperform direct prompting or retrieval-only classification in this
+evaluation.
+
+Second, within the question-based methods, bridge-question is consistently
+the strongest. This fits with it being the only method that sees both the
+premise and hypothesis together during question generation.
+
+A likely reason for this narrow performance range is the pipeline design, not
+chance. Every question-based method (methods 4--7) passes through the same
+Locator/Extractor: regardless of which question is asked, the Locator still
+narrows the 500-word premise down to a small number of sentences before the
+classifier sees it. On Qwen2.5-32B, h-question keeps only 1.4--1.5 answered
+questions per sample on average, and bridge-question keeps 2.0; even
+p-question's larger question sets (13--14 per sample after filtering) go
+through the same narrowing Locator. The result is close to what
+retrieve-then-classify already does directly --- selecting a small relevant
+part of the premise --- so the added value of generating a question first,
+rather than retrieving on the hypothesis alone, is often small.
+
+Seeding helps within this picture by restricting what gets asked: POS
+seeding ties questions to concrete noun phrases, verbs, and numbers; SRL
+seeding ties them to labeled predicate-argument roles. However, seeding
+cannot fix a Locator call that selects the wrong sentences, regardless of
+how well-targeted the question was.
 
 \subsection{Premise-Question Methods: An Independent Comparison}
 
@@ -243,48 +299,107 @@ hypothesis jointly.
 \toprule
 Model & \makecell{zero-\\shot} & \makecell{few-\\shot} & \makecell{retrieve-\\classify} & \makecell{h-quest.\\(pos)} & \makecell{bridge-\\question} & \makecell{p-quest.\\(decomp)} & \makecell{p-quest.\\(seed,pos)} & \makecell{p-quest.\\(seed,srl)} \\
 \midrule
-Qwen2.5-32B & 70.0 & 74.7 & 78.0$^\dagger$ & 74.7 & 73.3 & 59.3 & 61.3$^\dagger$ & 60.7 \\
+Qwen2.5-32B       & 70.0 & 74.7 & 78.0$^\dagger$ & 74.7 & 73.3 & 59.3 & 61.3$^\dagger$ & 60.7 \\
 DeepSeek-V4-Flash & 80.0$^\dagger$ & 80.0 & 79.3 & 71.3 & 77.3 & 68.7$^\dagger$ & 62.7 & 62.0 \\
-Gemma-3-27B & 68.0 & 68.7 & 64.0 & 68.0 & 74.0$^\dagger$ & 55.3$^\dagger$ & 47.3 & 51.3 \\
+Gemma-3-27B       & 68.0 & 68.7 & 64.0 & 68.0 & 74.0$^\dagger$ & 55.3$^\dagger$ & 47.3 & 51.3 \\
 \bottomrule
 \end{tabular}
-\caption{Accuracy (\%) on the identical 150-item subset used by the
-p-question methods, letting every method be compared fairly against
-p-question despite its smaller N (Section 3.2). $^\dagger$ marks the
-per-model best-baseline/best-p-question pair tested with a McNemar exact
-test \citep{dror-etal-2018-hitchhikers}; all three are significant at
+\caption{Accuracy (\%) on the same 150-item subset used by the p-question
+methods, so that every method is compared fairly against p-question despite
+its smaller $N$ (Section~3.2). $^\dagger$ marks the per-model
+best-baseline/best-p-question pair tested with a McNemar exact test
+\citep{dror-etal-2018-hitchhikers}; all three pairs are significant at
 $p<0.01$.}
 \label{tab:pq-fair}
 \end{table*}
 
-The three p-question variants were evaluated at N=150 rather than N=1,500
-(Section 3.2), so comparing raw numbers risks conflating sample and method
-differences. Table~\ref{tab:pq-fair} instead restricts every method to the
-identical 150 items, giving a true paired comparison. The gap widens, not
-narrows: each model's best baseline scores higher on this slice than its
-full-1,500 average (e.g. DeepSeek-V4-Flash's zero-shot reaches 80.0\% vs.
-74.6\% overall), while p-question stays roughly flat. A McNemar exact test
-\citep{dror-etal-2018-hitchhikers} on each model's
-best-baseline-vs-best-p-question pair confirms this is not noise: all three
-differences are significant at $p<0.01$.
+The three p-question variants were evaluated at $N=150$ rather than
+$N=1{,}500$ (Section~3.2), so a direct comparison of raw numbers would mix
+sample-size and method differences. Table~\ref{tab:pq-fair} instead
+restricts every method to the same 150 items, giving a fair paired
+comparison. The gap grows rather than shrinks: each model's best baseline
+scores higher on this subset than its full-1,500 average (e.g.\
+DeepSeek-V4-Flash's zero-shot reaches 80.0\% vs.\ 74.6\% overall), while
+p-question scores stay roughly flat. A McNemar exact test
+\citep{dror-etal-2018-hitchhikers} on each model's best-baseline vs.\
+best-p-question pair confirms this is not noise: all three differences are
+significant at $p<0.01$.
 
-The bottleneck is generation, not answering. Restricted to questions Stage 1
-actually produced, the Locator/Extractor answers 96-100\% of them across
-every model and variant. But 21-79\% of samples never got a usable question
-from Stage 1, forcing a zero-shot or hardcoded-Neutral fallback.
-p-question's weakness is that premise-only decomposition often generates
-nothing to answer, corroborating an earlier manual trace where 3 of 4
-checked failures were missing questions, not bad answers.
+The bottleneck is in question generation, not in answering. When Stage 1
+does produce questions, the Locator/Extractor answers 96--100\% of them
+across every model and variant. However, 21--79\% of samples never received
+a usable question from Stage 1, forcing a zero-shot or hardcoded-Neutral
+fallback. The weakness of p-question is that breaking down a premise alone
+often produces no question to answer. This confirms an earlier manual check
+in which 3 of 4 checked failures had missing questions, not bad answers.
 
-Within p-question, no seeding strategy dominates uniformly: decomposition is
-strongest for two of three models, seeded-pos for the third.
+Within p-question, no seeding strategy wins across all models: decomposition
+is strongest for two of the three models, and seeded-pos is strongest for
+the third.
 
 \section{Conclusion}
-% TODO
+
+In this work, we studied whether inference-time prompt engineering and
+structured question-guided evidence extraction can improve reasoning on the
+ConTRoL long-context Natural Language Inference benchmark. Across five
+language models, our results show that complex question-generation pipelines
+do not consistently outperform direct zero-shot, few-shot, or simple
+retrieve-then-classify baselines.
+
+Our results highlight two key mechanisms. First, \emph{joint context
+visibility is essential}: pipelines that see both the premise and hypothesis
+during question generation (\textsc{bridge-question}) consistently outperform
+premise-only decomposition (\textsc{p-question}), which shows a statistically
+significant performance drop ($p < 0.01$) because premise-only prompting
+often produces no hypothesis-relevant questions. Second, \emph{keeping
+context verbatim prevents information loss}: directly retrieving full premise
+sentences (\textsc{retrieve-then-classify}) matches or outperforms premise
+question-decomposition across all models, showing that generating intermediate
+questions and paraphrasing answers can break apart critical reasoning
+boundaries.
+
+In summary, for long-context NLI, keeping complete sentence-level evidence
+through direct prompting or direct retrieval is more robust than breaking
+passages into isolated question-answer pairs. Future work should address two
+open problems: aggregation strategies that reduce Neutral vote dilution, and
+retrieval methods that keep multi-sentence logical connections intact.
 
 \section*{Limitations}
-% TODO -- required section. The N=1500 vs N=150 sample-size asymmetry
-% (Section~\ref{sec:sampling}) belongs here at minimum.
+
+\paragraph{Sample-size asymmetry.}
+The three \textsc{p-question} variants are evaluated at $N=150$ rather than
+$N=1{,}500$ (Section~\ref{sec:sampling}), because their per-sample cost is
+much higher. We reduce the impact of this by restricting every other method
+to the same 150 items for a paired comparison (Section~4.3), but the six
+$N=1{,}500$ methods are still not directly comparable to \textsc{p-question}
+at their full sample size.
+
+\paragraph{Incomplete model coverage.}
+At the time of writing, gpt-oss-20B is missing the full \textsc{p-question}
+trio, and GPT-4o-mini is missing \textsc{h-question (srl)} and the
+\textsc{p-question} trio, due to infrastructure limits (self-hosted request
+timeouts for gpt-oss-20B; provider-side daily rate limits for GPT-4o-mini)
+encountered during evaluation. Table~\ref{tab:main-results} marks these
+cells clearly rather than leaving them out silently.
+
+\paragraph{Single run per configuration.}
+Each method-model pair was run once (no repeated seeds), so most reported
+numbers have no confidence interval. Where a comparison was central to our
+conclusions --- the \textsc{p-question} gap in Section~4.3 --- we computed
+bootstrap intervals and a McNemar significance test rather than relying on
+point estimates alone; this was not applied to every cell in
+Table~\ref{tab:main-results}.
+
+\paragraph{No human evaluation of intermediate outputs.}
+Our fallback-rate and answerable-rate diagnostics (Section~4.3) measure
+pipeline behavior automatically, but we have no human judgments of generated
+question or extracted answer quality. Some failure modes beyond ``no question
+generated'' or ``question unanswered'' may therefore go undetected.
+
+\paragraph{Dataset label noise.}
+Prior work on this dataset found at least one ConTRoL instance whose gold
+label does not match a reasonable reading of its premise. This creates a
+hard upper limit on accuracy that no method can overcome.
 
 \bibliography{references}
 \bibliographystyle{acl_natbib}

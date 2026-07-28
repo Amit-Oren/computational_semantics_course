@@ -61,13 +61,13 @@ than flat lexical spans.
 
 We evaluate nine method configurations, organized into three groups.
 
-\paragraph{Direct baselines.} \texttt{zero-shot} issues the premise and
+\paragraph{Direct baselines.} \textsc{zero-shot} issues the premise and
 hypothesis to the model in a single call with no intermediate reasoning step.
-\texttt{few-shot-CoT} uses the same single-call structure, prepending three
+\textsc{few-shot-CoT} uses the same single-call structure, prepending three
 fixed demonstrations --- one worked example per label, held constant across
 all evaluations --- following \citet{wei2022chain}.
 
-\paragraph{Retrieval control.} \texttt{retrieve-then-classify} isolates the
+\paragraph{Retrieval control.} \textsc{retrieve-then-classify} isolates the
 contribution of evidence localization from that of question generation. A
 locator model identifies the premise sentences most relevant to the
 hypothesis, using the \textbf{hypothesis itself} as the retrieval query; the
@@ -108,19 +108,19 @@ Stage (i) --- question generation --- is the only stage that differs between
 the three methods below.
 
 \begin{itemize}
-    \item \textbf{h-question} generates 2--4 probe questions directly from
+    \item \textsc{h-question} generates 2--4 probe questions directly from
     the hypothesis, seeded via either POS or SRL extraction
     (Section~\ref{sec:seeding}) applied to the hypothesis text. This pipeline
     is hypothesis-aware but premise-blind at generation time.
 
-    \item \textbf{bridge-question} generates 2--4 sub-questions from the
+    \item \textsc{bridge-question} generates 2--4 sub-questions from the
     premise and hypothesis jointly, with at least one question explicitly
     required to test the hypothesis's core claim against premise evidence,
     following the bridging/comparison framing of multi-hop QA
     \citep{yang-etal-2018-hotpotqa,min-etal-2019-multi}. This is the only configuration
     whose question-generation stage observes both texts simultaneously.
 
-    \item \textbf{p-question (decomposition)} applies \emph{atomic
+    \item \textsc{p-question (decomposition)} applies \emph{atomic
     decomposition} to the premise: the model is prompted to break the
     premise into the smallest standalone factual claims it contains ---
     each covering exactly one date, name, number, or event --- following
@@ -140,7 +140,7 @@ the three methods below.
     judgment of what is salient. This mode is premise-aware but
     hypothesis-blind at generation time.
 
-    \item \textbf{p-question (seeded)} generates one question per anchor
+    \item \textsc{p-question (seeded)} generates one question per anchor
     extracted from the premise via the seeding strategies of
     Section~\ref{sec:seeding}, evaluated separately for POS and SRL
     seeding.
@@ -148,7 +148,7 @@ the three methods below.
 
 Stage-1 question generation additionally receives three worked examples
 in-context for all six question-based configurations, following the same
-few-shot design as \texttt{few-shot-CoT}.
+few-shot design as \textsc{few-shot-CoT}.
 
 \subsection{Models}
 \label{sec:models}
