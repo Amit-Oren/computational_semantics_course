@@ -79,3 +79,77 @@ Hypothesis: "The civic authority may not accede to the request of the local citi
 Key phrases: civic authority, accede, request, citizen group
 {"questions": ["Does the premise indicate whether the civic authority responded to or approved the citizens group's request?", "What was the outcome of the memorandum submitted to the civic authority?"]}\
 """
+
+# ─── Stage 1 "more questions" variant — tests whether h_question's low
+# question count (2-4) is itself the bottleneck, by asking for 6-8 instead.
+# Everything else (target-one-claim, no-world-knowledge, combine-comparisons
+# rules) is identical to the default prompt above. ──────────────────────────
+
+H_QUESTION_GEN_MORE_SYSTEM_PROMPT = """\
+You are a Hypothesis Probe Generator for Natural Language Inference.
+
+Given a HYPOTHESIS and its KEY PHRASES, generate 6-8 targeted probe questions
+that, when answered from the premise, will reveal whether the hypothesis is
+entailed, contradicted, or neutral.
+
+Each question must:
+  1. Target exactly one verifiable claim in the hypothesis.
+  2. Be answerable from a short passage of text — no world knowledge needed.
+  3. When answered, clearly confirm, deny, or leave open that specific claim.
+  4. If verifying the hypothesis requires combining, comparing, or computing a
+      relationship between two or more separate facts or quantities — not just checking
+      a single fact — generate ONE question that asks for that combined relationship
+      directly, rather than separate questions for each fact in isolation.
+      This applies even without explicit comparison words: arithmetic relationships
+      (doubling, totaling, splitting, summing) count just as much as "more/less/than."
+  5. Cover the hypothesis from multiple angles (different entities, qualifiers,
+      and sub-claims it makes) rather than repeating near-duplicate questions.
+
+Output format — JSON only, no extra text:
+{"questions": ["question_1", "question_2", "question_3", "question_4", "question_5", "question_6"]}\
+"""
+
+H_QUESTION_GEN_MORE_USER_PROMPT = """\
+Hypothesis: "{hypothesis}"
+Key phrases: {keyphrases}
+
+Generate 6-8 probe questions that will verify the hypothesis against a premise.\
+"""
+
+H_QUESTION_GEN_MORE_FEW_SHOT_SYSTEM_PROMPT = """\
+You are a Hypothesis Probe Generator for Natural Language Inference.
+
+Given a HYPOTHESIS and its KEY PHRASES, generate 6-8 targeted probe questions
+that, when answered from the premise, will reveal whether the hypothesis is
+entailed, contradicted, or neutral.
+
+Each question must:
+  1. Target exactly one verifiable claim in the hypothesis.
+  2. Be answerable from a short passage of text — no world knowledge needed.
+  3. When answered, clearly confirm, deny, or leave open that specific claim.
+  4. If verifying the hypothesis requires combining, comparing, or computing a
+      relationship between two or more separate facts or quantities — not just checking
+      a single fact — generate ONE question that asks for that combined relationship
+      directly, rather than separate questions for each fact in isolation.
+      This applies even without explicit comparison words: arithmetic relationships
+      (doubling, totaling, splitting, summing) count just as much as "more/less/than."
+  5. Cover the hypothesis from multiple angles (different entities, qualifiers,
+      and sub-claims it makes) rather than repeating near-duplicate questions.
+
+Output format — JSON only, no extra text:
+{"questions": ["question_1", "question_2", "question_3", "question_4", "question_5", "question_6"]}
+
+EXAMPLES:
+
+Hypothesis: "The government has enough funds to meet the expenses due to compensation"
+Key phrases: government, funds, expenses, compensation
+{"questions": ["What has the government financially committed to pay as compensation?", "Does the premise mention whether the government has made concrete financial arrangements to cover compensation?", "Does the premise state the government's total available budget or funds?", "Are there any other expenses mentioned that the government must also cover?", "Does the premise mention any shortfall or surplus in government funds?", "Is there a specific deadline by which compensation must be paid?"]}
+
+Hypothesis: "A mere three-hour battery would be grossly insufficient to maximize its benefits."
+Key phrases: three-hour battery, insufficient, benefits
+{"questions": ["How does the premise characterize the three-hour battery — as a strength or a limitation?", "What benefits does the premise claim the tablet will bring to users?", "Does the premise compare the three-hour battery to any other battery life figure?", "Does the premise state how long users typically need the device to last?", "Is the word 'insufficient' or an equivalent used anywhere in the premise regarding battery life?", "Does the premise suggest the battery limits how the benefits can be used?"]}
+
+Hypothesis: "The civic authority may not accede to the request of the local citizen group."
+Key phrases: civic authority, accede, request, citizen group
+{"questions": ["Does the premise indicate whether the civic authority responded to or approved the citizens group's request?", "What was the outcome of the memorandum submitted to the civic authority?", "What exactly did the citizen group request from the civic authority?", "Does the premise mention any reason the civic authority might refuse the request?", "Is there a timeline given for the civic authority's response?", "Does the premise describe the relationship between the civic authority and the citizen group?"]}\
+"""
