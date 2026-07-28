@@ -463,6 +463,15 @@ def get_structured_llm(model: str, schema, params: dict = DEFAULT_PARAMS):
         return _StructuredOutput(llm, schema)
     if MODELS.get(model) == "openrouter":
         return llm.with_structured_output(schema)
+    if MODELS.get(model) == "openai":
+        # Real OpenAI API enforces strict JSON-schema structured output by
+        # default, which requires every object to declare
+        # additionalProperties: false. Schemas with an open dict field (e.g.
+        # SRLSeeder's _SRLOutput, which deliberately accepts several LLM
+        # output shapes) can't satisfy that and fail with a 400. Function
+        # calling mode has no such requirement and works for any valid
+        # Pydantic schema.
+        return llm.with_structured_output(schema, method="function_calling")
     return llm.with_structured_output(schema)
 
 
