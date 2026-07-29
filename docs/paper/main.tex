@@ -339,30 +339,75 @@ the third.
 
 \section{Conclusion}
 
-In this work, we studied whether inference-time prompt engineering and
-structured question-guided evidence extraction can improve reasoning on the
-ConTRoL long-context Natural Language Inference benchmark. Across five
-language models, our results show that complex question-generation pipelines
-do not consistently outperform direct zero-shot, few-shot, or simple
-retrieve-then-classify baselines.
+We studied whether inference-time prompt engineering and structured,
+question-guided evidence extraction can improve three-way NLI reasoning
+(Entailment, Contradiction, or Neutral) on the ConTRoL long-context
+benchmark, without any fine-tuning. Across five instruction-tuned language
+models, we find that question-based pipelines do not consistently
+outperform zero-shot, few-shot, or retrieve-then-classify baselines. A
+baseline or retrieval control attains the best score for four of the five
+models, and the six methods score close enough to each other that we treat
+their ranking as a hint, not a proven result.
 
-Our results highlight two key mechanisms. First, \emph{joint context
-visibility is essential}: pipelines that see both the premise and hypothesis
-during question generation (\textsc{bridge-question}) consistently outperform
-premise-only decomposition (\textsc{p-question}), which shows a statistically
-significant performance drop ($p < 0.01$) because premise-only prompting
-often produces no hypothesis-relevant questions. Second, \emph{keeping
-context verbatim prevents information loss}: directly retrieving full premise
-sentences (\textsc{retrieve-then-classify}) matches or outperforms premise
-question-decomposition across all models, showing that generating intermediate
-questions and paraphrasing answers can break apart critical reasoning
-boundaries.
+\paragraph{A shared retrieval step explains the null result.} One possible
+explanation for why the question-based pipelines do not beat the baselines
+is the design they share, though we cannot rule out other factors. Every
+question-based method sends its output through the same locator, which
+reduces the premise (averaging 500 words) to a small number of sentences
+before the classifier sees it. This is close to what retrieve-then-classify
+already does directly --- selecting the relevant part of the premise --- so
+the extra step of generating a question first, instead of retrieving on the
+hypothesis alone, may often add little. This shows up directly in how few
+questions actually survive to be used as evidence: h-question keeps only
+1.4--1.5 answered questions per sample, and bridge-question keeps about 2.0.
 
-In summary, for long-context NLI, keeping complete sentence-level evidence
-through direct prompting or direct retrieval is more robust than breaking
-passages into isolated question-answer pairs. Future work should address two
-open problems: aggregation strategies that reduce Neutral vote dilution, and
-retrieval methods that keep multi-sentence logical connections intact.
+\paragraph{Premise-only decomposition fails at generation, not answering.}
+Premise-only decomposition (p-question) is the one method that performs
+significantly worse, confirmed by a real statistical test (McNemar,
+$p<0.01$). The problem isn't answer quality --- looking only at the
+individual questions that do get generated, 96--98\% of them are answered
+correctly (Qwen2.5-32B). The problem is earlier: many samples never
+generate a single usable question to begin with, and 21--39\% of samples
+end up with nothing at all, forcing a fallback --- a plain zero-shot call
+as backup, or a hardcoded Neutral guess if even that fails. A related
+pattern shows up in h-question: when it fails to answer a question, it's
+usually because the hypothesis and premise barely share any of the same
+words --- suggesting the model sometimes misses an answer that's just
+phrased differently, rather than the answer truly being absent.
+
+\paragraph{Joint context visibility and verbatim evidence help most.}
+Among the question-based methods, bridge-question --- which looks at the
+premise and hypothesis together --- works best every time. And just
+retrieving whole premise sentences beats breaking the premise into separate
+questions, across every model. Both results point to the same idea:
+keeping full sentences together preserves the logical connections between
+them, while splitting the premise into separate question-answer pieces can
+break those connections apart. In short, for long-context NLI, keeping
+complete sentence-level evidence --- through direct prompting or direct
+retrieval --- is more robust than breaking a passage into isolated
+question-answer pairs.
+
+\paragraph{Modern zero-shot narrows the original gap.} The strongest
+models already reach accuracies well above this dataset's original
+fine-tuned baseline (BART-NLI-FT, a fine-tuned Transformer: 60.95\%; Liu et
+al., 2021) using zero-shot prompting alone, with no training data at all.
+This isn't conclusive evidence against question generation, though: most
+of the small gaps between methods haven't been tested for real
+significance, and one of our own experiments raised DeepSeek-V4-Flash's
+accuracy by 7.4 points just by asking more questions. Right now, though,
+simple baselines already perform about as well as more complex pipelines.
+
+\paragraph{Outlook.} It's still an open question whether asking more
+questions, or better-targeted ones, would change these results. Our nine
+methods differ mainly in where the questions come from --- the hypothesis,
+the premise, or both --- not in how many get asked, so this study can't
+separate the effect of question count from the effect of question source.
+Future work should look at two things: an adaptive mechanism that generates
+more questions when the current evidence is inconclusive, instead of
+relying on a fixed, narrow question budget; and retrieval methods that keep
+multi-sentence logical connections intact, motivated by
+retrieve-then-classify's consistent advantage over p-question, though this
+specific refinement is untested.
 
 \section*{Limitations}
 
